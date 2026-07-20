@@ -1,0 +1,16 @@
+---
+import CollectionCard from './CollectionCard.astro';
+import type { Collection } from '../types/collection';
+
+interface Props {
+  collections: Collection[];
+}
+
+const { collections } = Astro.props;
+---
+
+<div class="collection-grid">
+  {collections.map((collection) => <CollectionCard collection={collection} />)}
+</div>
+
+<style>.collection-grid{display:grid;gap:1.4rem;grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:640px){.collection-grid{grid-template-columns:1fr}}</style>

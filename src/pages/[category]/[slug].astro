@@ -1,0 +1,17 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import CollectionDetail from '../../components/CollectionDetail.astro';
+import { getAllCollections } from '../../data/collections';
+
+export function getStaticPaths() {
+  return getAllCollections().map((collection) => ({
+    params: { category: collection.category, slug: collection.slug },
+    props: { collection },
+  }));
+}
+
+const { collection } = Astro.props;
+---
+<MainLayout title={`${collection.title} | Honeycomb Arts & Bakes`} description={collection.shortDescription}>
+  <CollectionDetail collection={collection} />
+</MainLayout>
