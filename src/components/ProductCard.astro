@@ -1,0 +1,177 @@
+---
+import type { Product } from '../../types/product';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+
+const imageTone = product.imageTone || 'cream';
+const cardStyle = product.image ? `background-image: url(${product.image});` : undefined;
+
+const statusLabels: Record<string, string> = {
+  available: 'Available',
+  seasonal: 'Seasonal',
+  'out-of-stock': 'Out of Stock',
+  preorder: 'Preorder',
+};
+
+const statusLabel = statusLabels[product.status] || product.status;
+---
+
+<article class="product-card" id={product.slug}>
+<div class="product-card__link">
+    <div
+      class:list={['product-card__image', `image-panel--${imageTone}`]}
+      style={cardStyle}
+      role="img"
+      aria-label={product.image ? product.title : `${product.title} image placeholder`}
+    >
+      <span class:list={['product-card__status', `product-card__status--${product.status}`]}>
+        {statusLabel}
+      </span>
+      {product.priceLabel && <span class="product-card__price">{product.priceLabel}</span>}
+    </div>
+    <div class="product-card__content">
+      <h3 class="product-card__title">{product.title}</h3>
+      {product.subtitle && <p class="product-card__subtitle">{product.subtitle}</p>}
+      <p class="product-card__description">{product.shortDescription}</p>
+      <span class="product-card__cta">
+        View Details <span aria-hidden="true">→</span>
+      </span>
+    </div>
+  </div>
+</article>
+
+<style>
+  .product-card {
+    height: 100%;
+  }
+
+  .product-card__link {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 1.15rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+  }
+
+  .product-card__link:hover {
+    box-shadow: var(--shadow);
+    transform: translateY(-5px);
+  }
+
+  .product-card__link:focus-visible {
+    box-shadow: 0 0 0 4px rgba(214, 165, 75, 0.45);
+    outline: none;
+  }
+
+  .product-card__image {
+    background-position: center;
+    background-size: cover;
+    min-height: 220px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .product-card__image::after {
+    background: linear-gradient(180deg, transparent 40%, rgba(74, 51, 38, 0.3));
+    content: '';
+    inset: 0;
+    position: absolute;
+  }
+
+  .product-card__status {
+    border-radius: 99px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    left: 1rem;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 0.65rem;
+    position: absolute;
+    text-transform: uppercase;
+    top: 1rem;
+    z-index: 1;
+  }
+
+  .product-card__status--available {
+    background: var(--sage);
+    color: #fff;
+  }
+
+  .product-card__status--seasonal {
+    background: var(--honey);
+    color: var(--cocoa);
+  }
+
+  .product-card__status--out-of-stock {
+    background: #a36e62;
+    color: #fff;
+  }
+
+  .product-card__status--preorder {
+    background: var(--cocoa);
+    color: #fff;
+  }
+
+  .product-card__price {
+    backdrop-filter: blur(4px);
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 99px;
+    bottom: 1rem;
+    color: var(--cocoa);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.3rem 0.7rem;
+    position: absolute;
+    right: 1rem;
+    z-index: 1;
+  }
+
+  .product-card__content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 1.25rem 1.35rem 1.4rem;
+  }
+
+  .product-card__title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .product-card__subtitle {
+    color: var(--sage);
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin: 0.25rem 0 0;
+  }
+
+  .product-card__description {
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.5;
+    margin: 0.6rem 0 1.2rem;
+  }
+
+  .product-card__cta {
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-top: auto;
+  }
+
+  .product-card__cta span {
+    color: var(--honey);
+    font-size: 1.1rem;
+    margin-left: 0.2rem;
+  }
+</style>
