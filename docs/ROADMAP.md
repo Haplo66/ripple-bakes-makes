@@ -8,9 +8,9 @@
 
 ✔ Phase 4.1 Product Model
 
-⬜ Phase 4.2 Product Detail
+✔ Phase 4.2 Product Detail
 
-⬜ Phase 4.3 Product Routing
+✔ Phase 4.3 Product Routing
 
 ⬜ Phase 4.4 Form Definition
 

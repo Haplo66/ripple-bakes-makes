@@ -1,6 +1,68 @@
 ---
-import MainLayout from '../layouts/MainLayout.astro';import SectionTitle from '../components/SectionTitle.astro';import CollectionGrid from '../components/CollectionGrid.astro';import { getSewingCollections } from '../data/collections';
+import MainLayout from '../layouts/MainLayout.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import CollectionGrid from '../components/CollectionGrid.astro';
+import ProductGrid from '../components/products/ProductGrid.astro';
+import { getSewingCollections } from '../data/collections';
+import { getProductsByCollection } from '../data/products';
+
 const sewingCollections = getSewingCollections();
+const sewingProducts = getProductsByCollection('sewing-custom-sewing');
 ---
-<MainLayout title="Sewing & Handmade Crafts | Honeycomb Arts & Bakes" description="Custom sewing, repairs, personalized gifts, textile creations, and seasonal handmade crafts."><section class="page-hero"><div class="container"><span class="eyebrow">The handmade studio</span><h1 class="display">Stitched with <em>intention.</em></h1><p>Personalized, practical, and joyfully made pieces for gifting, keeping, and everyday living.</p></div></section><section class="section"><div class="container"><SectionTitle eyebrow="Made by hand" title="Pieces with a story <em>to tell.</em>" text="From small repairs to one-of-a-kind gifts, every project gets the same patient, personal care."/><CollectionGrid collections={sewingCollections}/></div></section><section class="section section--paper"><div class="container order-callout"><div><span class="eyebrow">Your idea, made real</span><h2 class="display">Let’s make it<br/><em>yours.</em></h2></div><div><p>Have a fabric, a feeling, or a particular person in mind? Start a conversation and we’ll explore what’s possible together.</p><a class="button" href="contact">Start a project <span class="arrow">→</span></a></div></div></section></MainLayout>
-<style>.order-callout{align-items:center;display:grid;gap:5rem;grid-template-columns:1.1fr .9fr}.order-callout p{color:var(--muted);font-size:1.02rem;margin-top:0}@media(max-width:800px){.order-callout{gap:2rem;grid-template-columns:1fr}}</style>
+
+<MainLayout title="Sewing & Handmade Crafts | Honeycomb Arts & Bakes" description="Custom sewing, repairs, personalized gifts, textile creations, and seasonal handmade crafts.">
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">The handmade studio</span>
+      <h1 class="display">Stitched with <em>intention.</em></h1>
+      <p>Personalized, practical, and joyfully made pieces for gifting, keeping, and everyday living.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionTitle eyebrow="Made by hand" title="Pieces with a story <em>to tell.</em>" text="From small repairs to one-of-a-kind gifts, every project gets the same patient, personal care."/>
+      <CollectionGrid collections={sewingCollections}/>
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="container">
+      <SectionTitle eyebrow="Our Products" title="Handcrafted <em>sewing creations.</em>"  text="Explore custom apparel, gifts, and handmade textile pieces."/>
+      <ProductGrid products={sewingProducts}/>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container order-callout">
+      <div>
+        <span class="eyebrow">Your idea, made real</span>
+        <h2 class="display">Let’s make it<br/><em>yours.</em></h2>
+      </div>
+      <div>
+        <p>Have a fabric, a feeling, or a particular person in mind? Start a conversation and we’ll explore what’s possible together.</p>
+        <a class="button" href="contact">Start a project <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  .order-callout {
+    align-items: center;
+    display: grid;
+    gap: 5rem;
+    grid-template-columns: 1.1fr .9fr;
+  }
+  .order-callout p {
+    color: var(--muted);
+    font-size: 1.02rem;
+    margin-top: 0;
+  }
+  @media(max-width:800px) {
+    .order-callout {
+      gap: 2rem;
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

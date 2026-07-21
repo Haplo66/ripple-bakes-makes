@@ -1,6 +1,68 @@
 ---
-import MainLayout from '../layouts/MainLayout.astro';import SectionTitle from '../components/SectionTitle.astro';import CollectionGrid from '../components/CollectionGrid.astro';import { getBakeryCollections } from '../data/collections';
+import MainLayout from '../layouts/MainLayout.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import CollectionGrid from '../components/CollectionGrid.astro';
+import ProductGrid from '../components/products/ProductGrid.astro';
+import { getBakeryCollections } from '../data/collections';
+import { getProductsByCollection } from '../data/products';
+
 const bakeryCollections = getBakeryCollections();
+const bakeryProducts = getProductsByCollection('bakery-cakes');
 ---
-<MainLayout title="Artisan Bakery | Honeycomb Arts & Bakes" description="Small-batch breads, cookies, cakes, seasonal treats, and custom bakery orders."><section class="page-hero"><div class="container"><span class="eyebrow">The bakery</span><h1 class="display">Baked slowly.<br/><em>Shared gladly.</em></h1><p>Comforting, beautiful bakes for everyday rituals, celebrations, and the people you love to feed.</p></div></section><section class="section"><div class="container"><SectionTitle eyebrow="What’s baking" title="Simple ingredients, <em>thoughtful details.</em>" text="A small, rotating menu of favourites — with room for a very good custom request."/><CollectionGrid collections={bakeryCollections}/></div></section><section class="section section--paper"><div class="container order-callout"><div><span class="eyebrow">Custom orders</span><h2 class="display">Planning a sweet<br/><em>occasion?</em></h2></div><div><p>Tell us what you’re celebrating, who it’s for, and when you need it. We’ll help shape something delicious and distinctly yours.</p><a class="button" href="contact">Ask about an order <span class="arrow">→</span></a></div></div></section></MainLayout>
-<style>.order-callout{align-items:center;display:grid;gap:5rem;grid-template-columns:1.1fr .9fr}.order-callout p{color:var(--muted);font-size:1.02rem;margin-top:0}@media(max-width:800px){.order-callout{gap:2rem;grid-template-columns:1fr}}</style>
+
+<MainLayout title="Artisan Bakery | Honeycomb Arts & Bakes" description="Small-batch breads, cookies, cakes, seasonal treats, and custom bakery orders.">
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">The bakery</span>
+      <h1 class="display">Baked slowly.<br/><em>Shared gladly.</em></h1>
+      <p>Comforting, beautiful bakes for everyday rituals, celebrations, and the people you love to feed.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionTitle eyebrow="What’s baking" title="Simple ingredients, <em>thoughtful details.</em>" text="A small, rotating menu of favourites — with room for a very good custom request."/>
+      <CollectionGrid collections={bakeryCollections}/>
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="container">
+      <SectionTitle eyebrow="Our Products" title="Handcrafted <em>bakery creations.</em>" text="Explore our cakes, breads, cookies, and seasonal treats made with care."/>
+      <ProductGrid products={bakeryProducts}/>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container order-callout">
+      <div>
+        <span class="eyebrow">Custom orders</span>
+        <h2 class="display">Planning a sweet<br/><em>occasion?</em></h2>
+      </div>
+      <div>
+        <p>Tell us what you’re celebrating, who it’s for, and when you need it. We’ll help shape something delicious and distinctly yours.</p>
+        <a class="button" href="contact">Ask about an order <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  .order-callout {
+    align-items: center;
+    display: grid;
+    gap: 5rem;
+    grid-template-columns: 1.1fr .9fr;
+  }
+  .order-callout p {
+    color: var(--muted);
+    font-size: 1.02rem;
+    margin-top: 0;
+  }
+  @media(max-width:800px) {
+    .order-callout {
+      gap: 2rem;
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
