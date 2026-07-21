@@ -6,7 +6,7 @@
 
 ✔ Phase 3 - Dynamic Collection Pages
 
-⬜ Phase 4.1 Product Model
+✔ Phase 4.1 Product Model
 
 ⬜ Phase 4.2 Product Detail
 

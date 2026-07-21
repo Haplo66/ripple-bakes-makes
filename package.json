@@ -1,1 +1,1 @@
-{"name":"honeycomb-arts-bakes","type":"module","scripts":{"dev":"astro dev","build":"astro build","preview":"astro preview"},"dependencies":{"astro":"^6.4.8"}}
+{"name":"honeycomb-arts-bakes","type":"module","scripts":{"dev":"astro dev","build":"astro build","preview":"astro preview"},"dependencies":{"@astrojs/check":"^0.9.9","astro":"^6.4.8","typescript":"^6.0.3"}}
