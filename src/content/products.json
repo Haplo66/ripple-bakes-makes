@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-22T22:46:17.204Z",
+    "generatedAt": "2026-07-22T22:55:10.984Z",
     "source": "Honeycomb Data Pipeline",
     "version": 1
   },
@@ -21,6 +21,7 @@
       "imageFolder": "bakery/cakes/birthday-cake",
       "formId": "birthday-cake-form",
       "image": null,
+      "images": [],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 1,
@@ -41,6 +42,7 @@
       "imageFolder": "bakery/cakes/celebration-cake",
       "formId": "celebration-cake-form",
       "image": null,
+      "images": [],
       "imageTone": "rose",
       "active": true,
       "displayOrder": 2,
@@ -61,6 +63,7 @@
       "imageFolder": "sewing/custom-sewing/adult-t-shirt",
       "formId": "adult-t-shirt-form",
       "image": null,
+      "images": [],
       "imageTone": "sage",
       "active": true,
       "displayOrder": 1,
@@ -81,6 +84,7 @@
       "imageFolder": "sewing/custom-sewing/custom-hoodie",
       "formId": "custom-hoodie-form",
       "image": null,
+      "images": [],
       "imageTone": "cocoa",
       "active": true,
       "displayOrder": 2,

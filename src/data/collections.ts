@@ -13,10 +13,12 @@ type CollectionRecord = Omit<
   | 'popularIdeas'
   | 'customizationNote'
   | 'active'
+  | 'images'
 > & {
   businessArea: CollectionCategory | 'Bakery' | 'Sewing';
   name: string;
   title?: string;
+  images?: string[];
   status: 'Active' | 'Inactive';
   galleryCaptions?: string[];
   popularIdeas?: string[];
@@ -34,6 +36,7 @@ const toCollection = (record: CollectionRecord): Collection => {
   const category = businessAreaMap[record.businessArea];
   const title = record.title || record.name;
   const galleryCaptions = record.galleryCaptions || [];
+  const images = record.images || [];
 
   return {
     ...record,
@@ -41,6 +44,8 @@ const toCollection = (record: CollectionRecord): Collection => {
     businessArea: category,
     title,
     active: record.status === 'Active',
+    images,
+    heroImage: record.heroImage || images[0] || null,
     galleryImages: galleryCaptions.map((caption, index) => ({
       alt: `${title}: ${caption}`,
       caption,

@@ -5,10 +5,11 @@ type GeneratedData<T> = {
   data: T[];
 };
 
-type ProductRecord = Omit<Product, 'collectionId' | 'status' | 'title'> & {
+type ProductRecord = Omit<Product, 'collectionId' | 'status' | 'title' | 'images'> & {
   collection: string;
   name: string;
   title?: string;
+  images?: string[];
   status: Product['status'] | 'Active' | 'Seasonal' | 'Out of Stock' | 'Preorder';
 };
 
@@ -23,12 +24,18 @@ const statusMap: Record<ProductRecord['status'], Product['status']> = {
   preorder: 'preorder',
 };
 
-const toProduct = (record: ProductRecord): Product => ({
-  ...record,
-  collectionId: record.collection,
-  title: record.title || record.name,
-  status: statusMap[record.status],
-});
+const toProduct = (record: ProductRecord): Product => {
+  const images = record.images || [];
+
+  return {
+    ...record,
+    collectionId: record.collection,
+    title: record.title || record.name,
+    status: statusMap[record.status],
+    images,
+    image: record.image || images[0] || null,
+  };
+};
 
 /** Product data loaded from JSON to support future spreadsheet-backed imports. */
 const rawProductRecords = Array.isArray(productRecords)

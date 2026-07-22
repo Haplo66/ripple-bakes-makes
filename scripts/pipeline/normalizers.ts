@@ -13,6 +13,9 @@ const parseNumber = (value: string, fallback = 0): number => {
 const parseNullableString = (value: string): string | null =>
   value.trim() ? value.trim() : null;
 
+const parsePipeField = (value: string): string[] =>
+  value.trim() ? value.split('|').map((part) => part.trim()).filter(Boolean) : [];
+
 const parseJsonField = <T>(
   value: string,
   fallback: T,
@@ -53,6 +56,7 @@ export const normalizeCollections = (
     description: values.description,
     imageFolder: values.imageFolder,
     heroImage: parseNullableString(values.heroImage ?? ''),
+    images: parsePipeField(values.images ?? ''),
     featured: parseBoolean(values.featured),
     status: values.status || 'Active',
     displayOrder: parseNumber(values.displayOrder),
@@ -88,6 +92,7 @@ export const normalizeProducts = (records: CsvRecord[]) =>
     imageFolder: values.imageFolder,
     formId: values.formId,
     image: parseNullableString(values.image ?? ''),
+    images: parsePipeField(values.images ?? ''),
     imageTone: values.imageTone || 'cream',
     active: parseBoolean(values.active, true),
     displayOrder: parseNumber(values.displayOrder),

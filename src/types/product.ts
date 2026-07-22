@@ -50,8 +50,11 @@ export interface Product {
 
   description: string;
 
-  /** Optional product image path. */
+  /** Optional primary product image path. */
   image: string | null;
+
+  /** All product image paths. */
+  images: string[];
 
   /** Folder that contains product imagery in future asset-backed imports. */
   imageFolder?: string;

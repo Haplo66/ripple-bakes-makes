@@ -27,6 +27,8 @@ export interface Collection {
   description: string;
   /** Folder that contains collection imagery in future asset-backed imports. */
   imageFolder?: string;
+  /** All collection image paths. */
+  images?: string[];
   heroImage: string | null;
   galleryImages: CollectionGalleryImage[];
   popularIdeas: string[];
