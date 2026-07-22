@@ -1,0 +1,165 @@
+---
+import MainLayout from '../../../layouts/MainLayout.astro';
+import { getAllProducts } from '../../../data/products';
+import { collections } from '../../../data/collections';
+import type { Product } from '../../../types/product';
+
+export async function getStaticPaths() {
+  const products = getAllProducts();
+
+  return products.map((product) => {
+    let collectionSlug = '';
+
+    const matched = collections.find(
+      (collection) => collection.id === product.collectionId,
+    );
+
+    if (matched) {
+      collectionSlug = matched.slug;
+    }
+
+    if (!collectionSlug) {
+      collectionSlug = product.collectionId.replace(
+        `${product.businessArea}-`,
+        '',
+      );
+    }
+
+    return {
+      params: {
+        businessArea: product.businessArea,
+        collection: collectionSlug,
+        slug: product.slug,
+      },
+      props: { product },
+    };
+  });
+}
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+
+const imageTone = product.imageTone || 'cream';
+const imageStyle = product.image
+  ? `background-image: url(${product.image});`
+  : undefined;
+
+const statusLabels: Record<string, string> = {
+  available: 'Available',
+  seasonal: 'Seasonal',
+  'out-of-stock': 'Out of Stock',
+  preorder: 'Preorder',
+};
+
+const statusLabel = statusLabels[product.status] || product.status;
+
+const businessAreaTitle =
+  product.businessArea === 'bakery'
+    ? 'Bakery'
+    : 'Sewing Studio';
+
+const baseUrl = import.meta.env.BASE_URL;
+const contactUrl = `${baseUrl}contact`;
+---
+
+<MainLayout
+  title={`${product.title} | Honeycomb Arts & Bakes`}
+  description={product.shortDescription}
+>
+  <div class="product-detail">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href={`${baseUrl}${product.businessArea}`}>
+          {businessAreaTitle}
+        </a>
+
+        <span class="separator" aria-hidden="true">/</span>
+
+        <span class="current" aria-current="page">
+          {product.title}
+        </span>
+      </nav>
+
+      <div class="product-detail__grid">
+        <div class="product-detail__media">
+          <div
+            class:list={[
+              'product-detail__image',
+              `image-panel--${imageTone}`,
+            ]}
+            style={imageStyle}
+            role="img"
+            aria-label={
+              product.image
+                ? product.title
+                : `${product.title} visual treatment`
+            }
+          >
+            <span
+              class:list={[
+                'status-badge',
+                `status-badge--${product.status}`,
+              ]}
+            >
+              {statusLabel}
+            </span>
+          </div>
+        </div>
+
+        <div class="product-detail__content">
+          <span class="eyebrow">{businessAreaTitle}</span>
+
+          <h1 class="display product-detail__title">
+            {product.title}
+          </h1>
+
+          {product.subtitle && (
+            <p class="product-detail__subtitle">
+              {product.subtitle}
+            </p>
+          )}
+
+          {product.priceLabel && (
+            <div class="product-detail__price">
+              <span class="price-tag">
+                {product.priceLabel}
+              </span>
+            </div>
+          )}
+
+          <div class="product-detail__description">
+            <p class="short-desc">
+              {product.shortDescription}
+            </p>
+
+            <p class="full-desc">
+              {product.description}
+            </p>
+          </div>
+
+          <div class="product-detail__meta">
+            <div class="meta-item">
+              <span class="meta-label">
+                Availability Status
+              </span>
+
+              <span class="meta-value">
+                {statusLabel}
+              </span>
+            </div>
+          </div>
+
+          <div class="product-detail__actions">
+            <a href={contactUrl} class="button">
+              Inquire About This Order
+              <span class="arrow" aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</MainLayout>
