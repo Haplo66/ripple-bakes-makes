@@ -64,8 +64,12 @@ const businessAreaTitle =
     : 'Sewing Studio';
 
 const baseUrl = import.meta.env.BASE_URL;
-const contactUrl = `${baseUrl}contact`;
 const productForm = product.formId ? getFormById(product.formId) : undefined;
+const cartForm = productForm || {
+  id: `${product.id}-cart-form`,
+  title: product.title,
+  fields: [],
+};
 ---
 
 <MainLayout
@@ -155,14 +159,14 @@ const productForm = product.formId ? getFormById(product.formId) : undefined;
             </div>
           </div>
 
-          <div class="product-detail__actions">
-            <a href={contactUrl} class="button">
-              Inquire About This Order
-              <span class="arrow" aria-hidden="true">→</span>
-            </a>
-          </div>
-
-          {productForm && <FormRenderer form={productForm} />}
+          <FormRenderer
+            form={cartForm}
+            product={{
+              collectionId: product.collectionId,
+              productId: product.id,
+              productTitle: product.title,
+            }}
+          />
         </div>
       </div>
     </div>

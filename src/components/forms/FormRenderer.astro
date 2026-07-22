@@ -4,28 +4,60 @@ import FormField from './FormField.astro';
 
 interface Props {
   form: Form;
+  product: {
+    collectionId: string;
+    productId: string;
+    productTitle: string;
+  };
 }
 
-const { form } = Astro.props;
+const { form, product } = Astro.props;
 ---
 
-<form class="product-form" action="#" method="post" data-dynamic-form>
+<form
+  class="product-form"
+  action="#"
+  method="post"
+  data-dynamic-form
+  data-cart-form
+  data-collection-id={product.collectionId}
+  data-product-id={product.productId}
+  data-product-title={product.productTitle}
+>
   <div class="product-form__header">
-    <span class="eyebrow">Inquiry Details</span>
+    <span class="eyebrow">Customize Order</span>
     <h2>{form.title}</h2>
   </div>
 
-  <div class="product-form__fields">
+  <div class="product-form__fields" data-cart-fields>
     {form.fields.map((field) => <FormField field={field} />)}
+
+    <label class="product-form__quantity">
+      Quantity
+      <input
+        type="number"
+        name="quantity"
+        min="1"
+        step="1"
+        value="1"
+        required
+      />
+    </label>
   </div>
 
   <button class="button button--honey" type="submit">
-    Send inquiry details
+    Add to cart
     <span class="arrow" aria-hidden="true">→</span>
   </button>
+
+  <p class="product-form__confirmation" data-cart-confirmation hidden>
+    Added to cart
+  </p>
 </form>
 
 <script>
+  import { addToCart } from '../../utils/cart';
+
   const forms = document.querySelectorAll('[data-dynamic-form]');
 
   forms.forEach((form) => {
@@ -74,6 +106,65 @@ const { form } = Astro.props;
     form.addEventListener('change', updateConditions);
     updateConditions();
   });
+
+  const cartForms = document.querySelectorAll('[data-cart-form]');
+
+  cartForms.forEach((form) => {
+    const confirmation = form.querySelector('[data-cart-confirmation]');
+
+    const getConfiguration = () => {
+      const data = new FormData(form);
+      const configuration = {};
+
+      data.forEach((value, key) => {
+        if (key === 'quantity' || key === 'notes') {
+          return;
+        }
+
+        const stringValue = String(value);
+        const currentValue = configuration[key];
+
+        if (Array.isArray(currentValue)) {
+          currentValue.push(stringValue);
+          return;
+        }
+
+        if (typeof currentValue === 'string') {
+          configuration[key] = [currentValue, stringValue];
+          return;
+        }
+
+        configuration[key] = stringValue;
+      });
+
+      return configuration;
+    };
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      if (!form.reportValidity()) {
+        return;
+      }
+
+      const formData = new FormData(form);
+      const quantity = Number(formData.get('quantity') || 1);
+      const notesValue = formData.get('notes');
+
+      addToCart({
+        collectionId: form.dataset.collectionId || '',
+        productId: form.dataset.productId || '',
+        productTitle: form.dataset.productTitle || '',
+        configuration: getConfiguration(),
+        quantity,
+        notes: notesValue ? String(notesValue) : undefined,
+      });
+
+      if (confirmation) {
+        confirmation.hidden = false;
+      }
+    });
+  });
 </script>
 
 <style>
@@ -107,6 +198,32 @@ const { form } = Astro.props;
   .product-form__fields :global(.form-field:has(textarea)),
   .product-form__fields :global(.form-field:has(fieldset)) {
     grid-column: span 2;
+  }
+
+  .product-form__quantity {
+    color: var(--cocoa);
+    display: flex;
+    flex-direction: column;
+    font-size: .78rem;
+    font-weight: 600;
+    gap: .4rem;
+  }
+
+  .product-form__quantity input {
+    background: #fffdfa;
+    border: 1px solid var(--line);
+    border-radius: .55rem;
+    color: var(--cocoa);
+    font-size: .92rem;
+    outline-color: var(--honey);
+    padding: .72rem .8rem;
+  }
+
+  .product-form__confirmation {
+    color: var(--sage);
+    font-size: .85rem;
+    font-weight: 600;
+    margin: .85rem 0 0;
   }
 
   @media (max-width: 620px) {
