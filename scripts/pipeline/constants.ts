@@ -18,3 +18,9 @@ export const OUTPUT_FILES = {
   products: 'products.json',
   forms: 'forms.json',
 } as const;
+
+export const SHEET_TABS = {
+  collections: 'Collections',
+  products: 'Products',
+  forms: 'Forms',
+} as const;
