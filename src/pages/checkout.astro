@@ -16,7 +16,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 
   <section class="section">
     <div class="container checkout-layout" data-checkout-ready hidden>
-      <form class="checkout-form" aria-label="Customer information">
+      <form class="checkout-form" aria-label="Customer information" data-checkout-form>
         <div class="checkout-panel">
           <div class="checkout-panel__heading">
             <span class="eyebrow">Customer Information</span>
@@ -26,22 +26,22 @@ import MainLayout from '../layouts/MainLayout.astro';
           <div class="checkout-fields">
             <label>
               Name
-              <input type="text" name="name" autocomplete="name" />
+              <input type="text" name="name" autocomplete="name" required />
             </label>
 
             <label>
               Email
-              <input type="email" name="email" autocomplete="email" />
+              <input type="email" name="email" autocomplete="email" required />
             </label>
 
             <label>
               Phone
-              <input type="tel" name="phone" autocomplete="tel" />
+              <input type="tel" name="phone" autocomplete="tel" required />
             </label>
 
             <label>
               Preferred Contact Method
-              <select name="preferredContactMethod">
+              <select name="preferredContactMethod" required>
                 <option value="">Select one</option>
                 <option value="email">Email</option>
                 <option value="phone">Phone</option>
@@ -51,7 +51,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 
             <label>
               Preferred Pickup Date
-              <input type="date" name="preferredPickupDate" />
+              <input type="date" name="preferredPickupDate" required />
             </label>
 
             <label class="checkout-fields__wide">
@@ -59,6 +59,12 @@ import MainLayout from '../layouts/MainLayout.astro';
               <textarea name="additionalNotes" rows="5"></textarea>
             </label>
           </div>
+
+          <p class="checkout-message" data-checkout-error hidden></p>
+
+          <button class="button button--honey checkout-submit" type="submit">
+            Prepare order
+          </button>
         </div>
       </form>
 
@@ -73,6 +79,13 @@ import MainLayout from '../layouts/MainLayout.astro';
 
         <div class="order-summary__items" data-checkout-summary></div>
       </aside>
+
+      <section class="checkout-confirmation" data-checkout-confirmation hidden>
+        <span class="eyebrow">Prepared</span>
+        <h2>Order prepared successfully</h2>
+        <p>Your order payload is ready for the future submission step.</p>
+        <pre data-checkout-order-preview></pre>
+      </section>
     </div>
 
     <div class="container checkout-empty" data-checkout-empty hidden>
@@ -103,13 +116,18 @@ import MainLayout from '../layouts/MainLayout.astro';
 
 <script>
   import { getCart } from '../utils/cart';
+  import { createOrderFromCart } from '../utils/order';
 
   const checkoutReady = document.querySelector('[data-checkout-ready]');
+  const checkoutForm = document.querySelector('[data-checkout-form]');
   const emptyState = document.querySelector('[data-checkout-empty]');
   const summaryList = document.querySelector('[data-checkout-summary]');
   const totalCount = document.querySelector('[data-checkout-total-count]');
   const totalLabel = document.querySelector('[data-checkout-total-label]');
   const template = document.querySelector('#checkout-item-template');
+  const checkoutError = document.querySelector('[data-checkout-error]');
+  const confirmation = document.querySelector('[data-checkout-confirmation]');
+  const orderPreview = document.querySelector('[data-checkout-order-preview]');
 
   const formatLabel = (value) =>
     value
@@ -120,6 +138,19 @@ import MainLayout from '../layouts/MainLayout.astro';
 
   const formatValue = (value) =>
     Array.isArray(value) ? value.join(', ') : String(value);
+
+  const getFieldValue = (formData, fieldName) =>
+    String(formData.get(fieldName) || '').trim();
+
+  const clearSubmitFeedback = () => {
+    if (checkoutError) {
+      checkoutError.textContent = '';
+      checkoutError.hidden = true;
+    }
+
+    if (confirmation) confirmation.hidden = true;
+    if (orderPreview) orderPreview.textContent = '';
+  };
 
   const renderCheckout = () => {
     const cart = getCart();
@@ -132,6 +163,7 @@ import MainLayout from '../layouts/MainLayout.astro';
     checkoutReady.hidden = !hasItems;
     emptyState.hidden = hasItems;
     summaryList.textContent = '';
+    clearSubmitFeedback();
 
     if (totalCount) totalCount.textContent = String(count);
     if (totalLabel) totalLabel.textContent = count === 1 ? 'item' : 'items';
@@ -162,6 +194,40 @@ import MainLayout from '../layouts/MainLayout.astro';
     });
   };
 
+  checkoutForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    clearSubmitFeedback();
+
+    const form = event.currentTarget;
+
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const cart = getCart();
+
+    if (cart.items.length === 0) {
+      renderCheckout();
+      return;
+    }
+
+    const formData = new FormData(form);
+    const order = createOrderFromCart(cart);
+
+    order.customer = {
+      name: getFieldValue(formData, 'name'),
+      email: getFieldValue(formData, 'email'),
+      phone: getFieldValue(formData, 'phone'),
+      preferredContactMethod: getFieldValue(formData, 'preferredContactMethod'),
+      preferredPickupDate: getFieldValue(formData, 'preferredPickupDate'),
+      additionalNotes: getFieldValue(formData, 'additionalNotes'),
+    };
+
+    if (confirmation) confirmation.hidden = false;
+    if (orderPreview) orderPreview.textContent = JSON.stringify(order, null, 2);
+  });
+
   window.addEventListener('honeycomb-cart:updated', renderCheckout);
   window.addEventListener('storage', renderCheckout);
   renderCheckout();
@@ -178,6 +244,8 @@ import MainLayout from '../layouts/MainLayout.astro';
   .checkout-fields input,.checkout-fields select,.checkout-fields textarea{background:#fffdfa;border:1px solid var(--line);border-radius:.55rem;color:var(--cocoa);font-size:.92rem;outline-color:var(--honey);padding:.72rem .8rem}
   .checkout-fields textarea{resize:vertical}
   .checkout-fields__wide{grid-column:1/-1}
+  .checkout-submit{margin-top:1.4rem}
+  .checkout-message{border-left:2px solid var(--honey);color:var(--muted);font-size:.9rem;margin:1rem 0 0;padding-left:.75rem}
   .order-summary{padding:1.5rem;position:sticky;top:1.5rem}
   .order-summary__heading{border-bottom:1px solid var(--line);margin-bottom:1.2rem;padding-bottom:1rem}
   .order-summary__heading p{font-family:'Playfair Display',Georgia,serif;font-size:1.75rem;font-weight:500;letter-spacing:-.035em;margin:.85rem 0 0}
@@ -193,6 +261,10 @@ import MainLayout from '../layouts/MainLayout.astro';
   .summary-item__configuration:empty{display:none}
   .summary-item__notes{border-left:2px solid var(--honey);color:var(--muted);font-size:.84rem;margin:.85rem 0 0;padding-left:.7rem}
   .summary-item__notes:empty{display:none}
+  .checkout-confirmation{background:#f6eddf;border:1px solid var(--line);border-radius:1.1rem;grid-column:1/-1;padding:1.5rem}
+  .checkout-confirmation h2{font-family:'Playfair Display',Georgia,serif;font-size:1.8rem;font-weight:500;letter-spacing:-.035em;margin:.5rem 0 .35rem}
+  .checkout-confirmation p{color:var(--muted);margin:0 0 1rem}
+  .checkout-confirmation pre{background:#fffdfa;border:1px solid var(--line);border-radius:.75rem;color:var(--cocoa);font-size:.78rem;line-height:1.5;margin:0;max-height:22rem;overflow:auto;padding:1rem;white-space:pre-wrap}
   .checkout-empty{padding:2rem}
   .checkout-empty h2{font-family:'Playfair Display',Georgia,serif;font-size:2rem;font-weight:500;letter-spacing:-.04em;margin:0 0 .5rem}
   .checkout-empty p{color:var(--muted);margin:0 0 1.25rem}
