@@ -1,0 +1,202 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout
+  title="Checkout | Honeycomb Arts & Bakes"
+  description="Share your pickup and contact details for your Honeycomb Arts & Bakes order."
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">Checkout</span>
+      <h1 class="display">A few details<br /><em>before we prepare it.</em></h1>
+      <p>Tell us how to reach you and when you would like to pick up your handmade order.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container checkout-layout" data-checkout-ready hidden>
+      <form class="checkout-form" aria-label="Customer information">
+        <div class="checkout-panel">
+          <div class="checkout-panel__heading">
+            <span class="eyebrow">Customer Information</span>
+            <h2>Your details</h2>
+          </div>
+
+          <div class="checkout-fields">
+            <label>
+              Name
+              <input type="text" name="name" autocomplete="name" />
+            </label>
+
+            <label>
+              Email
+              <input type="email" name="email" autocomplete="email" />
+            </label>
+
+            <label>
+              Phone
+              <input type="tel" name="phone" autocomplete="tel" />
+            </label>
+
+            <label>
+              Preferred Contact Method
+              <select name="preferredContactMethod">
+                <option value="">Select one</option>
+                <option value="email">Email</option>
+                <option value="phone">Phone</option>
+                <option value="text">Text message</option>
+              </select>
+            </label>
+
+            <label>
+              Preferred Pickup Date
+              <input type="date" name="preferredPickupDate" />
+            </label>
+
+            <label class="checkout-fields__wide">
+              Additional Notes
+              <textarea name="additionalNotes" rows="5"></textarea>
+            </label>
+          </div>
+        </div>
+      </form>
+
+      <aside class="order-summary" aria-live="polite">
+        <div class="order-summary__heading">
+          <span class="eyebrow">Order Summary</span>
+          <p>
+            <strong data-checkout-total-count>0</strong>
+            <span data-checkout-total-label>items</span>
+          </p>
+        </div>
+
+        <div class="order-summary__items" data-checkout-summary></div>
+      </aside>
+    </div>
+
+    <div class="container checkout-empty" data-checkout-empty hidden>
+      <h2>Your cart is empty</h2>
+      <p>Start with a bakery treat or a handmade sewing piece.</p>
+      <div class="checkout-empty__links">
+        <a class="button button--honey" href="bakery">Browse bakery</a>
+        <a class="button button--light" href="sewing">Browse sewing</a>
+      </div>
+    </div>
+  </section>
+
+  <template id="checkout-item-template">
+    <article class="summary-item">
+      <div class="summary-item__heading">
+        <h3 data-checkout-item-title></h3>
+        <p>
+          Quantity:
+          <strong data-checkout-item-quantity></strong>
+        </p>
+      </div>
+
+      <dl class="summary-item__configuration" data-checkout-item-configuration></dl>
+      <p class="summary-item__notes" data-checkout-item-notes></p>
+    </article>
+  </template>
+</MainLayout>
+
+<script>
+  import { getCart } from '../utils/cart';
+
+  const checkoutReady = document.querySelector('[data-checkout-ready]');
+  const emptyState = document.querySelector('[data-checkout-empty]');
+  const summaryList = document.querySelector('[data-checkout-summary]');
+  const totalCount = document.querySelector('[data-checkout-total-count]');
+  const totalLabel = document.querySelector('[data-checkout-total-label]');
+  const template = document.querySelector('#checkout-item-template');
+
+  const formatLabel = (value) =>
+    value
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/[-_]/g, ' ')
+      .replace(/\b\w/g, (letter) => letter.toUpperCase())
+      .trim();
+
+  const formatValue = (value) =>
+    Array.isArray(value) ? value.join(', ') : String(value);
+
+  const renderCheckout = () => {
+    const cart = getCart();
+
+    if (!checkoutReady || !emptyState || !summaryList || !template) return;
+
+    const count = cart.items.reduce((total, item) => total + item.quantity, 0);
+    const hasItems = cart.items.length > 0;
+
+    checkoutReady.hidden = !hasItems;
+    emptyState.hidden = hasItems;
+    summaryList.textContent = '';
+
+    if (totalCount) totalCount.textContent = String(count);
+    if (totalLabel) totalLabel.textContent = count === 1 ? 'item' : 'items';
+
+    if (!hasItems) return;
+
+    cart.items.forEach((item) => {
+      const fragment = template.content.cloneNode(true);
+      const title = fragment.querySelector('[data-checkout-item-title]');
+      const quantity = fragment.querySelector('[data-checkout-item-quantity]');
+      const configuration = fragment.querySelector('[data-checkout-item-configuration]');
+      const notes = fragment.querySelector('[data-checkout-item-notes]');
+
+      title.textContent = item.productTitle;
+      quantity.textContent = String(item.quantity);
+      notes.textContent = item.notes ? `Notes: ${item.notes}` : '';
+
+      Object.entries(item.configuration).forEach(([key, value]) => {
+        const term = document.createElement('dt');
+        const description = document.createElement('dd');
+
+        term.textContent = formatLabel(key);
+        description.textContent = formatValue(value);
+        configuration.append(term, description);
+      });
+
+      summaryList.append(fragment);
+    });
+  };
+
+  window.addEventListener('honeycomb-cart:updated', renderCheckout);
+  window.addEventListener('storage', renderCheckout);
+  renderCheckout();
+</script>
+
+<style>
+  .checkout-layout{align-items:start;display:grid;gap:2rem;grid-template-columns:minmax(0,1fr) 360px}
+  .checkout-panel,.order-summary,.checkout-empty{background:var(--paper);border:1px solid var(--line);border-radius:1.1rem}
+  .checkout-panel{padding:2rem}
+  .checkout-panel__heading{margin-bottom:1.5rem}
+  .checkout-panel__heading h2{font-family:'Playfair Display',Georgia,serif;font-size:2.2rem;font-weight:500;letter-spacing:-.04em;line-height:1.1;margin:.5rem 0 0}
+  .checkout-fields{display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .checkout-fields label{color:var(--cocoa);display:flex;flex-direction:column;font-size:.78rem;font-weight:600;gap:.4rem}
+  .checkout-fields input,.checkout-fields select,.checkout-fields textarea{background:#fffdfa;border:1px solid var(--line);border-radius:.55rem;color:var(--cocoa);font-size:.92rem;outline-color:var(--honey);padding:.72rem .8rem}
+  .checkout-fields textarea{resize:vertical}
+  .checkout-fields__wide{grid-column:1/-1}
+  .order-summary{padding:1.5rem;position:sticky;top:1.5rem}
+  .order-summary__heading{border-bottom:1px solid var(--line);margin-bottom:1.2rem;padding-bottom:1rem}
+  .order-summary__heading p{font-family:'Playfair Display',Georgia,serif;font-size:1.75rem;font-weight:500;letter-spacing:-.035em;margin:.85rem 0 0}
+  .order-summary__items{display:grid;gap:1rem}
+  .summary-item{border-bottom:1px solid var(--line);padding-bottom:1rem}
+  .summary-item:last-child{border-bottom:0;padding-bottom:0}
+  .summary-item__heading{display:grid;gap:.35rem}
+  .summary-item h3{font-family:'Playfair Display',Georgia,serif;font-size:1.25rem;font-weight:500;letter-spacing:-.03em;line-height:1.15;margin:0}
+  .summary-item__heading p{color:var(--muted);font-size:.84rem;margin:0}
+  .summary-item__configuration{display:grid;gap:.35rem;grid-template-columns:max-content 1fr;margin:.85rem 0 0}
+  .summary-item__configuration dt{color:var(--muted);font-size:.76rem;font-weight:600}
+  .summary-item__configuration dd{font-size:.84rem;margin:0}
+  .summary-item__configuration:empty{display:none}
+  .summary-item__notes{border-left:2px solid var(--honey);color:var(--muted);font-size:.84rem;margin:.85rem 0 0;padding-left:.7rem}
+  .summary-item__notes:empty{display:none}
+  .checkout-empty{padding:2rem}
+  .checkout-empty h2{font-family:'Playfair Display',Georgia,serif;font-size:2rem;font-weight:500;letter-spacing:-.04em;margin:0 0 .5rem}
+  .checkout-empty p{color:var(--muted);margin:0 0 1.25rem}
+  .checkout-empty__links{display:flex;flex-wrap:wrap;gap:.75rem}
+  @media(max-width:880px){.checkout-layout{grid-template-columns:1fr}.order-summary{position:static}}
+  @media(max-width:620px){.checkout-panel{padding:1.35rem}.checkout-fields{grid-template-columns:1fr}}
+</style>
