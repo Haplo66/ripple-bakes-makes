@@ -1,0 +1,146 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import CartItem from '../components/cart/CartItem.astro';
+import CartSummary from '../components/cart/CartSummary.astro';
+---
+
+<MainLayout
+  title="Cart | Honeycomb Arts & Bakes"
+  description="Review your Honeycomb Arts & Bakes cart."
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">Cart</span>
+      <h1 class="display">Your handmade<br /><em>order list.</em></h1>
+      <p>Review the items you have set aside before the checkout flow is connected.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container cart-layout">
+      <div class="cart-list" data-cart-list></div>
+
+      <div class="cart-empty" data-cart-empty hidden>
+        <h2>Your cart is empty</h2>
+        <p>Start with a bakery treat or a handmade sewing piece.</p>
+        <div class="cart-empty__links">
+          <a class="button button--honey" href="bakery">Browse bakery</a>
+          <a class="button button--light" href="sewing">Browse sewing</a>
+        </div>
+      </div>
+
+      <CartSummary />
+    </div>
+  </section>
+
+  <CartItem />
+</MainLayout>
+
+<script>
+  import {
+    clearCart,
+    getCart,
+    removeFromCart,
+    updateCartItemQuantity,
+  } from '../utils/cart';
+
+  const cartList = document.querySelector('[data-cart-list]');
+  const emptyState = document.querySelector('[data-cart-empty]');
+  const summary = document.querySelector('[data-cart-summary]');
+  const clearButton = document.querySelector('[data-cart-clear]');
+  const totalCount = document.querySelector('[data-cart-total-count]');
+  const totalLabel = document.querySelector('[data-cart-total-label]');
+  const template = document.querySelector('#cart-item-template');
+
+  const formatLabel = (value) =>
+    value.replace(/([A-Z])/g, ' $1').replace(/[-_]/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase()).trim();
+
+  const formatValue = (value) =>
+    Array.isArray(value) ? value.join(', ') : String(value);
+
+  const updateSummary = (cart) => {
+    const count = cart.items.reduce((total, item) => total + item.quantity, 0);
+
+    if (totalCount) totalCount.textContent = String(count);
+    if (totalLabel) totalLabel.textContent = count === 1 ? 'item' : 'items';
+  };
+
+  const renderCart = () => {
+    const cart = getCart();
+
+    if (!cartList || !emptyState || !summary || !template) return;
+
+    cartList.textContent = '';
+    updateSummary(cart);
+
+    const hasItems = cart.items.length > 0;
+    emptyState.hidden = hasItems;
+    summary.hidden = !hasItems;
+
+    if (!hasItems) return;
+
+    cart.items.forEach((item) => {
+      const fragment = template.content.cloneNode(true);
+      const cartItem = fragment.querySelector('[data-cart-item]');
+      const title = fragment.querySelector('[data-cart-item-title]');
+      const collection = fragment.querySelector('[data-cart-item-collection]');
+      const configuration = fragment.querySelector('[data-cart-item-configuration]');
+      const notes = fragment.querySelector('[data-cart-item-notes]');
+      const quantity = fragment.querySelector('[data-cart-item-quantity]');
+      const decrease = fragment.querySelector('[data-cart-decrease]');
+      const increase = fragment.querySelector('[data-cart-increase]');
+      const remove = fragment.querySelector('[data-cart-remove]');
+
+      cartItem.dataset.cartItemId = item.id;
+      title.textContent = item.productTitle;
+      collection.textContent = formatLabel(item.collectionId);
+      quantity.textContent = String(item.quantity);
+      notes.textContent = item.notes ? `Notes: ${item.notes}` : '';
+
+      Object.entries(item.configuration).forEach(([key, value]) => {
+        const term = document.createElement('dt');
+        const description = document.createElement('dd');
+
+        term.textContent = formatLabel(key);
+        description.textContent = formatValue(value);
+        configuration.append(term, description);
+      });
+
+      decrease.addEventListener('click', () => {
+        updateCartItemQuantity(item.id, item.quantity - 1);
+        renderCart();
+      });
+
+      increase.addEventListener('click', () => {
+        updateCartItemQuantity(item.id, item.quantity + 1);
+        renderCart();
+      });
+
+      remove.addEventListener('click', () => {
+        removeFromCart(item.id);
+        renderCart();
+      });
+
+      cartList.append(fragment);
+    });
+  };
+
+  clearButton?.addEventListener('click', () => {
+    clearCart();
+    renderCart();
+  });
+
+  window.addEventListener('honeycomb-cart:updated', renderCart);
+  window.addEventListener('storage', renderCart);
+  renderCart();
+</script>
+
+<style>
+  .cart-layout{align-items:start;display:grid;gap:2rem;grid-template-columns:1fr 320px}
+  .cart-list{display:grid;gap:1rem}
+  .cart-empty{background:var(--paper);border:1px solid var(--line);border-radius:1.1rem;padding:2rem}
+  .cart-empty h2{font-family:'Playfair Display',Georgia,serif;font-size:2rem;font-weight:500;letter-spacing:-.04em;margin:0 0 .5rem}
+  .cart-empty p{color:var(--muted);margin:0 0 1.25rem}
+  .cart-empty__links{display:flex;flex-wrap:wrap;gap:.75rem}
+  @media(max-width:820px){.cart-layout{grid-template-columns:1fr}}
+</style>

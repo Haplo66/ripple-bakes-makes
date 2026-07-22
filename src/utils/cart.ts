@@ -74,6 +74,18 @@ const withUpdatedTimestamp = (cart: Cart): Cart => {
   };
 };
 
+const dispatchCartUpdate = (cart: Cart): void => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  window.dispatchEvent(
+    new CustomEvent('honeycomb-cart:updated', {
+      detail: cart,
+    }),
+  );
+};
+
 /** Returns the current cart, falling back safely when storage is empty or invalid. */
 export const getCart = (): Cart => {
   if (!canUseStorage()) {
@@ -103,6 +115,8 @@ export const saveCart = (cart: Cart): Cart => {
       JSON.stringify(normalizedCart),
     );
   }
+
+  dispatchCartUpdate(normalizedCart);
 
   return normalizedCart;
 };
@@ -151,9 +165,13 @@ export const removeFromCart = (itemId: string): Cart => {
 
 /** Clears all cart items from localStorage. */
 export const clearCart = (): Cart => {
+  const emptyCart = createEmptyCart();
+
   if (canUseStorage()) {
     window.localStorage.removeItem(CART_STORAGE_KEY);
   }
 
-  return createEmptyCart();
+  dispatchCartUpdate(emptyCart);
+
+  return emptyCart;
 };

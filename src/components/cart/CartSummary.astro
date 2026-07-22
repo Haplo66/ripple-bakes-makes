@@ -1,0 +1,23 @@
+<aside class="cart-summary" data-cart-summary>
+  <span class="eyebrow">Summary</span>
+  <p>
+    <strong data-cart-total-count>0</strong>
+    <span data-cart-total-label>items</span>
+  </p>
+
+  <button class="button button--honey" type="button" disabled>
+    Checkout coming soon
+  </button>
+
+  <button class="cart-summary__clear" type="button" data-cart-clear>
+    Clear cart
+  </button>
+</aside>
+
+<style>
+  .cart-summary{background:#f6eddf;border-radius:1.1rem;padding:1.5rem;position:sticky;top:1.5rem}
+  .cart-summary p{font-family:'Playfair Display',Georgia,serif;font-size:1.75rem;font-weight:500;letter-spacing:-.035em;margin:.85rem 0 1.2rem}
+  .cart-summary .button{width:100%}
+  .cart-summary .button:disabled{cursor:not-allowed;opacity:.7;transform:none}
+  .cart-summary__clear{background:transparent;border:0;color:var(--muted);cursor:pointer;display:block;font-size:.82rem;font-weight:600;margin:.9rem auto 0;padding:.25rem;text-decoration:underline;text-underline-offset:.25rem}
+</style>
