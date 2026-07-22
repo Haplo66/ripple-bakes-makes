@@ -1,277 +1,182 @@
-# Honeycomb Arts & Bakes
-## Version 2 Architecture
-
-This document describes the long-term architecture of the Honeycomb Arts & Bakes website.
-
-The website is intentionally designed as a static Astro application that can be hosted on GitHub Pages without requiring a backend.
-
----
-
-# Guiding Principles
-
-The architecture should remain:
-
-- modular
-- reusable
-- data-driven
-- strongly typed
-- static-site compatible
-- easy to extend
-- easy to maintain
-
-Avoid duplicated layouts, duplicated components and hardcoded business logic.
-
-Business content belongs in data files.
-
-UI components should remain generic.
-
----
-
 # Architecture
 
-Category
-    ↓
-Collection
-    ↓
-Product
-    ↓
-Form Definition
-    ↓
-Shopping Cart
-    ↓
-Checkout Order
+## Table Of Contents
+
+- [Purpose](#purpose)
+- [System Overview](#system-overview)
+- [Project Structure](#project-structure)
+- [Data Flow](#data-flow)
+- [Build Pipeline](#build-pipeline)
+- [Runtime Architecture](#runtime-architecture)
+- [Data Loaders](#data-loaders)
+- [Component Relationships](#component-relationships)
+- [Design Principles](#design-principles)
+- [Extension Points](#extension-points)
+- [Related Documentation](#related-documentation)
+
+## Purpose
+
+Honeycomb Arts & Bakes is a static Astro website for a premium handmade bakery and sewing business. The architecture keeps business content in data files, renders collection and product pages from that data, and avoids any required backend so the site remains compatible with GitHub Pages.
+
+The current source of truth is a manually exported Google Sheet. The website does not read Google Sheets directly. CSV exports are processed by the Honeycomb Data Pipeline into JSON files under `src/data/`.
+
+## System Overview
+
+```mermaid
+flowchart TD
+  owner["Business owner"] --> sheet["Google Sheet"]
+  sheet --> csv["Manual CSV export"]
+  csv --> import["data/import/*.csv"]
+  import --> pipeline["Honeycomb Data Pipeline"]
+  pipeline --> json["src/data/*.json"]
+  json --> loaders["src/data/*.ts loaders"]
+  loaders --> pages["Astro pages"]
+  pages --> static["Static HTML/CSS/JS"]
+  static --> github["GitHub Pages"]
+```
+
+The key design decision is separation between source import and website rendering. Astro only depends on generated JSON and typed loaders. Future source systems should replace only the input adapter, not the website.
+
+## Project Structure
+
+```text
+data/import/              CSV exports and sample CSV files
+docs/                     Maintainer documentation
+scripts/pipeline/         Import pipeline stages
+src/components/           Reusable Astro UI components
+src/components/cart/      Cart-specific components
+src/components/forms/     Dynamic form renderer components
+src/components/products/  Product listing components
+src/data/                 JSON data and loader modules
+src/layouts/              Shared page layouts
+src/pages/                Static and dynamic Astro routes
+src/styles/               Global styles
+src/types/                Shared TypeScript data contracts
+src/utils/                Cart, order, path, and submission helpers
+```
+
+## Data Flow
+
+```mermaid
+flowchart LR
+  collectionsCsv["collections.csv"] --> reader["csv-reader.ts"]
+  productsCsv["products.csv"] --> reader
+  formsCsv["forms.csv"] --> reader
+  reader --> validators["validators.ts"]
+  validators --> normalizers["normalizers.ts"]
+  normalizers --> sort["Sort by id"]
+  sort --> generators["generators.ts"]
+  generators --> collectionsJson["collections.json"]
+  generators --> productsJson["products.json"]
+  generators --> formsJson["forms.json"]
+```
+
+Pipeline output is deterministic except for `_metadata.generatedAt`, which records the import timestamp. See [IMPORT_PIPELINE.md](./IMPORT_PIPELINE.md) for operational details and [GOOGLE_SHEET_SCHEMA.md](./GOOGLE_SHEET_SCHEMA.md) for the CSV schema.
+
+## Build Pipeline
+
+Local build workflow:
+
+```mermaid
+sequenceDiagram
+  participant Dev as Developer
+  participant CSV as data/import CSVs
+  participant Pipeline as npm run import:data
+  participant Astro as npm run build
+  participant Dist as dist/
+
+  Dev->>CSV: Copy exported CSV files
+  Dev->>Pipeline: Generate src/data JSON
+  Pipeline->>Astro: JSON files are ready
+  Dev->>Astro: Build static site
+  Astro->>Dist: Generate static pages
+```
+
+Commands:
+
+- `npm run import:data`: converts CSV files into generated JSON.
+- `npm run build`: builds the static Astro site.
+- `npm run dev`: starts local Astro development.
+- `npm run preview`: previews the built site.
+
+## Runtime Architecture
+
+At runtime the site is static. There is no server backend, database, paid service, or live Google Sheets dependency.
 
-Each layer has one responsibility.
+Astro generates:
 
----
+- top-level pages such as `/`, `/bakery`, `/sewing`, `/cart`, and `/checkout`
+- collection pages such as `/bakery/cakes`
+- product pages such as `/bakery/cakes/birthday-cake`
 
-# Category
+Cart and checkout behavior is client-side. Submission currently uses an abstraction under `src/utils/submission/`, with `mockSubmissionProvider.ts` as the active no-backend provider.
 
-Examples:
+## Data Loaders
 
-Bakery
+The website imports JSON only through loader modules:
 
-Sewing
+- `src/data/collections.ts`
+- `src/data/products.ts`
+- `src/data/forms.ts`
 
-Categories organize collections.
+These loaders:
 
----
+- read generated JSON from `json.data`
+- still tolerate the previous root-array format
+- map sheet-friendly values into UI-friendly types
+- provide query helpers such as `getAllCollections`, `getProductsByCollection`, and `getFormById`
 
-# Collection
+Keeping this mapping in loaders protects UI components from spreadsheet vocabulary and generated metadata.
 
-Examples:
+## Component Relationships
 
-Cakes
+```mermaid
+flowchart TD
+  layout["MainLayout"] --> header["Header"]
+  layout --> footer["Footer"]
+  pages["Astro pages"] --> layout
+  pages --> collectionGrid["CollectionGrid"]
+  collectionGrid --> collectionCard["CollectionCard"]
+  pages --> collectionDetail["CollectionDetail"]
+  pages --> productGrid["ProductGrid"]
+  productGrid --> productCard["ProductCard"]
+  pages --> formRenderer["FormRenderer"]
+  formRenderer --> formField["FormField"]
+  pages --> cartSummary["CartSummary"]
+  cartSummary --> cartItem["CartItem"]
+```
 
-Cookies
+Components should stay generic. Business-specific content belongs in data, not component branches such as `CakeForm` or `CookiePage`.
 
-Custom Sewing
+## Design Principles
 
-Rice Packs
+- Preserve a handmade, warm, trustworthy, professional feeling.
+- Prefer static-site compatibility and GitHub Pages deployment.
+- Keep business content data-driven.
+- Separate import, validation, normalization, generation, loading, and rendering.
+- Use small reusable components and typed helpers.
+- Avoid unnecessary frameworks, paid services, and backend dependencies.
+- Treat future integrations as adapters around stable internal data contracts.
 
-A Collection:
+## Extension Points
 
-- belongs to one Category
-- contains Products
-- owns collection-level content
-- has one landing page
+Current architecture intentionally leaves room for:
 
-Collection pages are generated dynamically.
+- Google Sheets API input adapter
+- image validation
+- duplicate ID detection
+- broken image detection
+- pricing and availability
+- tags and search indexes
+- sitemap generation
+- multilingual content
+- real submission provider behind the existing submission abstraction
 
-Example:
+These should be added by extending the relevant layer, not by moving business logic into Astro pages.
 
-/bakery/cakes
+## Related Documentation
 
----
-
-# Product
-
-Examples:
-
-Birthday Cake
-
-Wedding Cake
-
-Adult T-Shirt
-
-Hoodie
-
-Products belong to exactly one Collection.
-
-Products own:
-
-- title
-- description
-- images
-- future pricing
-- future availability
-- Form Definition
-
-Product pages are generated dynamically.
-
-Example:
-
-/bakery/cakes/birthday-cake
-
----
-
-# Form Definition
-
-Forms are configuration driven.
-
-Products reference a Form Definition.
-
-The rendering engine never contains business-specific logic.
-
-Supported field types:
-
-- text
-- textarea
-- dropdown
-- checkbox
-- radio
-- number
-- date
-
-Future support:
-
-- image upload
-- color picker
-- file upload
-
----
-
-# Shopping Cart
-
-The cart stores Products.
-
-Each cart item contains:
-
-- Product
-- Quantity
-- Configuration
-- Notes
-
-No payment processing.
-
----
-
-# Checkout
-
-Checkout collects:
-
-Customer Information
-
-Order Summary
-
-Preferred Contact
-
-Preferred Pickup
-
-The checkout generates a structured order suitable for email submission.
-
-No backend.
-
----
-
-# Data Location
-
-Business content belongs inside:
-
-src/data/
-
-Examples:
-
-collections.ts
-
-products.ts
-
-forms.ts
-
----
-
-# Components
-
-Components should remain generic.
-
-Good examples:
-
-CollectionCard
-
-CollectionDetail
-
-ProductDetail
-
-DynamicForm
-
-FieldRenderer
-
-Avoid:
-
-CakeForm
-
-ShirtForm
-
-CookiePage
-
----
-
-# Routing
-
-Collection:
-
-/category/collection
-
-Product:
-
-/category/collection/product
-
-No manually created product pages.
-
-Everything should be generated.
-
----
-
-# Design Rules
-
-Prefer:
-
-Composition
-
-Reusable components
-
-Small functions
-
-Clear naming
-
-TypeScript types
-
-Avoid:
-
-Large components
-
-Duplicated layouts
-
-Business logic inside UI
-
-Hardcoded content
-
----
-
-# Future Expansion
-
-The architecture should support:
-
-Pricing
-
-Inventory
-
-Availability
-
-Email ordering
-
-CMS
-
-Payment
-
-without requiring major architectural changes.
+- [DATA_MODEL.md](./DATA_MODEL.md): complete domain model and relationships
+- [GOOGLE_SHEET_SCHEMA.md](./GOOGLE_SHEET_SCHEMA.md): worksheet columns and JSON mapping
+- [IMPORT_PIPELINE.md](./IMPORT_PIPELINE.md): import process internals and commands
+- [DEVELOPER_GUIDE.md](./DEVELOPER_GUIDE.md): local setup and common development tasks

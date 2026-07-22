@@ -1,112 +1,177 @@
-[
-  {
-    "id": "birthday-cake-form",
-    "name": "Birthday Cake",
-    "description": "Customize a birthday cake order.",
-    "fields": [
-      {
-        "id": "flavor",
-        "label": "Flavor",
-        "type": "select",
-        "required": true,
-        "section": "Cake Details",
-        "defaultValue": "vanilla",
-        "options": [
-          { "value": "vanilla", "label": "Vanilla" },
-          { "value": "chocolate", "label": "Chocolate" },
-          { "value": "red-velvet", "label": "Red Velvet" },
-          { "value": "lemon", "label": "Lemon" }
-        ]
-      },
-      {
-        "id": "size",
-        "label": "Size",
-        "type": "select",
-        "required": true,
-        "section": "Cake Details",
-        "options": [
-          { "value": "six-inch", "label": "6 inch" },
-          { "value": "eight-inch", "label": "8 inch" },
-          { "value": "ten-inch", "label": "10 inch" }
-        ]
-      },
-      {
-        "id": "message",
-        "label": "Message",
-        "type": "text",
-        "required": false,
-        "section": "Decoration",
-        "placeholder": "Happy birthday, Maya!",
-        "helpText": "Optional short message for the cake.",
-        "validation": {
-          "maxLength": 60
-        }
-      }
-    ]
+{
+  "_metadata": {
+    "generated": true,
+    "generatedAt": "2026-07-22T19:00:25.688Z",
+    "source": "Honeycomb Data Pipeline",
+    "version": 1
   },
-  {
-    "id": "adult-t-shirt-form",
-    "name": "Adult T-Shirt",
-    "description": "Customize an adult t-shirt order.",
-    "fields": [
-      {
-        "id": "size",
-        "label": "Size",
-        "type": "select",
-        "required": true,
-        "section": "Fit",
-        "defaultValue": "medium",
-        "options": [
-          { "value": "small", "label": "Small" },
-          { "value": "medium", "label": "Medium" },
-          { "value": "large", "label": "Large" },
-          { "value": "extra-large", "label": "Extra Large" }
-        ]
-      },
-      {
-        "id": "color",
-        "label": "Color",
-        "type": "select",
-        "required": true,
-        "section": "Design",
-        "defaultValue": "cream",
-        "options": [
-          { "value": "cream", "label": "Cream" },
-          { "value": "sage", "label": "Sage" },
-          { "value": "rose", "label": "Rose" },
-          { "value": "cocoa", "label": "Cocoa" }
-        ]
-      },
-      {
-        "id": "theme",
-        "label": "Theme",
-        "type": "select",
-        "required": false,
-        "section": "Design",
-        "options": [
-          { "value": "floral", "label": "Floral" },
-          { "value": "birthday", "label": "Birthday" },
-          { "value": "seasonal", "label": "Seasonal" },
-          { "value": "other", "label": "Other" }
-        ]
-      },
-      {
-        "id": "themeDescription",
-        "label": "Theme Description",
-        "type": "textarea",
-        "required": false,
-        "section": "Design",
-        "placeholder": "Share the look, colors, or wording you have in mind.",
-        "helpText": "Shown when Theme is Other.",
-        "validation": {
-          "minLength": 10,
-          "maxLength": 240
+  "data": [
+    {
+      "id": "adult-t-shirt-form",
+      "name": "Adult T-Shirt",
+      "description": "Customize an adult t-shirt order.",
+      "fields": [
+        {
+          "id": "size",
+          "label": "Size",
+          "type": "select",
+          "required": true,
+          "section": "Fit",
+          "defaultValue": "medium",
+          "options": [
+            {
+              "value": "small",
+              "label": "Small"
+            },
+            {
+              "value": "medium",
+              "label": "Medium"
+            },
+            {
+              "value": "large",
+              "label": "Large"
+            },
+            {
+              "value": "extra-large",
+              "label": "Extra Large"
+            }
+          ]
         },
-        "condition": {
-          "fieldId": "theme",
-          "equals": "other"
+        {
+          "id": "color",
+          "label": "Color",
+          "type": "select",
+          "required": true,
+          "section": "Design",
+          "defaultValue": "cream",
+          "options": [
+            {
+              "value": "cream",
+              "label": "Cream"
+            },
+            {
+              "value": "sage",
+              "label": "Sage"
+            },
+            {
+              "value": "rose",
+              "label": "Rose"
+            },
+            {
+              "value": "cocoa",
+              "label": "Cocoa"
+            }
+          ]
+        },
+        {
+          "id": "theme",
+          "label": "Theme",
+          "type": "select",
+          "required": false,
+          "section": "Design",
+          "options": [
+            {
+              "value": "floral",
+              "label": "Floral"
+            },
+            {
+              "value": "birthday",
+              "label": "Birthday"
+            },
+            {
+              "value": "seasonal",
+              "label": "Seasonal"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        },
+        {
+          "id": "themeDescription",
+          "label": "Theme Description",
+          "type": "textarea",
+          "required": false,
+          "section": "Design",
+          "placeholder": "Share the look, colors, or wording you have in mind.",
+          "helpText": "Shown when Theme is Other.",
+          "validation": {
+            "minLength": 10,
+            "maxLength": 240
+          },
+          "condition": {
+            "fieldId": "theme",
+            "equals": "other"
+          }
         }
-      }
-    ]
-  }
-]
+      ]
+    },
+    {
+      "id": "birthday-cake-form",
+      "name": "Birthday Cake",
+      "description": "Customize a birthday cake order.",
+      "fields": [
+        {
+          "id": "flavor",
+          "label": "Flavor",
+          "type": "select",
+          "required": true,
+          "section": "Cake Details",
+          "defaultValue": "vanilla",
+          "options": [
+            {
+              "value": "vanilla",
+              "label": "Vanilla"
+            },
+            {
+              "value": "chocolate",
+              "label": "Chocolate"
+            },
+            {
+              "value": "red-velvet",
+              "label": "Red Velvet"
+            },
+            {
+              "value": "lemon",
+              "label": "Lemon"
+            }
+          ]
+        },
+        {
+          "id": "size",
+          "label": "Size",
+          "type": "select",
+          "required": true,
+          "section": "Cake Details",
+          "options": [
+            {
+              "value": "six-inch",
+              "label": "6 inch"
+            },
+            {
+              "value": "eight-inch",
+              "label": "8 inch"
+            },
+            {
+              "value": "ten-inch",
+              "label": "10 inch"
+            }
+          ]
+        },
+        {
+          "id": "message",
+          "label": "Message",
+          "type": "text",
+          "required": false,
+          "section": "Decoration",
+          "placeholder": "Happy birthday, Maya!",
+          "helpText": "Optional short message for the cake.",
+          "validation": {
+            "maxLength": 60
+          }
+        }
+      ]
+    }
+  ]
+}

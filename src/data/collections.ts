@@ -1,6 +1,10 @@
 import type { Collection, CollectionCategory } from '../types/collection';
 import collectionRecords from './collections.json';
 
+type GeneratedData<T> = {
+  data: T[];
+};
+
 type CollectionRecord = Omit<
   Collection,
   | 'category'
@@ -49,9 +53,12 @@ const toCollection = (record: CollectionRecord): Collection => {
 };
 
 /** Collection data loaded from JSON to support future spreadsheet-backed imports. */
-export const collections: readonly Collection[] = (
-  collectionRecords as CollectionRecord[]
-).map(toCollection);
+const rawCollectionRecords = Array.isArray(collectionRecords)
+  ? collectionRecords
+  : (collectionRecords as GeneratedData<CollectionRecord>).data;
+
+export const collections: readonly Collection[] = (rawCollectionRecords as CollectionRecord[])
+  .map(toCollection);
 
 const orderedActive = (items: readonly Collection[]): Collection[] =>
   items

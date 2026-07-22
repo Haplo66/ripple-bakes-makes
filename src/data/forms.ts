@@ -1,6 +1,10 @@
 import type { Form } from '../types/form';
 import formRecords from './forms.json';
 
+type GeneratedData<T> = {
+  data: T[];
+};
+
 type FormRecord = Omit<Form, 'title'> & {
   title?: string;
 };
@@ -11,7 +15,11 @@ const toForm = (record: FormRecord): Form => ({
 });
 
 /** Form data loaded from JSON to support future spreadsheet-backed imports. */
-export const forms: readonly Form[] = (formRecords as FormRecord[]).map(toForm);
+const rawFormRecords = Array.isArray(formRecords)
+  ? formRecords
+  : (formRecords as GeneratedData<FormRecord>).data;
+
+export const forms: readonly Form[] = (rawFormRecords as FormRecord[]).map(toForm);
 
 export const getAllForms = (): Form[] => forms.slice();
 

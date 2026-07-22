@@ -1,6 +1,10 @@
 import type { Product } from '../types/product';
 import productRecords from './products.json';
 
+type GeneratedData<T> = {
+  data: T[];
+};
+
 type ProductRecord = Omit<Product, 'collectionId' | 'status' | 'title'> & {
   collection: string;
   name: string;
@@ -27,7 +31,11 @@ const toProduct = (record: ProductRecord): Product => ({
 });
 
 /** Product data loaded from JSON to support future spreadsheet-backed imports. */
-export const products: readonly Product[] = (productRecords as ProductRecord[]).map(toProduct);
+const rawProductRecords = Array.isArray(productRecords)
+  ? productRecords
+  : (productRecords as GeneratedData<ProductRecord>).data;
+
+export const products: readonly Product[] = (rawProductRecords as ProductRecord[]).map(toProduct);
 
 const orderedActive = (items: readonly Product[]): Product[] =>
   items

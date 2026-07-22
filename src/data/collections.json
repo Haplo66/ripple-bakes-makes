@@ -1,146 +1,218 @@
-[
-  {
-    "id": "bakery-breads",
-    "businessArea": "bakery",
-    "slug": "breads",
-    "name": "Breads",
-    "subtitle": "Slow-risen and table-ready.",
-    "shortDescription": "Slow-risen loaves, focaccia, and seasonal bakes made for the table.",
-    "description": "From a crusty loaf for dinner to a tender focaccia for sharing, each bake is made in small batches with time, care, and uncomplicated ingredients.",
-    "imageFolder": "bakery/breads",
-    "heroImage": null,
-    "featured": true,
-    "status": "Active",
-    "displayOrder": 1,
-    "imageTone": "wheat",
-    "galleryCaptions": ["Fresh morning loaves", "Focaccia for the table", "Seasonal bakes"],
-    "popularIdeas": ["Weekly bread box", "Dinner-party focaccia", "Seasonal loaf"],
-    "customizationNote": "Ask about flavours, quantities, and a bake that suits your table."
+{
+  "_metadata": {
+    "generated": true,
+    "generatedAt": "2026-07-22T19:00:25.687Z",
+    "source": "Honeycomb Data Pipeline",
+    "version": 1
   },
-  {
-    "id": "bakery-cookies",
-    "businessArea": "bakery",
-    "slug": "cookies",
-    "name": "Cookies",
-    "subtitle": "Buttery favourites to share.",
-    "shortDescription": "Buttery classics and playful seasonal boxes for gifting or sharing.",
-    "description": "Comforting classics, seasonal details, and gift-ready boxes make these cookies an easy way to share something sweet.",
-    "imageFolder": "bakery/cookies",
-    "heroImage": null,
-    "featured": true,
-    "status": "Active",
-    "displayOrder": 2,
-    "imageTone": "rose",
-    "galleryCaptions": ["Classic cookie box", "Seasonal sweet treats", "A thoughtful gift"],
-    "popularIdeas": ["Celebration cookie box", "Teacher thank-you gift", "Holiday assortment"],
-    "customizationNote": "Choose your favourites, add a note, or build a box for your occasion."
-  },
-  {
-    "id": "bakery-cakes",
-    "businessArea": "bakery",
-    "slug": "cakes",
-    "name": "Cakes",
-    "subtitle": "Made for celebrations.",
-    "shortDescription": "Thoughtful celebration cakes with beautiful, unfussy finishes.",
-    "description": "Celebration cakes should feel special without feeling overdone. Each is made to bring a delicious, personal touch to your gathering.",
-    "imageFolder": "bakery/cakes",
-    "heroImage": null,
-    "featured": true,
-    "status": "Active",
-    "displayOrder": 3,
-    "imageTone": "cream",
-    "galleryCaptions": ["A soft, simple finish", "Cake for a gathering", "Personal celebration details"],
-    "popularIdeas": ["Birthday cake", "Small gathering cake", "Seasonal celebration"],
-    "customizationNote": "Share your date, serving size, and a little about the celebration."
-  },
-  {
-    "id": "bakery-custom-orders",
-    "businessArea": "bakery",
-    "slug": "custom-orders",
-    "name": "Custom orders",
-    "subtitle": "Made for your occasion.",
-    "shortDescription": "A little something made exactly for your occasion.",
-    "description": "A custom order starts with the occasion and ends with a thoughtful detail that makes it feel like yours.",
-    "imageFolder": "bakery/custom-orders",
-    "heroImage": null,
-    "featured": true,
-    "status": "Active",
-    "displayOrder": 4,
-    "imageTone": "sage",
-    "galleryCaptions": ["A custom bakery moment", "Thoughtful finishing touches", "Made for sharing"],
-    "popularIdeas": ["Dessert table addition", "Host gift", "Seasonal gathering"],
-    "customizationNote": "Tell us the occasion and we will explore a delicious fit."
-  },
-  {
-    "id": "sewing-custom-sewing",
-    "businessArea": "sewing",
-    "slug": "custom-sewing",
-    "name": "Custom sewing",
-    "subtitle": "Made to fit your life.",
-    "shortDescription": "Made-to-order pieces that fit your life and your style.",
-    "description": "Thoughtfully sewn pieces begin with a useful idea, a lovely fabric, and attention to the small details that make something feel personal.",
-    "imageFolder": "sewing/custom-sewing",
-    "heroImage": null,
-    "featured": true,
-    "status": "Active",
-    "displayOrder": 1,
-    "imageTone": "sage",
-    "galleryCaptions": ["A considered fabric detail", "Made for every day", "Finished by hand"],
-    "popularIdeas": ["Custom keepsake", "Home textile", "Practical everyday piece"],
-    "customizationNote": "Bring a fabric, an idea, or simply a need - we will find the right direction."
-  },
-  {
-    "id": "sewing-repairs-refreshes",
-    "businessArea": "sewing",
-    "slug": "repairs-refreshes",
-    "name": "Repairs & refreshes",
-    "subtitle": "For pieces worth keeping.",
-    "shortDescription": "Careful mending for the pieces worth keeping.",
-    "description": "A favourite item can often have more life in it. Careful repair and refresh work helps useful, meaningful pieces stay in your everyday rotation.",
-    "imageFolder": "sewing/repairs-refreshes",
-    "heroImage": null,
-    "featured": true,
-    "status": "Active",
-    "displayOrder": 2,
-    "imageTone": "wheat",
-    "galleryCaptions": ["A careful repair", "Fresh detail, familiar piece", "Ready for another season"],
-    "popularIdeas": ["Visible mending", "Hem and fit refresh", "Keepsake repair"],
-    "customizationNote": "Share a photo and a short note about the repair you have in mind."
-  },
-  {
-    "id": "sewing-gifts",
-    "businessArea": "sewing",
-    "slug": "gifts",
-    "name": "Gifts",
-    "subtitle": "Personal and made to remember.",
-    "shortDescription": "Personalized fabric creations made to be remembered.",
-    "description": "The best gifts feel considered. These handmade pieces are created to mark a person, a milestone, or a simple moment of care.",
-    "imageFolder": "sewing/gifts",
-    "heroImage": null,
-    "featured": true,
-    "status": "Active",
-    "displayOrder": 3,
-    "imageTone": "rose",
-    "galleryCaptions": ["A gift with a story", "Personal finishing touch", "Ready to be remembered"],
-    "popularIdeas": ["Baby keepsake", "Personalized gift", "Host or teacher gift"],
-    "customizationNote": "Tell us who it is for and what you would love the piece to say."
-  },
-  {
-    "id": "sewing-seasonal-crafts",
-    "businessArea": "sewing",
-    "slug": "seasonal-crafts",
-    "name": "Seasonal crafts",
-    "subtitle": "Handmade warmth for the season.",
-    "shortDescription": "Small batches of handmade warmth for every season.",
-    "description": "Small seasonal details make a home and a gathering feel especially welcoming. These pieces are made in limited, thoughtful batches.",
-    "imageFolder": "sewing/seasonal-crafts",
-    "heroImage": null,
-    "featured": true,
-    "status": "Active",
-    "displayOrder": 4,
-    "imageTone": "cocoa",
-    "galleryCaptions": ["A seasonal detail", "Handmade for the home", "A little warmth"],
-    "popularIdeas": ["Holiday decor", "Seasonal table detail", "Limited-run gift"],
-    "customizationNote": "Ask what is currently in season or about a small custom batch."
-  }
-]
+  "data": [
+    {
+      "id": "bakery-breads",
+      "businessArea": "bakery",
+      "slug": "breads",
+      "name": "Breads",
+      "subtitle": "Slow-risen and table-ready.",
+      "shortDescription": "Slow-risen loaves, focaccia, and seasonal bakes made for the table.",
+      "description": "From a crusty loaf for dinner to a tender focaccia for sharing, each bake is made in small batches with time, care, and uncomplicated ingredients.",
+      "imageFolder": "bakery/breads",
+      "heroImage": null,
+      "featured": true,
+      "status": "Active",
+      "displayOrder": 1,
+      "imageTone": "wheat",
+      "galleryCaptions": [
+        "Fresh morning loaves",
+        "Focaccia for the table",
+        "Seasonal bakes"
+      ],
+      "popularIdeas": [
+        "Weekly bread box",
+        "Dinner-party focaccia",
+        "Seasonal loaf"
+      ],
+      "customizationNote": "Ask about flavours, quantities, and a bake that suits your table."
+    },
+    {
+      "id": "bakery-cakes",
+      "businessArea": "bakery",
+      "slug": "cakes",
+      "name": "Cakes",
+      "subtitle": "Made for celebrations.",
+      "shortDescription": "Thoughtful celebration cakes with beautiful, unfussy finishes.",
+      "description": "Celebration cakes should feel special without feeling overdone. Each is made to bring a delicious, personal touch to your gathering.",
+      "imageFolder": "bakery/cakes",
+      "heroImage": null,
+      "featured": true,
+      "status": "Active",
+      "displayOrder": 3,
+      "imageTone": "cream",
+      "galleryCaptions": [
+        "A soft, simple finish",
+        "Cake for a gathering",
+        "Personal celebration details"
+      ],
+      "popularIdeas": [
+        "Birthday cake",
+        "Small gathering cake",
+        "Seasonal celebration"
+      ],
+      "customizationNote": "Share your date, serving size, and a little about the celebration."
+    },
+    {
+      "id": "bakery-cookies",
+      "businessArea": "bakery",
+      "slug": "cookies",
+      "name": "Cookies",
+      "subtitle": "Buttery favourites to share.",
+      "shortDescription": "Buttery classics and playful seasonal boxes for gifting or sharing.",
+      "description": "Comforting classics, seasonal details, and gift-ready boxes make these cookies an easy way to share something sweet.",
+      "imageFolder": "bakery/cookies",
+      "heroImage": null,
+      "featured": true,
+      "status": "Active",
+      "displayOrder": 2,
+      "imageTone": "rose",
+      "galleryCaptions": [
+        "Classic cookie box",
+        "Seasonal sweet treats",
+        "A thoughtful gift"
+      ],
+      "popularIdeas": [
+        "Celebration cookie box",
+        "Teacher thank-you gift",
+        "Holiday assortment"
+      ],
+      "customizationNote": "Choose your favourites, add a note, or build a box for your occasion."
+    },
+    {
+      "id": "bakery-custom-orders",
+      "businessArea": "bakery",
+      "slug": "custom-orders",
+      "name": "Custom orders",
+      "subtitle": "Made for your occasion.",
+      "shortDescription": "A little something made exactly for your occasion.",
+      "description": "A custom order starts with the occasion and ends with a thoughtful detail that makes it feel like yours.",
+      "imageFolder": "bakery/custom-orders",
+      "heroImage": null,
+      "featured": true,
+      "status": "Active",
+      "displayOrder": 4,
+      "imageTone": "sage",
+      "galleryCaptions": [
+        "A custom bakery moment",
+        "Thoughtful finishing touches",
+        "Made for sharing"
+      ],
+      "popularIdeas": [
+        "Dessert table addition",
+        "Host gift",
+        "Seasonal gathering"
+      ],
+      "customizationNote": "Tell us the occasion and we will explore a delicious fit."
+    },
+    {
+      "id": "sewing-custom-sewing",
+      "businessArea": "sewing",
+      "slug": "custom-sewing",
+      "name": "Custom sewing",
+      "subtitle": "Made to fit your life.",
+      "shortDescription": "Made-to-order pieces that fit your life and your style.",
+      "description": "Thoughtfully sewn pieces begin with a useful idea, a lovely fabric, and attention to the small details that make something feel personal.",
+      "imageFolder": "sewing/custom-sewing",
+      "heroImage": null,
+      "featured": true,
+      "status": "Active",
+      "displayOrder": 1,
+      "imageTone": "sage",
+      "galleryCaptions": [
+        "A considered fabric detail",
+        "Made for every day",
+        "Finished by hand"
+      ],
+      "popularIdeas": [
+        "Custom keepsake",
+        "Home textile",
+        "Practical everyday piece"
+      ],
+      "customizationNote": "Bring a fabric, an idea, or simply a need - we will find the right direction."
+    },
+    {
+      "id": "sewing-gifts",
+      "businessArea": "sewing",
+      "slug": "gifts",
+      "name": "Gifts",
+      "subtitle": "Personal and made to remember.",
+      "shortDescription": "Personalized fabric creations made to be remembered.",
+      "description": "The best gifts feel considered. These handmade pieces are created to mark a person, a milestone, or a simple moment of care.",
+      "imageFolder": "sewing/gifts",
+      "heroImage": null,
+      "featured": true,
+      "status": "Active",
+      "displayOrder": 3,
+      "imageTone": "rose",
+      "galleryCaptions": [
+        "A gift with a story",
+        "Personal finishing touch",
+        "Ready to be remembered"
+      ],
+      "popularIdeas": [
+        "Baby keepsake",
+        "Personalized gift",
+        "Host or teacher gift"
+      ],
+      "customizationNote": "Tell us who it is for and what you would love the piece to say."
+    },
+    {
+      "id": "sewing-repairs-refreshes",
+      "businessArea": "sewing",
+      "slug": "repairs-refreshes",
+      "name": "Repairs & refreshes",
+      "subtitle": "For pieces worth keeping.",
+      "shortDescription": "Careful mending for the pieces worth keeping.",
+      "description": "A favourite item can often have more life in it. Careful repair and refresh work helps useful, meaningful pieces stay in your everyday rotation.",
+      "imageFolder": "sewing/repairs-refreshes",
+      "heroImage": null,
+      "featured": true,
+      "status": "Active",
+      "displayOrder": 2,
+      "imageTone": "wheat",
+      "galleryCaptions": [
+        "A careful repair",
+        "Fresh detail, familiar piece",
+        "Ready for another season"
+      ],
+      "popularIdeas": [
+        "Visible mending",
+        "Hem and fit refresh",
+        "Keepsake repair"
+      ],
+      "customizationNote": "Share a photo and a short note about the repair you have in mind."
+    },
+    {
+      "id": "sewing-seasonal-crafts",
+      "businessArea": "sewing",
+      "slug": "seasonal-crafts",
+      "name": "Seasonal crafts",
+      "subtitle": "Handmade warmth for the season.",
+      "shortDescription": "Small batches of handmade warmth for every season.",
+      "description": "Small seasonal details make a home and a gathering feel especially welcoming. These pieces are made in limited, thoughtful batches.",
+      "imageFolder": "sewing/seasonal-crafts",
+      "heroImage": null,
+      "featured": true,
+      "status": "Active",
+      "displayOrder": 4,
+      "imageTone": "cocoa",
+      "galleryCaptions": [
+        "A seasonal detail",
+        "Handmade for the home",
+        "A little warmth"
+      ],
+      "popularIdeas": [
+        "Holiday decor",
+        "Seasonal table detail",
+        "Limited-run gift"
+      ],
+      "customizationNote": "Ask what is currently in season or about a small custom batch."
+    }
+  ]
+}
