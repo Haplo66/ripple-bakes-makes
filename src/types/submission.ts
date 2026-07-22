@@ -1,10 +1,12 @@
 export type SubmissionResult =
   | {
       success: true;
+      providerName: string;
       message?: string;
-      orderId?: string;
+      externalReferenceId?: string;
     }
   | {
       success: false;
+      providerName: string;
       error?: string;
     };

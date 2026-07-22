@@ -241,8 +241,8 @@ import MainLayout from '../layouts/MainLayout.astro';
         resultMessage.textContent =
           result.message || 'Your order is ready for the future submission step.';
       }
-      if (resultReference && result.orderId) {
-        resultReference.textContent = `Reference: ${result.orderId}`;
+      if (resultReference && result.externalReferenceId) {
+        resultReference.textContent = `Reference: ${result.externalReferenceId}`;
         resultReference.hidden = false;
       }
       return;
