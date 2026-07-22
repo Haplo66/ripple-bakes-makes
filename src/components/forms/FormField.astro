@@ -1,0 +1,211 @@
+---
+import type { FormField } from '../../types/form';
+
+interface Props {
+  field: FormField;
+}
+
+const { field } = Astro.props;
+const fieldId = `field-${field.id}`;
+const hasOptions = Boolean(field.options?.length);
+const inputType = field.type === 'phone' ? 'tel' : field.type;
+---
+
+<div
+  class="form-field"
+  data-form-field={field.id}
+  data-condition-field={field.condition?.fieldId}
+  data-condition-equals={field.condition?.equals}
+  hidden={Boolean(field.condition)}
+>
+  {
+    field.type === 'textarea' ? (
+      <label for={fieldId}>
+        {field.label}
+        {!field.required && <span>(optional)</span>}
+      </label>
+
+      <textarea
+        id={fieldId}
+        name={field.id}
+        required={field.required}
+        data-required={field.required ? 'true' : 'false'}
+        placeholder={field.placeholder}
+        rows="4"
+      />
+    ) : field.type === 'select' || field.type === 'multiselect' ? (
+      <label for={fieldId}>
+        {field.label}
+        {!field.required && <span>(optional)</span>}
+      </label>
+
+      <select
+        id={fieldId}
+        name={field.id}
+        required={field.required}
+        data-required={field.required ? 'true' : 'false'}
+        multiple={field.type === 'multiselect'}
+      >
+        {field.type === 'select' && <option value="">Select one</option>}
+        {field.options?.map((option) => (
+          <option value={option.value}>{option.label}</option>
+        ))}
+      </select>
+    ) : field.type === 'radio' && hasOptions ? (
+      <fieldset>
+        <legend>
+          {field.label}
+          {!field.required && <span>(optional)</span>}
+        </legend>
+
+        <div class="choice-list">
+          {field.options?.map((option) => (
+            <label class="choice">
+              <input
+                type="radio"
+                name={field.id}
+                value={option.value}
+                required={field.required}
+                data-required={field.required ? 'true' : 'false'}
+              />
+              <span>{option.label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    ) : field.type === 'checkbox' && hasOptions ? (
+      <fieldset>
+        <legend>
+          {field.label}
+          {!field.required && <span>(optional)</span>}
+        </legend>
+
+        <div class="choice-list">
+          {field.options?.map((option) => (
+            <label class="choice">
+              <input
+                type="checkbox"
+                name={field.id}
+                value={option.value}
+                required={field.required}
+                data-required={field.required ? 'true' : 'false'}
+              />
+              <span>{option.label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    ) : field.type === 'checkbox' ? (
+      <label class="choice choice--single">
+        <input
+          id={fieldId}
+          type="checkbox"
+          name={field.id}
+          required={field.required}
+          data-required={field.required ? 'true' : 'false'}
+        />
+        <span>{field.label}</span>
+      </label>
+    ) : (
+      <label for={fieldId}>
+        {field.label}
+        {!field.required && <span>(optional)</span>}
+      </label>
+
+      <input
+        id={fieldId}
+        type={inputType}
+        name={field.id}
+        required={field.required}
+        data-required={field.required ? 'true' : 'false'}
+        placeholder={field.placeholder}
+      />
+    )
+  }
+
+  {field.helpText && <p class="form-field__help">{field.helpText}</p>}
+</div>
+
+<style>
+  .form-field {
+    color: var(--cocoa);
+    display: flex;
+    flex-direction: column;
+    font-size: .78rem;
+    font-weight: 600;
+    gap: .4rem;
+  }
+
+  .form-field[hidden] {
+    display: none;
+  }
+
+  label span,
+  legend span {
+    color: var(--muted);
+    font-weight: 400;
+    margin-left: .25rem;
+  }
+
+  input,
+  select,
+  textarea {
+    background: #fffdfa;
+    border: 1px solid var(--line);
+    border-radius: .55rem;
+    color: var(--cocoa);
+    font-size: .92rem;
+    outline-color: var(--honey);
+    padding: .72rem .8rem;
+  }
+
+  select[multiple] {
+    min-height: 8.5rem;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  legend {
+    margin-bottom: .4rem;
+    padding: 0;
+  }
+
+  .choice-list {
+    display: grid;
+    gap: .45rem;
+  }
+
+  .choice {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    font-size: .9rem;
+    font-weight: 500;
+    gap: .55rem;
+  }
+
+  .choice input {
+    accent-color: var(--honey);
+    flex: 0 0 auto;
+    padding: 0;
+  }
+
+  .choice--single {
+    margin-top: .2rem;
+  }
+
+  .form-field__help {
+    color: var(--muted);
+    font-size: .76rem;
+    font-weight: 400;
+    margin: 0;
+  }
+</style>

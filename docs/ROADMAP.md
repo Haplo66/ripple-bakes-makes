@@ -16,9 +16,9 @@
 
 ✔ Phase 4.5 Form Renderer
 
-⬜ Phase 4.6 Conditional Logic
+✔ Phase 4.6 Conditional Logic
 
-⬜ Phase 4.7 Product Integration
+✔ Phase 4.7 Product Integration
 
 ⬜ Phase 5 Cart
 

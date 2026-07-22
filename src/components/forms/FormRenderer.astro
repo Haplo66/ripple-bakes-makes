@@ -1,0 +1,122 @@
+---
+import type { Form } from '../../types/form';
+import FormField from './FormField.astro';
+
+interface Props {
+  form: Form;
+}
+
+const { form } = Astro.props;
+---
+
+<form class="product-form" action="#" method="post" data-dynamic-form>
+  <div class="product-form__header">
+    <span class="eyebrow">Inquiry Details</span>
+    <h2>{form.title}</h2>
+  </div>
+
+  <div class="product-form__fields">
+    {form.fields.map((field) => <FormField field={field} />)}
+  </div>
+
+  <button class="button button--honey" type="submit">
+    Send inquiry details
+    <span class="arrow" aria-hidden="true">→</span>
+  </button>
+</form>
+
+<script>
+  const forms = document.querySelectorAll('[data-dynamic-form]');
+
+  forms.forEach((form) => {
+    const conditionalFields = form.querySelectorAll('[data-condition-field]');
+
+    const setFieldState = (field, isVisible) => {
+      field.hidden = !isVisible;
+
+      field.querySelectorAll('input, select, textarea').forEach((input) => {
+        input.disabled = !isVisible;
+        input.required =
+          isVisible && input.dataset.required === 'true';
+      });
+    };
+
+    const getFieldValue = (fieldId) => {
+      const checked = form.querySelector(
+        `[name="${fieldId}"]:checked`,
+      );
+
+      if (checked) {
+        return checked.value;
+      }
+
+      const input = form.querySelector(`[name="${fieldId}"]`);
+      return input?.value;
+    };
+
+    const updateConditions = () => {
+      conditionalFields.forEach((field) => {
+        const dependsOn = field.dataset.conditionField;
+        const expectedValue = field.dataset.conditionEquals;
+
+        if (!dependsOn) {
+          return;
+        }
+
+        setFieldState(
+          field,
+          String(getFieldValue(dependsOn)) === expectedValue,
+        );
+      });
+    };
+
+    form.addEventListener('input', updateConditions);
+    form.addEventListener('change', updateConditions);
+    updateConditions();
+  });
+</script>
+
+<style>
+  .product-form {
+    background: #f6eddf;
+    border-radius: 1.1rem;
+    margin-top: 1.75rem;
+    padding: 1.5rem;
+  }
+
+  .product-form__header {
+    margin-bottom: 1.15rem;
+  }
+
+  .product-form__header h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.7rem;
+    font-weight: 500;
+    letter-spacing: -.035em;
+    line-height: 1.1;
+    margin: .4rem 0 0;
+  }
+
+  .product-form__fields {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 1.2rem;
+  }
+
+  .product-form__fields :global(.form-field:has(textarea)),
+  .product-form__fields :global(.form-field:has(fieldset)) {
+    grid-column: span 2;
+  }
+
+  @media (max-width: 620px) {
+    .product-form__fields {
+      grid-template-columns: 1fr;
+    }
+
+    .product-form__fields :global(.form-field:has(textarea)),
+    .product-form__fields :global(.form-field:has(fieldset)) {
+      grid-column: auto;
+    }
+  }
+</style>

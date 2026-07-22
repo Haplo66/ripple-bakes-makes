@@ -1,5 +1,7 @@
 ---
 import MainLayout from '../../../layouts/MainLayout.astro';
+import FormRenderer from '../../../components/forms/FormRenderer.astro';
+import { getFormById } from '../../../data/forms';
 import { getAllProducts } from '../../../data/products';
 import { collections } from '../../../data/collections';
 import type { Product } from '../../../types/product';
@@ -63,6 +65,7 @@ const businessAreaTitle =
 
 const baseUrl = import.meta.env.BASE_URL;
 const contactUrl = `${baseUrl}contact`;
+const productForm = product.formId ? getFormById(product.formId) : undefined;
 ---
 
 <MainLayout
@@ -158,6 +161,8 @@ const contactUrl = `${baseUrl}contact`;
               <span class="arrow" aria-hidden="true">→</span>
             </a>
           </div>
+
+          {productForm && <FormRenderer form={productForm} />}
         </div>
       </div>
     </div>
