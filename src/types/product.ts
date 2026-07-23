@@ -73,6 +73,9 @@ export interface Product {
   /** Future inquiry form reference. */
   formId?: string;
 
+  /** Numeric price for consistent formatting and sorting. */
+  price?: number;
+
   /** Display-only price information. */
   priceLabel?: string;
 

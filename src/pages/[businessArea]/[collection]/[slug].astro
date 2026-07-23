@@ -7,6 +7,7 @@ import { getProductOptions } from '../../../data/product-options';
 import { productOptionsToFormFields } from '../../../utils/options-to-fields';
 import { sitePath } from '../../../utils/paths';
 import { getProductPrimaryImage, getProductImages } from '../../../utils/images';
+import { formatPrice } from '../../../utils/format';
 import type { Product } from '../../../types/product';
 import type { Form } from '../../../types/form';
 
@@ -70,6 +71,7 @@ const businessAreaTitle =
     : 'Sewing Studio';
 
 const options = getProductOptions(product.id);
+const displayPrice = formatPrice(product.price) || product.priceLabel;
 const customizationFields = productOptionsToFormFields(options);
 const customizationForm: Form | undefined = customizationFields.length > 0
   ? {
@@ -152,10 +154,10 @@ const customizationForm: Form | undefined = customizationFields.length > 0
             </p>
           )}
 
-          {product.priceLabel && (
+          {displayPrice && (
             <div class="product-detail__price">
               <span class="price-tag">
-                {product.priceLabel}
+                {displayPrice}
               </span>
             </div>
           )}

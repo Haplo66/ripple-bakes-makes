@@ -1,19 +1,37 @@
-import type { Product } from '../types/product';
+import type { Product, ProductCategory } from '../types/product';
+import type { CollectionCategory, CollectionImageTone } from '../types/collection';
 import productRecords from '../content/products.json';
 
-type GeneratedData<T> = {
-  data: T[];
-};
-
-type ProductRecord = Omit<Product, 'collectionId' | 'status' | 'title' | 'images'> & {
+interface ProductRecord {
+  id: string;
+  businessArea: string;
   collection: string;
+  category?: string;
+  slug: string;
   name: string;
+  subtitle?: string;
+  shortDescription: string;
+  description?: string;
+  status: string;
+  featured: boolean;
+  imageFolder: string;
+  formId: string;
+  image: string | null;
+  images: string[];
+  imageTone?: string;
+  active: boolean;
+  displayOrder: number;
+  price?: number;
+  priceLabel?: string;
   title?: string;
-  images?: string[];
-  status: Product['status'] | 'Active' | 'Seasonal' | 'Out of Stock' | 'Preorder';
+}
+
+const businessAreaMap: Record<string, CollectionCategory> = {
+  bakery: 'bakery',
+  sewing: 'sewing',
 };
 
-const statusMap: Record<ProductRecord['status'], Product['status']> = {
+const statusMap: Record<string, Product['status']> = {
   Active: 'available',
   Seasonal: 'seasonal',
   'Out of Stock': 'out-of-stock',
@@ -28,21 +46,37 @@ const toProduct = (record: ProductRecord): Product => {
   const images = record.images || [];
 
   return {
-    ...record,
+    id: record.id,
+    businessArea: businessAreaMap[record.businessArea] || record.businessArea as CollectionCategory,
+    collection: record.collection,
     collectionId: record.collection,
+    category: (record.category || record.slug) as ProductCategory,
+    slug: record.slug,
     title: record.title || record.name,
-    status: statusMap[record.status],
-    images,
+    name: record.name,
+    subtitle: record.subtitle,
+    shortDescription: record.shortDescription,
+    description: record.description || record.shortDescription,
     image: record.image || images[0] || null,
+    images,
+    imageFolder: record.imageFolder,
+    imageTone: (record.imageTone || 'cream') as CollectionImageTone,
+    status: statusMap[record.status] || 'available',
+    active: record.active ?? true,
+    featured: record.featured ?? false,
+    displayOrder: record.displayOrder ?? 0,
+    formId: record.formId,
+    price: record.price,
+    priceLabel: record.priceLabel,
   };
 };
 
 /** Product data loaded from JSON to support future spreadsheet-backed imports. */
-const rawProductRecords = Array.isArray(productRecords)
+const rawData = Array.isArray(productRecords)
   ? productRecords
-  : (productRecords as GeneratedData<ProductRecord>).data;
+  : productRecords.data;
 
-export const products: readonly Product[] = (rawProductRecords as ProductRecord[]).map(toProduct);
+export const products: readonly Product[] = rawData.map(toProduct);
 
 const orderedActive = (items: readonly Product[]): Product[] =>
   items

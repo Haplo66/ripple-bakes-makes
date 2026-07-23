@@ -104,6 +104,7 @@ export const normalizeProducts = (records: CsvRecord[]) =>
     imageTone: values.imageTone || 'cream',
     active: parseBoolean(values.active, true),
     displayOrder: parseNumber(values.displayOrder),
+    price: parseNumber(values.price),
     priceLabel: values.priceLabel,
   }));
 

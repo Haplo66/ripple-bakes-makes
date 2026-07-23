@@ -3,6 +3,7 @@ import type { Product } from '../../types/product';
 import { collections } from '../../data/collections';
 import { productPath } from '../../utils/paths';
 import { getProductPrimaryImage } from '../../utils/images';
+import { formatPrice } from '../../utils/format';
 
 interface Props {
   product: Product;
@@ -26,6 +27,7 @@ const statusLabels: Record<string, string> = {
 };
 
 const statusLabel = statusLabels[product.status] || product.status;
+const displayPrice = formatPrice(product.price) || product.priceLabel;
 ---
 
 <article class="product-card" id={product.slug}>
@@ -39,7 +41,7 @@ const statusLabel = statusLabels[product.status] || product.status;
       <span class:list={['product-card__status', `product-card__status--${product.status}`]}>
         {statusLabel}
       </span>
-      {product.priceLabel && <span class="product-card__price">{product.priceLabel}</span>}
+      {displayPrice && <span class="product-card__price">{displayPrice}</span>}
     </div>
     <div class="product-card__content">
       <h3 class="product-card__title">{product.title}</h3>

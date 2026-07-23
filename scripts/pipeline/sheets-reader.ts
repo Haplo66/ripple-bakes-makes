@@ -21,6 +21,7 @@ const HEADER_MAP: Record<DatasetName, Record<string, string>> = {
     'Collection': 'collection',
     'Form ID': 'formId',
     'Image Folder': 'imageFolder',
+    'Price': 'price',
   },
   forms: {
     'Form ID': 'id',
