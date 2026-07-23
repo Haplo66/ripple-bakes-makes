@@ -1,0 +1,225 @@
+{
+  "_metadata": {
+    "generated": true,
+    "generatedAt": "2026-07-23T21:31:52.743Z",
+    "source": "RIPPLE Data Pipeline",
+    "version": 1
+  },
+  "data": [
+    {
+      "id": "bakery-cakes-birthday-cake--custom-message",
+      "productId": "bakery-cakes-birthday-cake",
+      "optionName": "Custom Message",
+      "optionType": "text",
+      "values": [],
+      "required": false,
+      "displayOrder": 4,
+      "placeholder": "Enter a short message or name",
+      "helpText": null
+    },
+    {
+      "id": "bakery-cakes-birthday-cake--flavor",
+      "productId": "bakery-cakes-birthday-cake",
+      "optionName": "Flavor",
+      "optionType": "select",
+      "values": [
+        "Vanilla",
+        "Chocolate",
+        "Lemon",
+        "Marble"
+      ],
+      "required": true,
+      "displayOrder": 1,
+      "placeholder": null,
+      "helpText": null
+    },
+    {
+      "id": "bakery-cakes-birthday-cake--frosting",
+      "productId": "bakery-cakes-birthday-cake",
+      "optionName": "Frosting",
+      "optionType": "select",
+      "values": [
+        "Buttercream",
+        "Cream Cheese",
+        "Chocolate Ganache"
+      ],
+      "required": true,
+      "displayOrder": 2,
+      "placeholder": null,
+      "helpText": null
+    },
+    {
+      "id": "bakery-cakes-birthday-cake--layers",
+      "productId": "bakery-cakes-birthday-cake",
+      "optionName": "Layers",
+      "optionType": "select",
+      "values": [
+        "2",
+        "3"
+      ],
+      "required": true,
+      "displayOrder": 3,
+      "placeholder": null,
+      "helpText": null
+    },
+    {
+      "id": "bakery-cakes-celebration-cake--flavor",
+      "productId": "bakery-cakes-celebration-cake",
+      "optionName": "Flavor",
+      "optionType": "select",
+      "values": [
+        "Vanilla",
+        "Chocolate",
+        "Strawberry",
+        "Red Velvet"
+      ],
+      "required": true,
+      "displayOrder": 1,
+      "placeholder": null,
+      "helpText": null
+    },
+    {
+      "id": "bakery-cakes-celebration-cake--frosting",
+      "productId": "bakery-cakes-celebration-cake",
+      "optionName": "Frosting",
+      "optionType": "select",
+      "values": [
+        "Buttercream",
+        "Cream Cheese",
+        "Chocolate Ganache"
+      ],
+      "required": true,
+      "displayOrder": 2,
+      "placeholder": null,
+      "helpText": null
+    },
+    {
+      "id": "bakery-cakes-celebration-cake--tier-count",
+      "productId": "bakery-cakes-celebration-cake",
+      "optionName": "Tier Count",
+      "optionType": "select",
+      "values": [
+        "1",
+        "2",
+        "3"
+      ],
+      "required": true,
+      "displayOrder": 3,
+      "placeholder": null,
+      "helpText": null
+    },
+    {
+      "id": "sewing-custom-sewing-adult-t-shirt--color",
+      "productId": "sewing-custom-sewing-adult-t-shirt",
+      "optionName": "Color",
+      "optionType": "select",
+      "values": [
+        "White",
+        "Black",
+        "Navy",
+        "Sage",
+        "Dusty Rose"
+      ],
+      "required": true,
+      "displayOrder": 2,
+      "placeholder": null,
+      "helpText": null
+    },
+    {
+      "id": "sewing-custom-sewing-adult-t-shirt--neck-style",
+      "productId": "sewing-custom-sewing-adult-t-shirt",
+      "optionName": "Neck Style",
+      "optionType": "select",
+      "values": [
+        "Crew",
+        "V-Neck"
+      ],
+      "required": true,
+      "displayOrder": 3,
+      "placeholder": null,
+      "helpText": null
+    },
+    {
+      "id": "sewing-custom-sewing-adult-t-shirt--size",
+      "productId": "sewing-custom-sewing-adult-t-shirt",
+      "optionName": "Size",
+      "optionType": "select",
+      "values": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "required": true,
+      "displayOrder": 1,
+      "placeholder": null,
+      "helpText": null
+    },
+    {
+      "id": "sewing-custom-sewing-custom-hoodie--color",
+      "productId": "sewing-custom-sewing-custom-hoodie",
+      "optionName": "Color",
+      "optionType": "select",
+      "values": [
+        "Charcoal",
+        "Navy",
+        "Olive",
+        "Burgundy",
+        "Cream"
+      ],
+      "required": true,
+      "displayOrder": 2,
+      "placeholder": null,
+      "helpText": null
+    },
+    {
+      "id": "sewing-custom-sewing-custom-hoodie--hood-style",
+      "productId": "sewing-custom-sewing-custom-hoodie",
+      "optionName": "Hood Style",
+      "optionType": "select",
+      "values": [
+        "Standard",
+        "Oversized"
+      ],
+      "required": true,
+      "displayOrder": 3,
+      "placeholder": null,
+      "helpText": null
+    },
+    {
+      "id": "sewing-custom-sewing-custom-hoodie--pocket-style",
+      "productId": "sewing-custom-sewing-custom-hoodie",
+      "optionName": "Pocket Style",
+      "optionType": "select",
+      "values": [
+        "Kangaroo",
+        "Zip",
+        "None"
+      ],
+      "required": false,
+      "displayOrder": 4,
+      "placeholder": null,
+      "helpText": null
+    },
+    {
+      "id": "sewing-custom-sewing-custom-hoodie--size",
+      "productId": "sewing-custom-sewing-custom-hoodie",
+      "optionName": "Size",
+      "optionType": "select",
+      "values": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "required": true,
+      "displayOrder": 1,
+      "placeholder": null,
+      "helpText": null
+    }
+  ]
+}
