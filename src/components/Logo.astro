@@ -4,7 +4,6 @@ import { sitePath } from '../utils/paths';
 const { compact = false } = Astro.props;
 ---
 <a class:list={['logo',{compact}]} href={sitePath()} aria-label="RIPPLE Bakes & Makes home">
-  <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 56 17v30L32 61 8 47V17Z"/><path d="M18 40c4-11 7-16 11-19m-6 6 10 2m-7 4 9 2M39 21v18m-5-13h10m-10 5h10m-10 5h10"/><circle cx="33" cy="15" r="3"/><path d="M30 14c-4-4-8-1-7 3 2 3 5 2 7-1m6-2c4-4 8-1 7 3-2 3-5 2-7-1"/></svg>
-  <span><strong>RIPPLE</strong><small>Bakes &amp; Makes</small></span>
+  <img src={sitePath('ripple-logo-transparent.png')} alt="RIPPLE Bakes & Makes" />
 </a>
-<style>.logo{align-items:center;display:inline-flex;gap:.6rem;line-height:1}.logo svg{fill:none;height:42px;stroke:var(--honey);stroke-linecap:round;stroke-linejoin:round;stroke-width:2;width:42px}.logo strong{display:block;font-family:'Playfair Display',serif;font-size:1.28rem;font-weight:600;letter-spacing:-.06em}.logo small{color:var(--sage);display:block;font-size:.53rem;font-weight:600;letter-spacing:.16em;margin-top:.28rem;text-transform:uppercase}.logo.compact strong{font-size:1.05rem}.logo.compact svg{height:34px;width:34px}</style>
+<style>.logo{align-items:center;display:inline-flex;line-height:1}.logo img{height:48px;width:auto}.logo.compact img{height:38px}</style>
