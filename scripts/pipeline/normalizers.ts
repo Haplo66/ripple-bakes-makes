@@ -114,6 +114,10 @@ export const normalizeProductOptions = (records: CsvRecord[]) =>
     optionName: values.optionName,
     optionType: values.optionType,
     values: values.values ? values.values.split('|').map((v) => v.trim()).filter(Boolean) : [],
+    required: parseBoolean(values.required),
+    displayOrder: parseNumber(values.displayOrder),
+    placeholder: parseNullableString(values.placeholder ?? ''),
+    helpText: parseNullableString(values.helpText ?? ''),
   }));
 
 export const normalizeForms = (

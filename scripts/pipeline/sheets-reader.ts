@@ -30,6 +30,10 @@ const HEADER_MAP: Record<DatasetName, Record<string, string>> = {
     'Product ID': 'productId',
     'Option Name': 'optionName',
     'Option Type': 'optionType',
+    'Required': 'required',
+    'Display Order': 'displayOrder',
+    'Placeholder': 'placeholder',
+    'Help Text': 'helpText',
   },
 };
 

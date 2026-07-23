@@ -417,55 +417,64 @@ Not yet integrated.
 
 ---
 
-# v1.7 Initial Tasks
+## v1.7 — Product Options Integration ✅
 
-Before coding:
+Completed.
 
-1. Audit current Product Options readiness.
+Implemented:
 
-Inspect:
+- Product Options Google Sheets integration
+- Pipeline import support
+- Validation and normalization
+- Generated product-options content
+- Product option data layer
+- Product-to-options relationship using productId
+- Product page "Available Options" display
 
-```
-src/types/product-options.ts
+Architecture:
 
-scripts/pipeline/
+- Products remain independent from customization options.
+- Options are data-driven.
+- No duplicated product data.
+- No checkout/order logic introduced.
 
-src/data/
+Verification:
 
-src/components/forms/
+npm run import:data ✅
+npm run build ✅
+0 warnings
 
-src/pages/[businessArea]/[collection]/[slug].astro
-```
+Tag:
 
-Determine:
-
-* where options enter the pipeline
-* how options attach to products
-* how forms consume options
-* how customization UI should be generated
+v1.7-product-options
 
 ---
 
 ## v1.8 — Dynamic Customization & Forms Enhancement
 
+v1.8 Decision: Product Options are the source of truth for product customization fields. 
+Forms consume Product Options instead of duplicating them
+
 Goal:
 
 Improve the product customization experience.
 
-Current:
-
-- Dynamic FormRenderer exists.
-- Forms are Google Sheets driven.
-
-Enhance:
-
-- Product-specific forms.
-- Product options connected to form fields.
-- Conditional fields.
-- Better field validation.
-- Improved customer input flow.
-
-Example:
+deepseek note:
+Assumptions
+1.
+Products with both formId and Product Options → Product Options take priority for customization; formId is ignored for field rendering. Products with only formId (no options) retain existing behavior.
+2.
+The formId field on products CSV remains required (for backward compatibility and general form linking), but its role shifts from “customization form ID” to “general form ID (fallback).”
+3.
+Existing FormRenderer cart/submit JS is acceptable — it was already running on the page.
+Open Question for You
+How should we handle products that have both a formId reference (e.g., adult-t-shirt-form with its own field definitions) and Product Options that define the same/similar fields? Currently they’d produce duplicate fields. Options:
+•
+A (recommended): Product Options fully replace formId-based customization. If options exist, ignore formId. Only use formId as fallback when no options exist.
+•
+B: Merge both — append formId fields after options fields (risks duplication).
+•
+C: Keep both on page — options section + formId section (redundant).
 
 
 ---
@@ -550,17 +559,5 @@ Continue from:
 
 Next objective:
 
-**v1.7 — Product Options Integration**
-Goal:
+**v1.8**
 
-Connect Product Options from Google Sheets into the product data architecture.
-
-Planned:
-
-- Import Product Options through pipeline.
-- Validate and normalize option data.
-- Attach options to products.
-- Expose options on product detail pages.
-- Prepare customization flow.
-
-Expected output:

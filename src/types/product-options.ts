@@ -2,6 +2,7 @@
 export type ProductOptionType =
   | 'select'
   | 'multiselect'
+  | 'radio'
   | 'text'
   | 'textarea'
   | 'number'
@@ -21,6 +22,12 @@ export interface ProductOption {
 
   /** Available choices for select-style options. */
   values?: string[];
+
+  /** Display ordering within a product's option list. */
+  displayOrder?: number;
+
+  /** Placeholder text for text-style options. */
+  placeholder?: string;
 
   /** Optional helper text for future forms or product detail pages. */
   description?: string;
