@@ -1,0 +1,93 @@
+---
+import type { CollectionImageTone } from '../../types/collection';
+
+interface Props {
+  images: string[];
+  primaryImage: string | null;
+  imageTone?: CollectionImageTone;
+  title: string;
+}
+
+const { images, primaryImage, imageTone = 'cream', title } = Astro.props;
+const hasImages = images.length > 0;
+const mainImage = primaryImage || (hasImages ? images[0] : null);
+---
+
+<div class="product-gallery">
+  <div
+    class:list={['product-gallery__main', `image-panel--${imageTone}`]}
+    style={mainImage ? `background-image: url(${mainImage});` : undefined}
+    role="img"
+    aria-label={mainImage ? title : `${title} visual treatment`}
+    data-gallery-main
+  >
+    <slot name="overlay" />
+  </div>
+
+  {images.length > 1 && (
+    <div class="product-gallery__thumbs">
+      {images.map((url, index) => (
+        <button
+          class:list={[
+            'product-gallery__thumb',
+            `image-panel--${imageTone}`,
+            index === 0 && 'product-gallery__thumb--active',
+          ]}
+          style={`background-image: url(${url});`}
+          aria-label={`${title} image ${index + 1}`}
+          data-thumb={index}
+        ></button>
+      ))}
+    </div>
+  )}
+</div>
+
+<script>
+  const mainEl = document.querySelector('[data-gallery-main]');
+  const thumbEls = document.querySelectorAll('[data-thumb]');
+
+  if (mainEl && thumbEls.length > 0) {
+    thumbEls.forEach((thumb) => {
+      thumb.addEventListener('click', () => {
+        const bg = thumb.style.backgroundImage;
+        if (bg) {
+          mainEl.style.backgroundImage = bg;
+          thumbEls.forEach((t) =>
+            t.classList.remove('product-gallery__thumb--active'),
+          );
+          thumb.classList.add('product-gallery__thumb--active');
+        }
+      });
+    });
+  }
+</script>
+
+<style>
+  .product-gallery__main {
+    background-position: center;
+    background-size: cover;
+    min-height: 400px;
+  }
+  .product-gallery__thumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  .product-gallery__thumb {
+    background-position: center;
+    background-size: cover;
+    border: 2px solid transparent;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    height: 80px;
+    padding: 0;
+    width: 80px;
+  }
+  .product-gallery__thumb:hover {
+    border-color: var(--honey);
+  }
+  .product-gallery__thumb--active {
+    border-color: var(--honey);
+  }
+</style>

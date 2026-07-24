@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-24T00:00:56.792Z",
+    "generatedAt": "2026-07-24T05:34:47.753Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -61,7 +61,9 @@
       "image": "01.jpg",
       "images": [
         "01.jpg",
-        "02.jpg"
+        "02.jpg",
+        "03.jpg",
+        "04.jpg"
       ],
       "imageTone": "cream",
       "active": true,
@@ -78,15 +80,17 @@
       "shortDescription": "Sweet chocolate filled pastry",
       "status": "Active",
       "featured": false,
-      "imageFolder": "",
+      "imageFolder": "products/BK-FP-002",
       "formId": "bakery-filled-pocket",
-      "image": null,
-      "images": [],
+      "image": "01.jpg",
+      "images": [
+        "01.jpg"
+      ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "primaryImage": ""
+      "primaryImage": "01.jpg"
     },
     {
       "id": "BK-SB-001",

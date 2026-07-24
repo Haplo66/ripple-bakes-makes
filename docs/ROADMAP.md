@@ -4,39 +4,46 @@
 
 RIPPLE Bakes & Makes is an Astro static website deployed on GitHub Pages.
 
+The website supports two business areas:
+
+- Bakery
+- Sewing
+
+The goal is to provide a beautiful product catalog experience while keeping the business workflow simple and maintainable.
+
 Current stack:
 
-* Astro 6.4.8
-* TypeScript
-* GitHub Pages
-* Google Sheets as business content source
-* Static site generation
+- Astro 6.4.8
+- TypeScript
+- GitHub Pages
+- Google Sheets as business content source
+- Static site generation
 
 Repository:
 
-* Branch: `master`
-* Base path: `/ripple-bakes-makes`
+- Branch: `master`
+- Base path: `/ripple-bakes-makes`
 
 ---
 
 # Development Philosophy
 
-## Architecture Principles
+## Principles
 
 Keep:
 
-* Astro static generation
-* Google Sheets as the business-friendly data source
-* TypeScript transformations inside the pipeline
-* Simple maintenance workflow
-* Free solutions only
+- Astro static generation
+- Google Sheets as the business-friendly data source
+- TypeScript transformations inside the build pipeline
+- Simple maintenance workflow
+- Free solutions only
 
 Avoid:
 
-* Unnecessary backend complexity
-* Paid services
-* Technical fields exposed to business users
-* Overengineering before needed
+- Unnecessary backend complexity
+- Paid services
+- Technical fields exposed to business users
+- Overengineering before business needs require it
 
 ---
 
@@ -44,29 +51,29 @@ Avoid:
 
 Use ChatGPT for:
 
-* Architecture
-* Planning
-* Reviews
-* Implementation prompts
+- Architecture
+- Planning
+- Reviews
+- Implementation prompts
 
 Use DeepSeek/Codex-style tools for:
 
-* Code implementation
-* Refactoring
-* Testing
+- Code implementation
+- Refactoring
+- Testing
 
 Implementation prompts should:
 
-* Be a single copy-paste markdown block
-* Stay concise
-* Recommend model/effort when useful
+- Be a single copy/paste markdown block
+- Clearly define scope
+- Recommend model/effort when useful
 
 Current preferred implementation model:
 
-* DeepSeek V4 Flash Free
-* High Thinking
-* Build mode for implementation tasks
-* Planning mode for architecture decisions
+- DeepSeek V4 Flash Free
+- High Thinking
+- Build mode for implementation tasks
+- Planning mode for architecture decisions
 
 ---
 
@@ -78,33 +85,34 @@ Current preferred implementation model:
 Google Sheets
       |
       v
-scripts/pipeline/
-      |
-      ├── reader.ts
-      ├── sheets-reader.ts
-      ├── csv-reader.ts
-      ├── validators.ts
-      ├── normalizers.ts
-      ├── generators.ts
+Pipeline
       |
       v
-src/content/
+Generated Content
       |
-      ├── products.json
-      ├── collections.json
-      └── forms.json
       |
-      v
-src/data/
-      |
-      ├── products.ts
-      ├── collections.ts
-      ├── forms.ts
-      └── product-options.ts
+      +-- Products
+      +-- Collections
+      +-- Product Options
+      +-- Forms
       |
       v
-Astro pages/components
+Astro Pages + Components
+      |
+      v
+Static Website
 ```
+
+## Business Data Source
+
+Google Sheets manages:
+
+- Products
+- Collections
+- Product options
+- Forms
+
+Technical processing remains inside the TypeScript pipeline.
 
 ---
 
@@ -118,39 +126,21 @@ Status:
 
 ✅ Completed
 
+Goal:
+
+Create a business-friendly content management workflow.
+
 Implemented:
 
-* Google Sheets API integration
-* Service account authentication
-* Sheet reader abstraction
-* CSV fallback support
+- Google Sheets integration
+- Authentication support
+- Data reader abstraction
+- CSV fallback support
+- Import pipeline
 
-Pipeline:
+Result:
 
-```
-scripts/pipeline/
-
-├── constants.ts
-├── csv-reader.ts
-├── generators.ts
-├── import-data.ts
-├── logger.ts
-├── normalizers.ts
-├── reader.ts
-├── sheets-auth.ts
-├── sheets-reader.ts
-├── types.ts
-└── validators.ts
-```
-
-Environment:
-
-```
-GOOGLE_SHEETS_CLIENT_EMAIL
-GOOGLE_SHEETS_PRIVATE_KEY
-GOOGLE_SHEETS_ID
-SHEETS_ENABLED=true
-```
+Business data can be maintained without editing code.
 
 ---
 
@@ -160,19 +150,15 @@ Status:
 
 ✅ Completed
 
-Problem:
+Goal:
 
-Astro dynamic routes require:
+Support Astro dynamic routes without exposing technical fields.
 
-```
-product.slug
-```
+Implemented:
 
-Solution:
-
-* Pipeline generates slugs automatically
-* Business users keep simple spreadsheets
-* Technical fields remain inside TypeScript
+- Automatic slug generation during import
+- Product routing support
+- Name changes without breaking references
 
 Example:
 
@@ -186,11 +172,6 @@ becomes:
 personalized-baby-blanket
 ```
 
-Verification:
-
-* `npm run import:data` ✅
-* `npm run build` ✅
-
 ---
 
 # v1.6 — RIPPLE Rebranding
@@ -199,25 +180,18 @@ Status:
 
 ✅ Completed
 
+Goal:
+
+Replace Honeycomb Arts & Bakes branding with RIPPLE Bakes & Makes.
+
 Implemented:
 
-## Repository
+- Repository rename
+- Logo updates
+- Favicon updates
+- Header/footer branding system
 
-Changed:
-
-* Honeycomb Arts & Bakes
-* RIPPLE Bakes & Makes
-
-## Branding
-
-Completed:
-
-* RIPPLE logo assets
-* Updated references
-* New favicon assets
-* Header/footer logo handling
-
-Logo system:
+Logo handling:
 
 Header:
 
@@ -229,19 +203,6 @@ Footer:
 
 ```
 ripple-logo.png
-```
-
-Favicon:
-
-```
-public/ripple-symbol.png
-```
-
-Verification:
-
-```
-31 pages
-0 errors
 ```
 
 ---
@@ -258,41 +219,21 @@ Connect product customization options from Google Sheets into the product archit
 
 Implemented:
 
-Google Sheet:
+- Product Options data source
+- Import pipeline support
+- Validation
+- Normalization
+- Product option lookup
+
+Architecture decision:
+
+Product options reference products using:
 
 ```
-Product Options
+productId
 ```
 
-Pipeline support:
-
-```
-Google Sheets
-      |
-      v
-Pipeline
-      |
-      v
-product-options.json
-      |
-      v
-Product customization system
-```
-
-Added:
-
-* Product option import
-* Validation
-* Normalization
-* Product option data layer
-* Product option lookup by product ID
-
-Architecture decisions:
-
-* Product Options reference products using `productId`
-* Product records remain unchanged
-* No duplicated product customization fields
-* Options remain data-driven
+Products remain the source of truth.
 
 ---
 
@@ -304,53 +245,32 @@ Status:
 
 Goal:
 
-Use Product Options as the source of product customization fields.
+Generate product customization forms dynamically.
 
 Implemented:
 
-Product Options now generate dynamic form fields.
+- Product option conversion
+- Dynamic form fields
+- Required fields
+- Ordering/display rules
+- Help text support
 
-Flow:
+Architecture:
 
 ```
 Product Options
         |
         v
-Option conversion layer
+Generated Form Fields
         |
         v
-Form fields
-        |
-        v
-FormRenderer
-```
-
-Added:
-
-* Product option field conversion
-* Required fields
-* Display ordering
-* Placeholder support
-* Help text support
-* Radio option type
-
-Architecture:
-
-```
-Product Options = primary customization source
-
-formId forms = fallback
+Form Renderer
 ```
 
 Behavior:
 
-* Products with Product Options use generated fields
-* Products without options continue using existing forms
-
-Verification:
-
-* `npm run import:data` ✅
-* `npm run build` ✅
+- Products with options generate forms automatically.
+- Existing forms remain as fallback.
 
 ---
 
@@ -362,47 +282,26 @@ Status:
 
 Goal:
 
-Connect collection pages with product browsing.
+Connect collections with product browsing.
 
 Implemented:
 
-Collection pages now load products dynamically.
+- Dynamic product loading
+- Product grids
+- Product cards
+- Collection-to-product flow
 
-Flow:
+Customer flow:
 
 ```
 Collection
      |
      v
-getProductsByCollection()
+Products
      |
      v
-ProductGrid
-     |
-     v
-ProductCard
+Product Detail
 ```
-
-Added:
-
-* Product loading on collection pages
-* ProductGrid integration
-* Product cards displayed inside collections
-
-Verification:
-
-```
-npm run import:data
-npm run build
-
-31 pages built
-```
-
-Verified:
-
-* Collection pages show products
-* Product detail routes remain functional
-* No build warnings
 
 ---
 
@@ -410,76 +309,32 @@ Verified:
 
 Status:
 
-Planned
+✅ Completed
 
 Goal:
 
-Introduce product pricing into the data-driven architecture.
+Introduce product pricing into the data-driven system.
 
-Planned:
+Implemented:
 
-* Product price fields in Google Sheets
-* Currency handling
-* Display pricing on product cards
-* Display pricing on product pages
-* Support future order calculations
+- Product pricing fields
+- Currency handling
+- Pricing display support
 
 Architecture:
 
-Products remain the source of truth.
-
+```
 Google Sheets
       |
       v
 Pipeline
       |
       v
-products.json
+Products Data
       |
       v
-Product display components
-
----
-
-# Current Product Architecture
-
-Current customer flow:
-
+Website Display
 ```
-Home
- |
- +-- Bakery
- |      |
- |      +-- Collection
- |              |
- |              +-- Product
- |                      |
- |                      +-- Customization
- |
- +-- Sewing
-        |
-        +-- Collection
-                |
-                +-- Product
-                        |
-                        +-- Customization
-```
-
-
-
-## Data Sync Automation
-
-Future:
-
-- Manual GitHub workflow trigger for data refresh
-- Scheduled Google Sheets synchronization
-- Automatic product/pricing updates
-- Availability synchronization
-
-
----
-
-# Upcoming Milestones
 
 ---
 
@@ -487,30 +342,26 @@ Future:
 
 Status:
 
-Planned
+🚧 In Progress
 
 Goal:
 
-Improve product presentation and customer experience.
-
-This milestone focuses on making products visually appealing, easier to browse, and ready for future ordering workflows.
+Improve product presentation and prepare the website for future ordering workflows.
 
 Principles:
 
 Keep:
 
-* Astro static generation
-* Google Sheets as content source
-* Git-based image management
-* Data-driven architecture
-* Simple business workflow
+- Astro static generation
+- Google Sheets workflow
+- Data-driven architecture
+- Simple maintenance
 
 Avoid:
 
-* Backend complexity
-* Manual image URL management
-* Duplicate content systems
-
+- Backend complexity
+- Duplicate content systems
+- Manual technical workflows
 
 ---
 
@@ -518,23 +369,19 @@ Avoid:
 
 Status:
 
-Planned
-
+✅ Completed
 
 Goal:
 
-Create a simple automatic image management system.
+Create a simple product image management system.
+
+Design:
 
 The business owner manages images by adding files to product folders.
 
 No image URLs are stored in Google Sheets.
 
-
-## Product ID Convention
-
-Product IDs become globally unique.
-
-Format:
+Product ID convention:
 
 ```
 {BusinessArea}-{Collection}-{Number}
@@ -544,165 +391,42 @@ Examples:
 
 ```
 BK-FP-001
-BK-CA-001
 SW-SH-001
-SW-HAT-001
 ```
 
-
-Rules:
-
-* IDs are permanent
-* IDs identify products, not names
-* Product names can change without affecting references
-
-
----
-
-## Image Folder Structure
+Image structure:
 
 ```
 public/
 └── images/
-    |
-    ├── products/
-    │
-    │    └── {productId}/
-    │           ├── 01.jpg
-    │           ├── 02.jpg
-    │           ├── 03.jpg
-    │           ├── 04.jpg
-    │           └── 05.jpg
-    │
-    ├── collections/
-    │
-    │    └── {collectionId}/
-    │           └── 01.jpg
-    │
-    ├── business-areas/
-    │
-    │    └── {businessAreaId}/
-    │           └── 01.jpg
-    │
-    └── default-product.jpg
+    └── products/
+        └── {productId}/
+            ├── 01.jpg
+            ├── 02.jpg
+            └── 03.jpg
 ```
 
-
----
-
-## Image Rules
-
-Supported format:
+Image priority:
 
 ```
-.jpg
+Product Image
+      |
+      v
+Collection Image
+      |
+      v
+Business Area Image
+      |
+      v
+Default Image
 ```
 
+Implemented:
 
-Naming:
-
-```
-01.jpg = primary image
-
-02.jpg - 05.jpg = additional images
-```
-
-
-Limits:
-
-* Maximum 5 images per product
-* Images are optional
-* Missing images are allowed
-
-
----
-
-## Image Resolution Logic
-
-Priority:
-
-```
-Product image
-        |
-        v
-Collection image
-        |
-        v
-Business area image
-        |
-        v
-Default image
-```
-
-
-Example:
-
-Product:
-
-```
-BK-FP-003
-```
-
-No product folder:
-
-↓
-
-Use:
-
-```
-collections/BK-FP/01.jpg
-```
-
-
----
-
-## Pipeline Changes
-
-Add:
-
-* Image discovery utility
-* Product image resolver
-* Fallback handling
-* Product type image fields
-
-
-Generated data:
-
-```
-products.json
-```
-
-
-Example:
-
-```json
-{
-  "id": "BK-FP-001",
-  "images": [
-    "/images/products/BK-FP-001/01.jpg",
-    "/images/products/BK-FP-001/02.jpg"
-  ],
-  "primaryImage":
-    "/images/products/BK-FP-001/01.jpg"
-}
-```
-
-
-Warnings:
-
-Example:
-
-```
-WARNING:
-Product BK-FP-003 is using default image.
-```
-
-
-Build behavior:
-
-* Warning only
-* Never fail build
-
+- Image discovery
+- Product image resolver
+- Fallback handling
+- Product image data fields
 
 ---
 
@@ -710,24 +434,19 @@ Build behavior:
 
 Status:
 
-Planned
-
+✅ Completed
 
 Goal:
 
-Improve product detail pages.
+Improve product detail pages with visual product galleries.
 
+Implemented:
 
-Add:
-
-* Main product image
-* Thumbnail images
-* Image switching
-* Responsive gallery layout
-* Missing image handling
-
-
-Customer flow:
+- Main product image
+- Thumbnail images
+- Image switching
+- Responsive gallery
+- Missing image handling
 
 ```
 Product Page
@@ -741,13 +460,75 @@ Gallery
       +-- Main Image
       |
       +-- Additional Images
+```
 
-      |
-      v
+# v1.9.1.1 — Product Page Layout Polish
+
+Status:
+
+🚧 In Progress
+
+Goal:
+
+Improve the product detail page layout after completing the gallery system.
+
+The gallery functionality is complete. This milestone focuses on product presentation and brand experience.
+
+Objectives:
+
+- Create a balanced desktop product hero layout
+- Display product image and product information together
+- Improve visual hierarchy
+- Reduce oversized image dominance
+- Improve spacing and typography
+- Maintain RIPPLE boutique handmade style
+
+Desktop direction:
+
+```
+Product Gallery        Product Information
+
+Main Image             Category
+                       Product Name
+Thumbnails             Price
+                       Description
+                       Customization
+```
+
+Mobile direction:
+
+```
+Image
+
+Thumbnails
+
+Category
+
+Product Name
+
+Price
+
+Description
 
 Customization
 ```
 
+Keep:
+
+- Existing gallery component
+- Existing data architecture
+- Existing product flow
+- RIPPLE typography direction
+
+Avoid:
+
+- Architecture changes
+- New backend requirements
+- Unnecessary components
+
+---
+
+# Upcoming Milestones
 
 ---
 
@@ -757,33 +538,19 @@ Status:
 
 Planned
 
-
 Goal:
 
-Improve collection browsing.
+Improve collection browsing experience.
 
+Planned:
 
-Add:
+- Better product images
+- Improved product cards
+- Short descriptions
+- Visual consistency
+- Optional featured badges
 
-* Better product images
-* Improved card layout
-* Short descriptions
-* Visual consistency
-* Optional featured badge
-
-
-Collection view:
-
-Before:
-
-```
-Image
-
-Product Name
-```
-
-
-After:
+Target:
 
 ```
 Image
@@ -792,9 +559,8 @@ Product Name
 
 Short Description
 
-Featured indicator
+Featured Indicator
 ```
-
 
 ---
 
@@ -804,20 +570,17 @@ Status:
 
 Planned
 
-
 Goal:
 
-Make collection pages feel like product catalogs.
+Make collections feel like polished product catalogs.
 
+Planned:
 
-Add:
-
-* Collection hero images
-* Collection descriptions
-* Improved headers
-* Better product grouping
-* Collection fallback images
-
+- Collection hero images
+- Collection descriptions
+- Improved collection headers
+- Better product grouping
+- Collection fallback images
 
 Example:
 
@@ -841,27 +604,23 @@ Status:
 
 Planned
 
-
 Goal:
 
 Improve product discovery.
 
+Planned:
 
-Add:
+- Featured products
+- Featured collections
+- Bakery highlights
+- Sewing highlights
 
-* Featured products
-* Featured collections
-* Bakery highlights
-* Sewing highlights
-
-
-Possible Google Sheet fields:
+Possible data fields:
 
 ```
 featured
 displayOrder
 ```
-
 
 Example:
 
@@ -870,18 +629,16 @@ Homepage
 
 Featured Bakery
 
-[Product]
-[Product]
-[Product]
-
+Product
+Product
+Product
 
 Featured Sewing
 
-[Product]
-[Product]
-[Product]
+Product
+Product
+Product
 ```
-
 
 ---
 
@@ -891,25 +648,21 @@ Status:
 
 Planned
 
-
 Goal:
 
-Prepare website content for ordering workflow.
+Prepare product content for ordering workflows.
 
+Planned:
 
-Add:
-
-* Better product descriptions
-* Collection descriptions
-* Product availability flags
-* SEO metadata from Google Sheets
-* Improved content consistency
-
+- Better product descriptions
+- Collection descriptions
+- Product availability flags
+- SEO metadata
+- Content consistency improvements
 
 Reason:
 
-A reliable ordering system requires customers to trust and understand the products first.
-
+A reliable ordering system requires customers to understand and trust the products first.
 
 ---
 
@@ -919,88 +672,105 @@ Completed when:
 
 ✅ Products support multiple images  
 ✅ Images are automatically discovered  
-✅ Fallback image system works  
+✅ Image fallback system works  
 ✅ Product pages have galleries  
-✅ Collection pages look like catalogs  
+✅ Product pages have polished presentation  
+✅ Collection pages feel like catalogs  
 ✅ Homepage highlights products  
-✅ Content is ready for ordering workflow
-
-
-Focus:
-
-Improve customer experience without changing architecture.
-
+✅ Content is ready for ordering workflow  
 
 ---
 
-## v2.0 — Ordering Workflow
+# v2.0 — Ordering Workflow
 
-RIPPLE Catalog Sheet
+Status:
+
+Future
+
+Goal:
+
+Introduce customer ordering and business order management.
+
+Architecture:
+
+Separate catalog data from transaction data.
+
+---
+
+## Catalog Sheet
 
 Purpose:
-Website content management
+
+Website content management.
 
 Contains:
 
-Products
-Collections
-Product Options
-Forms
+- Products
+- Collections
+- Product Options
+- Forms
 
+---
 
-RIPPLE Orders Sheet
+## Orders Sheet
 
 Purpose:
-Customer transaction records
+
+Customer transaction records.
 
 Contains:
 
-Orders
-Order Items
-Customers (future)
-Payments (future)
+- Orders
+- Order Items
+- Customer information (future)
+- Payments (future)
 
+---
 
-Order Structure:
+## Order Structure
 
-Orders sheet:
+Orders:
 
+```
 Order ID
 Customer Information
 Order Status
 Date
 Total
+```
 
+Order Items:
 
-Order Items sheet:
-
+```
 Order ID
 Product ID
 Product Name
 Quantity
 Customization Data
 Price
+```
 
 Example:
 
-Orders
+```
+Order:
 
 RPL-000123
 John Smith
 Pending
 
 
-Order Items
+Items:
 
-RPL-000123
 Baby Blanket
 Blue
 Name: Emma
 
-RPL-000123
+
 Custom Shirt
 Size: M
 Theme: Dragon
+```
 
 ---
 
@@ -1012,14 +782,14 @@ Future
 
 Possible improvements:
 
-* Inventory management
-* Availability tracking
-* Improved Google Sheets workflows
-* Order history
-* Customer communication tools
-* Analytics
+- Inventory management
+- Availability tracking
+- Improved Google Sheets workflows
+- Order history
+- Customer communication tools
+- Analytics
 
-Only implement when business needs justify complexity.
+Only implement when business needs justify additional complexity.
 
 ---
 
@@ -1028,15 +798,36 @@ Only implement when business needs justify complexity.
 Completed:
 
 ```
-v1.5     Google Sheets Pipeline              ✅
-v1.5.1   Product Slug Generation             ✅
-v1.6     RIPPLE Rebranding                   ✅
-v1.7     Product Options Integration         ✅
-v1.8     Dynamic Customization Forms         ✅
-v1.8.1   Product Collection Display           ✅
+v1.5       Google Sheets Pipeline                 ✅
+v1.5.1     Product Slug Generation                ✅
+v1.6       RIPPLE Rebranding                      ✅
+v1.7       Product Options Integration            ✅
+v1.8       Dynamic Customization Forms             ✅
+v1.8.1     Product Collection Display              ✅
+v1.8.2     Product Pricing Foundation              ✅
+v1.9.0     Product Image Architecture              ✅
+v1.9.1     Product Gallery Component               ✅
 ```
 
-Current architecture supports:
+Current:
+
+```
+v1.9.1.1   Product Page Layout Polish              🚧
+```
+
+Upcoming:
+
+```
+v1.9.2     Product Card Improvements               ⏳
+v1.9.3     Collection Presentation Improvements    ⏳
+v1.9.4     Homepage Product Highlights             ⏳
+v1.9.5     Content Management Refinement           ⏳
+v2.0       Ordering Workflow                       ⏳
+```
+
+---
+
+# Current Architecture Supports
 
 ```
 Google Sheets
@@ -1049,10 +840,23 @@ Dynamic Astro Website
       |
       v
 Product Discovery + Customization
+      |
+      v
+Future Ordering Workflow
 ```
 
-Next objective:
+---
+
+# Next Objective
+
+Complete:
 
 ```
-v1.9 — Product Gallery & Content Improvements
+v1.9.1.1 — Product Page Layout Polish
+```
+
+Then continue with:
+
+```
+v1.9.2 — Product Card Improvements
 ```

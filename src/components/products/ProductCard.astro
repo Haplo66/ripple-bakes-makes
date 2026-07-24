@@ -30,7 +30,7 @@ const statusLabel = statusLabels[product.status] || product.status;
 const displayPrice = formatPrice(product.price) || product.priceLabel;
 ---
 
-<article class="product-card" id={product.slug}>
+<article class="product-card">
   <a class="product-card__link" href={href}>
     <div
       class:list={['product-card__image', `image-panel--${imageTone}`]}
@@ -41,6 +41,7 @@ const displayPrice = formatPrice(product.price) || product.priceLabel;
       <span class:list={['product-card__status', `product-card__status--${product.status}`]}>
         {statusLabel}
       </span>
+      {product.featured && <span class="product-card__featured">Featured</span>}
       {displayPrice && <span class="product-card__price">{displayPrice}</span>}
     </div>
     <div class="product-card__content">
@@ -81,9 +82,9 @@ const displayPrice = formatPrice(product.price) || product.priceLabel;
   }
 
   .product-card__image {
+    aspect-ratio: 4 / 3;
     background-position: center;
     background-size: cover;
-    min-height: 220px;
     overflow: hidden;
     position: relative;
   }
@@ -103,6 +104,21 @@ const displayPrice = formatPrice(product.price) || product.priceLabel;
     letter-spacing: 0.08em;
     padding: 0.35rem 0.65rem;
     position: absolute;
+    text-transform: uppercase;
+    top: 1rem;
+    z-index: 1;
+  }
+
+  .product-card__featured {
+    background: var(--honey);
+    border-radius: 99px;
+    color: var(--cocoa);
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 0.3rem 0.55rem;
+    position: absolute;
+    right: 1rem;
     text-transform: uppercase;
     top: 1rem;
     z-index: 1;
@@ -151,12 +167,16 @@ const displayPrice = formatPrice(product.price) || product.priceLabel;
   }
 
   .product-card__title {
+    display: -webkit-box;
     font-family: 'Playfair Display', Georgia, serif;
     font-size: 1.4rem;
     font-weight: 500;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     letter-spacing: -0.03em;
     line-height: 1.2;
     margin: 0;
+    overflow: hidden;
   }
 
   .product-card__subtitle {
@@ -168,9 +188,13 @@ const displayPrice = formatPrice(product.price) || product.priceLabel;
 
   .product-card__description {
     color: var(--muted);
+    display: -webkit-box;
     font-size: 0.88rem;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
     line-height: 1.5;
     margin: 0.6rem 0 1.2rem;
+    overflow: hidden;
   }
 
   .product-card__cta {

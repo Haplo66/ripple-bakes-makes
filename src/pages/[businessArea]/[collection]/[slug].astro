@@ -1,6 +1,7 @@
 ---
 import MainLayout from '../../../layouts/MainLayout.astro';
 import FormRenderer from '../../../components/forms/FormRenderer.astro';
+import ProductGallery from '../../../components/products/ProductGallery.astro';
 import { getAllProducts } from '../../../data/products';
 import { collections } from '../../../data/collections';
 import { getProductOptions } from '../../../data/product-options';
@@ -50,11 +51,8 @@ interface Props {
 const { product } = Astro.props;
 
 const imageTone = product.imageTone || 'cream';
-const primaryImage = getProductPrimaryImage(product);
-const imageStyle = primaryImage
-  ? `background-image: url(${primaryImage});`
-  : undefined;
-const allImages = getProductImages(product);
+const galleryImages = getProductImages(product);
+const galleryPrimaryImage = getProductPrimaryImage(product);
 
 const statusLabels: Record<string, string> = {
   available: 'Available',
@@ -104,20 +102,14 @@ const customizationForm: Form | undefined = customizationFields.length > 0
 
       <div class="product-detail__grid">
         <div class="product-detail__media">
-          <div
-            class:list={[
-              'product-detail__image',
-              `image-panel--${imageTone}`,
-            ]}
-            style={imageStyle}
-            role="img"
-            aria-label={
-              primaryImage
-                ? product.title
-                : `${product.title} visual treatment`
-            }
+          <ProductGallery
+            images={galleryImages}
+            primaryImage={galleryPrimaryImage}
+            imageTone={imageTone}
+            title={product.title}
           >
             <span
+              slot="overlay"
               class:list={[
                 'status-badge',
                 `status-badge--${product.status}`,
@@ -125,20 +117,7 @@ const customizationForm: Form | undefined = customizationFields.length > 0
             >
               {statusLabel}
             </span>
-          </div>
-
-          {allImages.length > 1 && (
-            <div class="product-thumbnails">
-              {allImages.map((url) => (
-                <div
-                  class:list={['product-thumbnail', `image-panel--${imageTone}`]}
-                  style={`background-image: url(${url});`}
-                  role="img"
-                  aria-label={`${product.title} image`}
-                ></div>
-              ))}
-            </div>
-          )}
+          </ProductGallery>
         </div>
 
         <div class="product-detail__content">
@@ -201,16 +180,154 @@ const customizationForm: Form | undefined = customizationFields.length > 0
 </MainLayout>
 
 <style>
-  .product-thumbnails {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 1rem;
+  .product-detail__grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr;
   }
-  .product-thumbnail {
-    background-position: center;
-    background-size: cover;
-    border-radius: 0.6rem;
-    height: 80px;
-    width: 80px;
+
+  .product-detail__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .product-detail__title {
+    font-size: clamp(1.5rem, 3.5vw, 2.6rem);
+    margin: 0;
+  }
+
+  .product-detail__subtitle {
+    color: var(--muted);
+    font-size: 1.05rem;
+    margin: 0;
+  }
+
+  .product-detail__price {
+    margin: 0;
+  }
+
+  .price-tag {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--cocoa);
+  }
+
+  .product-detail__description {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .product-detail__description .short-desc {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.45;
+    margin: 0;
+  }
+
+  .product-detail__description .full-desc {
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .product-detail__meta {
+    border-top: 1px solid var(--line);
+    font-size: 0.82rem;
+    padding-top: 0.75rem;
+  }
+
+  .meta-item {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .meta-label {
+    color: var(--muted);
+  }
+
+  .meta-value {
+    font-weight: 600;
+  }
+
+  .breadcrumb {
+    font-size: 0.82rem;
+    margin-bottom: 1.5rem;
+    padding-top: 1.5rem;
+  }
+
+  .breadcrumb .separator {
+    color: var(--line);
+    margin: 0 0.35rem;
+  }
+
+  .breadcrumb .current {
+    color: var(--muted);
+  }
+
+  .status-badge {
+    border-radius: 99px;
+    font-size: 0.62rem;
+    font-weight: 600;
+    left: 0.75rem;
+    letter-spacing: 0.08em;
+    padding: 0.3rem 0.55rem;
+    position: absolute;
+    text-transform: uppercase;
+    top: 0.75rem;
+    z-index: 2;
+  }
+
+  .status-badge--available {
+    background: var(--sage);
+    color: #fff;
+  }
+
+  .status-badge--seasonal {
+    background: var(--honey);
+    color: var(--cocoa);
+  }
+
+  .status-badge--out-of-stock {
+    background: #a36e62;
+    color: #fff;
+  }
+
+  .status-badge--preorder {
+    background: var(--cocoa);
+    color: #fff;
+  }
+
+  @media (min-width: 768px) {
+    .product-detail {
+      padding-bottom: 5rem;
+    }
+
+    .product-detail__grid {
+      align-items: start;
+      gap: 3rem;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .product-detail__content {
+      gap: 1.5rem;
+      padding-top: 0;
+    }
+
+    .breadcrumb {
+      margin-bottom: 2.5rem;
+      padding-top: 2.5rem;
+    }
+
+    .price-tag {
+      font-size: 1.8rem;
+    }
+
+    .product-detail__description .short-desc {
+      font-size: 1.15rem;
+    }
   }
 </style>
