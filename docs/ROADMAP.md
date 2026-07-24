@@ -514,11 +514,42 @@ Avoid:
 
 ---
 
+# v1.9 — Product Gallery & Content Improvements
+
+Status:
+
+In Progress
+
+Goal:
+
+Improve product presentation and customer experience.
+
+This milestone focuses on making products visually appealing, easier to browse, and ready for future ordering workflows.
+
+Principles:
+
+Keep:
+
+* Astro static generation
+* Google Sheets as content source
+* Git-based image management
+* Data-driven architecture
+* Simple business workflow
+
+Avoid:
+
+* Backend complexity
+* Manual image URL management
+* Duplicate content systems
+
+
+---
+
 # v1.9.0 — Product Image Architecture Foundation
 
 Status:
 
-Planned
+✅ Completed
 
 
 Goal:
@@ -530,11 +561,11 @@ The business owner manages images by adding files to product folders.
 No image URLs are stored in Google Sheets.
 
 
-## Product ID Convention
+## Implemented
 
-Product IDs become globally unique.
+### Product ID Convention
 
-Format:
+Product identifiers now support:
 
 ```
 {BusinessArea}-{Collection}-{Number}
@@ -546,58 +577,47 @@ Examples:
 BK-FP-001
 BK-CA-001
 SW-SH-001
-SW-HAT-001
+```
+
+Business area codes:
+
+```
+BK = Bakery
+SW = Sewing
 ```
 
 
-Rules:
-
-* IDs are permanent
-* IDs identify products, not names
-* Product names can change without affecting references
-
-
----
-
-## Image Folder Structure
+### Image Folder Structure
 
 ```
 public/
 └── images/
     |
     ├── products/
-    │
     │    └── {productId}/
     │           ├── 01.jpg
     │           ├── 02.jpg
-    │           ├── 03.jpg
-    │           ├── 04.jpg
-    │           └── 05.jpg
-    │
+    │           └── ...
+    |
     ├── collections/
-    │
     │    └── {collectionId}/
     │           └── 01.jpg
-    │
+    |
     ├── business-areas/
-    │
     │    └── {businessAreaId}/
     │           └── 01.jpg
-    │
+    |
     └── default-product.jpg
 ```
 
 
----
+### Image Rules
 
-## Image Rules
-
-Supported format:
+Format:
 
 ```
 .jpg
 ```
-
 
 Naming:
 
@@ -608,18 +628,16 @@ Naming:
 ```
 
 
-Limits:
+Rules:
 
 * Maximum 5 images per product
 * Images are optional
-* Missing images are allowed
+* No image URLs in Google Sheets
 
 
----
+### Image Resolution
 
-## Image Resolution Logic
-
-Priority:
+Implemented fallback hierarchy:
 
 ```
 Product image
@@ -635,74 +653,254 @@ Default image
 ```
 
 
-Example:
+### Pipeline Integration
 
-Product:
+Implemented:
+
+* Image scanner
+* Image resolver
+* Product image metadata generation
+* Primary image generation
+* Build warnings for default image usage
+
+
+Generated product data now includes:
 
 ```
-BK-FP-003
+images[]
+primaryImage
 ```
 
-No product folder:
 
-↓
+### Verification
 
-Use:
+Completed:
 
 ```
-collections/BK-FP/01.jpg
+npm run import:data ✅
+
+npm run build ✅
+
+31 pages built
+0 errors
 ```
 
 
 ---
 
-## Pipeline Changes
+# v1.9.0.1 — Demo Product Image Population
+
+Status:
+
+Planned
+
+
+Goal:
+
+Validate the complete image workflow using representative demo images.
+
+
+Tasks:
+
+* Use existing imported product catalog
+* Create demo product image folders
+* Populate sample JPG images
+* Verify product image discovery
+* Verify fallback behavior
+
+
+Coverage:
+
+Create examples for:
+
+* Bakery products
+* Sewing products
+* Products using fallback images
+
+
+Image requirements:
+
+* Development/demo only
+* Replace before production
+* JPG format
+* Follow final folder naming rules
+
+
+Verification:
+
+```
+npm run import:data
+npm run build
+```
+
+
+---
+
+# v1.9.1 — Product Gallery Component
+
+Status:
+
+Planned
+
+
+Goal:
+
+Improve product detail page presentation.
+
 
 Add:
 
-* Image discovery utility
-* Product image resolver
-* Fallback handling
-* Product type image fields
+* Main product image
+* Thumbnail images
+* Image switching
+* Responsive gallery layout
+* Missing image handling
 
 
-Generated data:
-
-```
-products.json
-```
-
-
-Example:
-
-```json
-{
-  "id": "BK-FP-001",
-  "images": [
-    "/images/products/BK-FP-001/01.jpg",
-    "/images/products/BK-FP-001/02.jpg"
-  ],
-  "primaryImage":
-    "/images/products/BK-FP-001/01.jpg"
-}
-```
-
-
-Warnings:
-
-Example:
+Customer flow:
 
 ```
-WARNING:
-Product BK-FP-003 is using default image.
+Product Page
+
+      |
+      v
+
+Image Gallery
+
+      |
+      +-- Main Image
+      |
+      +-- Thumbnails
+
+      |
+      v
+
+Product Information
+
+      |
+      v
+
+Customization Form
 ```
 
 
-Build behavior:
+---
 
-* Warning only
-* Never fail build
+# v1.9.2 — Product Card Improvements
 
+Status:
+
+Planned
+
+
+Goal:
+
+Improve collection browsing.
+
+
+Add:
+
+* Better product images
+* Improved card layout
+* Short descriptions
+* Visual consistency
+* Optional featured indicators
+
+
+---
+
+# v1.9.3 — Collection Presentation Improvements
+
+Status:
+
+Planned
+
+
+Goal:
+
+Make collection pages feel like product catalogs.
+
+
+Add:
+
+* Collection hero images
+* Collection descriptions
+* Improved headers
+* Better product grouping
+* Collection fallback images
+
+
+---
+
+# v1.9.4 — Homepage Product Highlights
+
+Status:
+
+Planned
+
+
+Goal:
+
+Improve product discovery.
+
+
+Add:
+
+* Featured products
+* Featured collections
+* Bakery highlights
+* Sewing highlights
+
+
+Possible fields:
+
+```
+featured
+displayOrder
+```
+
+
+---
+
+# v1.9.5 — Content Management Refinement
+
+Status:
+
+Planned
+
+
+Goal:
+
+Prepare website content for ordering workflow.
+
+
+Add:
+
+* Better product descriptions
+* Collection descriptions
+* Product availability flags
+* SEO metadata from Google Sheets
+* Improved content consistency
+
+
+Reason:
+
+A reliable ordering system requires customers to trust and understand the products first.
+
+
+---
+
+# v1.9 Completion Criteria
+
+Completed when:
+
+✅ Products support multiple images  
+✅ Images are automatically discovered  
+✅ Fallback image system works  
+✅ Product pages have galleries  
+✅ Collection pages look like catalogs  
+✅ Homepage highlights products  
+✅ Content is ready for ordering workflow
 
 ---
 
