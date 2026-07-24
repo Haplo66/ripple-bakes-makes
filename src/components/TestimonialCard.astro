@@ -1,5 +1,5 @@
 ---
 const {quote,name,detail}=Astro.props;
 ---
-<figure class="testimonial"><span>“</span><blockquote>{quote}</blockquote><figcaption><strong>{name}</strong><small>{detail} · Placeholder testimonial</small></figcaption></figure>
+<figure class="testimonial"><span>“</span><blockquote>{quote}</blockquote><figcaption><strong>{name}</strong><small>{detail}</small></figcaption></figure>
 <style>.testimonial{background:var(--paper);border:1px solid var(--line);border-radius:1rem;margin:0;padding:1.7rem}.testimonial>span{color:var(--honey);font-family:'Playfair Display',serif;font-size:3rem;line-height:.45}.testimonial blockquote{font-family:'Playfair Display',serif;font-size:1.22rem;line-height:1.4;margin:1rem 0 1.5rem}.testimonial figcaption{display:flex;flex-direction:column;font-size:.78rem}.testimonial small{color:var(--muted);margin-top:.2rem}</style>

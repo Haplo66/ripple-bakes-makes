@@ -606,47 +606,40 @@ Validation:
 
 ---
 
-# v1.9.4 — Homepage Product Highlights
+# v1.9.4 — Homepage Product Highlights & Brand Experience
 
 Status:
 
-Planned
+✅ Completed
 
 Goal:
 
-Improve product discovery.
+Transform the homepage into a boutique storefront that introduces the RIPPLE brand and improves product discovery while maintaining the inquiry-based customer workflow.
 
-Planned:
+Implemented:
 
-- Featured products
-- Featured collections
-- Bakery highlights
-- Sewing highlights
+- Added featured products section to homepage
+- Connected homepage discovery to existing featured product system
+- Improved RIPPLE hero branding with ripple symbol accent
+- Updated homepage CTAs to match inquiry workflow
+- Removed customer-facing placeholder wording
+- Improved bakery/sewing CTA wording
+- Fixed homepage content quality issues
+- Preserved cart navigation as part of future inquiry workflow
 
-Possible data fields:
+Architecture:
 
-```
-featured
-displayOrder
-```
+- Reused existing ProductGrid/ProductCard components
+- Reused existing product data and featured flags
+- No new data fields
+- No new backend requirements
+- Cart functionality preserved for future order-request workflow
 
-Example:
+Validation:
 
-```
-Homepage
-
-Featured Bakery
-
-Product
-Product
-Product
-
-Featured Sewing
-
-Product
-Product
-Product
-```
+- npm run build successful
+- 31 pages generated
+- 0 errors
 
 ---
 
@@ -806,37 +799,17 @@ Only implement when business needs justify additional complexity.
 Completed:
 
 ```
-Completed:
-v1.5
-✅ Google Sheets Pipeline
-v1.5.1
-✅ Product Slug Generation
-v1.6
-✅ RIPPLE Rebranding
-v1.7
-✅ Product Options Integration
-v1.8
-✅ Dynamic Customization Forms
-v1.8.1
-✅ Product Collection Display
-v1.8.2
-✅ Product Pricing Foundation
-v1.9.0
-✅ Product Image Architecture
-v1.9.1
-✅ Product Gallery Component
-v1.9.1.1
-✅ Product Page Layout Polish
-v1.9.2
-✅ Catalog Experience Improvements
-v1.9.3    
-✅ Collection Presentation Improvements
+v1.9.0   Product Image Architecture              ✅
+v1.9.1   Product Gallery                         ✅
+v1.9.1.1 Product Page Layout Polish              ✅
+v1.9.2   Catalog Experience Improvements         ✅
+v1.9.3   Collection Presentation Improvements    ✅
+v1.9.4   Homepage Product Highlights             ✅
 ```
 
 Upcoming:
 
 ```
-v1.9.4     Homepage Product Highlights             ⏳
 v1.9.5     Content Management Refinement           ⏳
 v2.0       Ordering Workflow                       ⏳
 ```
