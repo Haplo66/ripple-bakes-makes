@@ -12,3 +12,13 @@ export const formatPrice = (price: number | undefined | null): string | null => 
   if (price == null || !Number.isFinite(price)) return null;
   return `$${price.toFixed(2)}`;
 };
+
+export const productStatusLabels: Record<string, string> = {
+  available: 'Available',
+  seasonal: 'Seasonal',
+  'out-of-stock': 'Out of Stock',
+  preorder: 'Preorder',
+};
+
+export const formatProductStatus = (status: string): string =>
+  productStatusLabels[status] || status;
