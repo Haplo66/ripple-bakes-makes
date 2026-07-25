@@ -349,12 +349,36 @@ async function importHomepageImages(
   dryRun: boolean,
 ): Promise<{ items: number; downloaded: number; replaced: number; skipped: number; failed: number }> {
   const subfolders = await listAll(drive, sectionId);
+  const folders = subfolders.filter((s) => s.mimeType === DRIVE_FOLDER_MIME);
+  console.log(`  Homepage Images: ${folders.length} subfolder(s)`);
   let total = { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0 };
 
-  for (const sub of subfolders) {
-    if (sub.mimeType !== DRIVE_FOLDER_MIME) continue;
+  for (const sub of folders) {
     const targetDir = `home/${sub.name}`;
     const result = await importFlatSection(drive, sub.id, targetDir, `Homepage/${sub.name}`, dryRun);
+    total.items += result.items;
+    total.downloaded += result.downloaded;
+    total.replaced += result.replaced;
+    total.skipped += result.skipped;
+    total.failed += result.failed;
+  }
+
+  return total;
+}
+
+async function importCollectionImages(
+  drive: drive_v3.Drive,
+  sectionId: string,
+  dryRun: boolean,
+): Promise<{ items: number; downloaded: number; replaced: number; skipped: number; failed: number }> {
+  const subfolders = await listAll(drive, sectionId);
+  const folders = subfolders.filter((s) => s.mimeType === DRIVE_FOLDER_MIME);
+  console.log(`  Collection Images: ${folders.length} subfolder(s)`);
+  let total = { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0 };
+
+  for (const sub of folders) {
+    const targetDir = `collections/${sub.name}`;
+    const result = await importFlatSection(drive, sub.id, targetDir, `Collection/${sub.name}`, dryRun);
     total.items += result.items;
     total.downloaded += result.downloaded;
     total.replaced += result.replaced;
@@ -382,7 +406,12 @@ async function importBusinessAreaImages(
     }
     const targetDir = `business-areas/${code}`;
     const label = `${area.name} → ${code}`;
-    const result = await importFlatSection(drive, area.id, targetDir, label, dryRun);
+
+    const innerFolderId = await findChildFolder(drive, area.id, code);
+    const scanFolderId = innerFolderId || area.id;
+    const scanLabel = innerFolderId ? `${label}/${code}` : label;
+
+    const result = await importFlatSection(drive, scanFolderId, targetDir, scanLabel, dryRun);
     total.items += result.items;
     total.downloaded += result.downloaded;
     total.replaced += result.replaced;

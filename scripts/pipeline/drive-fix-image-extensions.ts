@@ -308,10 +308,32 @@ async function processHomepageImages(
   dryRun: boolean,
 ): Promise<{ checked: number; renamed: number; skipped: number; errors: number }> {
   const subfolders = await listAll(drive, sectionId);
+  const folders = subfolders.filter((s) => s.mimeType === DRIVE_FOLDER_MIME);
+  console.log(`  Homepage Images: ${folders.length} subfolder(s)`);
   let total = { checked: 0, renamed: 0, skipped: 0, errors: 0 };
 
-  for (const sub of subfolders) {
-    if (sub.mimeType !== DRIVE_FOLDER_MIME) continue;
+  for (const sub of folders) {
+    const result = await processFlatSection(drive, sub.id, `${sub.name}/`, dryRun);
+    total.checked += result.checked;
+    total.renamed += result.renamed;
+    total.skipped += result.skipped;
+    total.errors += result.errors;
+  }
+
+  return total;
+}
+
+async function processCollectionImages(
+  drive: drive_v3.Drive,
+  sectionId: string,
+  dryRun: boolean,
+): Promise<{ checked: number; renamed: number; skipped: number; errors: number }> {
+  const subfolders = await listAll(drive, sectionId);
+  const folders = subfolders.filter((s) => s.mimeType === DRIVE_FOLDER_MIME);
+  console.log(`  Collection Images: ${folders.length} subfolder(s)`);
+  let total = { checked: 0, renamed: 0, skipped: 0, errors: 0 };
+
+  for (const sub of folders) {
     const result = await processFlatSection(drive, sub.id, `${sub.name}/`, dryRun);
     total.checked += result.checked;
     total.renamed += result.renamed;
@@ -334,7 +356,12 @@ async function processBusinessAreaImages(
     if (area.mimeType !== DRIVE_FOLDER_MIME) continue;
     const code = BUSINESS_AREA_CODE[area.name];
     const label = code ? `${area.name} → ${code}` : area.name;
-    const result = await processFlatSection(drive, area.id, label, dryRun);
+
+    const innerFolderId = await findChildFolder(drive, area.id, code);
+    const scanFolderId = innerFolderId || area.id;
+    const scanLabel = innerFolderId ? `${label}/${code}` : label;
+
+    const result = await processFlatSection(drive, scanFolderId, scanLabel, dryRun);
     total.checked += result.checked;
     total.renamed += result.renamed;
     total.skipped += result.skipped;
@@ -407,6 +434,9 @@ async function run(): Promise<void> {
         break;
       case 'homepage-images':
         result = await processHomepageImages(drive, sectionId, dryRun);
+        break;
+      case 'collection-images':
+        result = await processCollectionImages(drive, sectionId, dryRun);
         break;
       case 'business-area-images':
         result = await processBusinessAreaImages(drive, sectionId, dryRun);

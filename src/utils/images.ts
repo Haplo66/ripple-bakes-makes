@@ -4,8 +4,6 @@ import { sitePath } from './paths';
 
 const buildImageUrl = (path: string): string => sitePath(`images/${path}`);
 
-const productImageFolder = (id: string): string => `products/${id}`;
-
 const primaryFromImages = (images: string[], folder?: string): string | null => {
   if (images.length === 0) return null;
   const path = folder ? `${folder}/${images[0]}` : images[0];
@@ -21,10 +19,10 @@ const allFromImages = (images: string[], folder?: string): string[] => {
 };
 
 export const getProductImages = (product: Product): string[] =>
-  allFromImages(product.images, productImageFolder(product.id));
+  allFromImages(product.images, product.imageFolder);
 
 export const getProductPrimaryImage = (product: Product): string | null =>
-  primaryFromImages(product.images, productImageFolder(product.id));
+  primaryFromImages(product.images, product.imageFolder);
 
 export const getCollectionImages = (collection: Collection): string[] =>
   allFromImages(collection.images || [], collection.imageFolder);

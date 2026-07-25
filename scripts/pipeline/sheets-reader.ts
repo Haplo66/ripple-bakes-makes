@@ -22,6 +22,8 @@ const HEADER_MAP: Record<DatasetName, Record<string, string>> = {
     'Form ID': 'formId',
     'Image Folder': 'imageFolder',
     'Price': 'price',
+    'Featured': 'featured',
+    'Homepage Featured': 'homepageFeatured',
   },
   forms: {
     'Form ID': 'id',
