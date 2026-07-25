@@ -7,7 +7,8 @@
     "preview": "astro preview",
     "import:data": "node --env-file=.env --experimental-strip-types scripts/pipeline/import-data.ts",
     "import:assets": "node --env-file=.env --experimental-strip-types scripts/pipeline/drive-product-image-importer.ts",
-    "drive:fix-extensions": "node --env-file=.env --experimental-strip-types scripts/pipeline/drive-fix-image-extensions.ts"
+    "drive:fix-extensions": "node --env-file=.env --experimental-strip-types scripts/pipeline/drive-fix-image-extensions.ts",
+    "update": "node --env-file=.env --experimental-strip-types scripts/pipeline/update-site.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.9",
