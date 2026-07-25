@@ -6,27 +6,28 @@ RIPPLE Bakes & Makes is an Astro static website deployed on GitHub Pages.
 
 Purpose:
 
-* Beautiful handmade product catalog
-* Simple business maintenance workflow
-* Future-ready inquiry/order workflow
+- Beautiful handmade product catalog
+- Simple business maintenance workflow
+- Future-ready inquiry and order workflow
 
 Business areas:
 
-* Bakery
-* Sewing
+- Bakery
+- Sewing
 
 Stack:
 
-* Astro 6.4.8
-* TypeScript
-* GitHub Pages
-* Google Sheets content source
-* Static site generation
+- Astro 6.4.8
+- TypeScript
+- GitHub Pages
+- Google Sheets
+- Google Drive
+- Static site generation
 
 Repository:
 
-* Branch: `master`
-* Base path: `/ripple-bakes-makes`
+- Branch: `master`
+- Base path: `/ripple-bakes-makes`
 
 ---
 
@@ -34,69 +35,27 @@ Repository:
 
 Keep:
 
-* Static Astro architecture
-* Google Sheets as business content source
-* TypeScript transformation pipeline
-* Simple maintenance workflow
-* Free solutions
+- Static Astro architecture
+- Simple business maintenance workflow
+- Free solutions
+- Clear separation of data and presentation
+- Single source of truth for every type of content
 
 Avoid:
 
-* Unnecessary backend complexity
-* Duplicate data systems
-* Manual technical maintenance
+- Unnecessary backend complexity
+- Duplicate data systems
+- Manual technical maintenance
 
----
-
-# AI Workflow
-
-Use ChatGPT for:
-
-* Architecture
-* Planning
-* Reviews
-* Implementation prompts
-
-Use DeepSeek/Codex tools for:
-
-* Implementation
-* Refactoring
-* Testing
-
-Implementation prompts:
-
-* Single markdown block
-* Clear scope
-* Minimal unnecessary planning
-
-Preferred implementation:
-
-* DeepSeek V4 Flash Free
-* High Thinking
-* Build mode
-
----
-
-# Current Architecture
-
-## Data Flow
+Core principle:
 
 ```
-Google Sheets
+Business Data
+      +
+Business Assets
       |
       v
-Import Pipeline
-      |
-      v
-Generated Data
-      |
-      +-- Products
-      +-- Collections
-      +-- Product Options
-      +-- Forms
-      |
-      v
-Astro Components
+RIPPLE Content Pipeline
       |
       v
 Static Website
@@ -104,9 +63,104 @@ Static Website
 
 ---
 
+# RIPPLE Architecture
+
+RIPPLE uses Google Workspace as the business content backend.
+
+## Google Sheets — Business Database
+
+Contains structured business data:
+
+- Products
+- Collections
+- Product Options
+- Forms
+- Future Orders
+- Future Inventory
+
+---
+
+## Google Drive — Asset Database
+
+Contains business assets:
+
+```
+RIPPLE/
+
+├── Assets/
+│
+├── Orders/
+│
+├── Inventory/
+│
+└── Documents/
+```
+
+Assets include:
+
+- Product images
+- Collection images
+- Homepage images
+- Business area images
+- Logo and branding
+- Marketing materials
+
+---
+
+# RIPPLE Content Pipeline
+
+The Content Pipeline connects business data and website generation.
+
+Architecture:
+
+```
+Google Sheets
+      |
+      |
+      +----------------+
+                       |
+                       v
+
+              RIPPLE Content Pipeline
+
+                       ^
+                       |
+                       |
+
+Google Drive
+      |
+      |
+      +----------------+
+
+                       |
+                       v
+
+             Generated Website Data
+
+                       |
+                       v
+
+              Astro Static Website
+
+                       |
+                       v
+
+              GitHub Pages
+```
+
+Responsibilities:
+
+- Import business data
+- Sync assets
+- Validate content
+- Generate website data
+- Prepare static deployment
+
+---
+
 # Completed Milestones
 
-## v1.5 — Google Sheets Pipeline
+## v1.0 — Foundation
 
 Status:
 
@@ -114,14 +168,14 @@ Status:
 
 Implemented:
 
-* Google Sheets integration
-* Import pipeline
-* CSV fallback
-* Data normalization
+- Astro static website
+- GitHub Pages deployment
+- Bakery and Sewing structure
+- Initial website architecture
 
 ---
 
-## v1.6 — RIPPLE Rebranding
+## v1.5 — Content Data Pipeline
 
 Status:
 
@@ -129,25 +183,14 @@ Status:
 
 Implemented:
 
-* Honeycomb → RIPPLE rebrand
-* Logo system
-* Header/footer branding
-* Favicon updates
-
-Logo structure:
-
-```
-public/
-└── images/
-    └── logo/
-        ├── ripple-logo-transparent.png
-        ├── ripple-logo.png
-        └── ripple-symbol.png
-```
+- Google Sheets integration
+- Import pipeline
+- Data normalization
+- Dynamic content generation
 
 ---
 
-## v1.7 — Product Options Integration
+## v1.6 — RIPPLE Branding
 
 Status:
 
@@ -155,14 +198,14 @@ Status:
 
 Implemented:
 
-* Product option data source
-* Import support
-* Validation
-* Product option lookup
+- Brand migration
+- Logo system
+- Favicon system
+- Header and footer branding
 
 ---
 
-## v1.8 — Dynamic Customization Forms
+## v1.7 — Product Configuration
 
 Status:
 
@@ -170,31 +213,13 @@ Status:
 
 Implemented:
 
-* Dynamic product forms
-* Required fields
-* Display ordering
-* Help text
-
-Flow:
-
-```
-Product Options
-        |
-        v
-Form Renderer
-```
+- Product option system
+- Dynamic customization support
+- Form data integration
 
 ---
 
-# v1.9 — Product Experience Improvements
-
-Goal:
-
-Create a polished handmade boutique catalog experience.
-
----
-
-## v1.9.0 — Product Image Architecture
+## v1.9 — Product Experience
 
 Status:
 
@@ -202,167 +227,19 @@ Status:
 
 Implemented:
 
-* Automatic image discovery
-* Product image folders
-* Image fallback handling
-
-Structure:
-
-```
-public/
-└── images/
-    └── products/
-        └── {productId}/
-            ├── 01.jpg
-            ├── 02.jpg
-            └── 03.jpg
-```
-
-Image priority:
-
-```
-Product Image
-      |
-Collection Image
-      |
-Business Area Image
-      |
-Fallback
-```
+- Product image architecture
+- Product galleries
+- Product detail pages
+- Collection presentation
+- Homepage storefront experience
+- Featured products
+- Inquiry-based customer flow
 
 ---
 
-## v1.9.1 — Product Gallery
+# Current Development
 
-Status:
-
-✅ Completed
-
-Implemented:
-
-* Product image gallery
-* Thumbnail navigation
-* Responsive layout
-* Multiple images per product
-
-Current behavior:
-
-* Default gallery support up to 12 images
-* Flagship products can showcase larger collections
-
----
-
-## v1.9.1.1 — Product Page Polish
-
-Status:
-
-✅ Completed
-
-Implemented:
-
-* Balanced product layout
-* Improved spacing
-* Better typography
-* Boutique presentation style
-
----
-
-## v1.9.2 — Catalog Experience Improvements
-
-Status:
-
-✅ Completed
-
-Implemented:
-
-* Fixed bakery/sewing discovery flow
-* Featured products
-* Related products
-* Improved breadcrumbs
-* Improved descriptions
-* Improved product cards
-
-Architecture:
-
-* Existing Product model reused
-* No unnecessary components
-* Static architecture preserved
-
----
-
-## v1.9.3 — Collection Presentation Improvements
-
-Status:
-
-✅ Completed
-
-Implemented:
-
-* "Ask About This Collection" inquiry CTA
-* Better collection descriptions
-* Collection subtitles
-* Popular ideas
-* Customization notes
-* Removed empty sections
-* Improved collection presentation
-
-Architecture:
-
-* Existing Collection model reused
-
----
-
-## v1.9.4 — Homepage Brand Experience
-
-Status:
-
-✅ Completed
-
-Goal:
-
-Make the homepage feel like a boutique storefront.
-
-Implemented:
-
-* Large RIPPLE logo hero presentation
-* Hero product image
-* Featured creations section
-* Data-driven homepage products
-* Improved CTA wording
-* Removed placeholder messaging
-* Preserved cart navigation
-
-Homepage structure:
-
-```
-Hero Brand Area
-
-        |
-        v
-
-Featured Creations
-
-        |
-        v
-
-Fresh from Kitchen & Studio
-
-        |
-        v
-
-Services + Brand Story
-```
-
-Additional improvements:
-
-* Added `homepageFeatured` product selection
-* Homepage products are data-driven
-* Improved handmade typography
-* Added home hero image structure
-
----
-
-# v1.9.5 — Content & Asset Refinement
+# v1.10 — RIPPLE Content Pipeline
 
 Status:
 
@@ -370,134 +247,131 @@ Status:
 
 Goal:
 
-Improve photography, branding, and content quality.
-
-## Hero Images
-
-Structure:
-
-```
-public/
-└── images/
-    └── home/
-        └── hero/
-            ├── hero-01.jpg
-            ├── hero-02.jpg
-            └── hero-03.jpg
-```
-
-Purpose:
-
-Support future seasonal or rotating hero images.
+Create a complete business-managed content workflow using Google Sheets and Google Drive.
 
 ---
 
-## Gallery Images
+## v1.10.1 — Google Drive Asset Structure
 
-Structure:
+Status:
 
-```
-public/
-└── images/
-    └── gallery/
-        ├── morning-loaves.jpg
-        ├── stitched-care.jpg
-        ├── autumn-tables.jpg
-        ├── little-sweetness.jpg
-        └── everyday-heirlooms.jpg
-```
+⏳ Planned
 
-Behavior:
+Goal:
+
+Move all website assets into Google Drive.
+
+Asset structure:
 
 ```
-Image exists
-      |
-      v
-Display photo
+Assets/
 
-No image
-      |
-      v
-Display fallback design
+├── Product Images/
+│   ├── Bakery/
+│   └── Sewing/
+│
+├── Collection Images/
+│
+├── Homepage Images/
+│   ├── Hero/
+│   ├── Featured/
+│   └── Gallery/
+│
+├── Business Area Images/
+│   ├── Bakery/
+│   └── Sewing/
+│
+├── Shared/
+│
+├── Logo and Symbol/
+│
+├── Favicon/
+│
+└── Marketing/
 ```
-
-Remaining:
-
-* Add real gallery photography
-* Improve homepage visuals
-* Continue brand refinement
 
 ---
 
-# v1.9 Completion Criteria
+## v1.10.2 — Asset Import Pipeline
 
-Completed:
+Status:
 
-✅ Product image system
-✅ Product galleries
-✅ Product detail experience
-✅ Collection catalog experience
-✅ Homepage storefront experience
-✅ Data-driven featured products
-✅ Inquiry-based customer flow
+⏳ Planned
+
+Goal:
+
+Extend the existing content pipeline to import Google Drive assets.
+
+Capabilities:
+
+- Product image synchronization
+- Collection image synchronization
+- Homepage asset synchronization
+- Branding asset synchronization
+- Asset validation
 
 ---
+
+## v1.10.3 — Content Validation
+
+Status:
+
+⏳ Planned
+
+Goal:
+
+Improve reliability before deployment.
+
+Validation:
+
+- Missing images
+- Missing product assets
+- Invalid folders
+- Missing required content
+- Duplicate assets
+
+---
+
+# Future Development
 
 # v2.0 — Inquiry & Ordering Workflow
 
 Status:
 
-Future
+⏳ Future
 
 Goal:
 
 Create a simple customer inquiry and order management workflow.
 
-Principle:
-
-Keep catalog data separate from transaction data.
-
-## Catalog Data
-
-Managed through Google Sheets.
-
-Contains:
-
-* Products
-* Collections
-* Product Options
-* Forms
-
-## Inquiry / Orders Data
-
-Separate workflow.
-
-Contains:
-
-* Customer inquiries
-* Orders
-* Order items
-* Status tracking
-
-Example:
+Data separation:
 
 ```
+Catalog Data
+
+Google Sheets
+    |
+    |
+Products
+Collections
+Options
+
+
+Transaction Data
+
+Google Sheets
+    |
+    |
 Orders
-
-Order ID
-Customer
-Status
-Date
-
-
 Order Items
-
-Order ID
-Product ID
-Quantity
-Customization
-Price
+Status Tracking
 ```
+
+Possible additions:
+
+- Email notifications
+- Customer communication workflow
+- Order status management
 
 ---
 
@@ -505,39 +379,60 @@ Price
 
 Possible improvements:
 
-* Inventory tracking
-* Availability management
-* Customer history
-* Analytics
-* Business workflow tools
+- Inventory tracking
+- Availability management
+- Customer history
+- Analytics
+- Business workflow tools
 
 Only add complexity when business needs require it.
 
 ---
 
-# Current Status Summary
+# Permanent Project Rules
 
-Completed:
+## Single Source of Truth
+
+| Content | Source |
+|---|---|
+| Product information | Google Sheets |
+| Collection information | Google Sheets |
+| Product options | Google Sheets |
+| Forms | Google Sheets |
+| Product images | Google Drive |
+| Collection images | Google Drive |
+| Homepage images | Google Drive |
+| Logos | Google Drive |
+| Favicons | Google Drive |
+| Marketing assets | Google Drive |
+| Orders | Google Sheets (future) |
+| Inventory | Google Sheets (future) |
+
+---
+
+## Editing Rules
+
+Never manually edit generated website content.
+
+Flow:
 
 ```
-v1.9.0   Product Image Architecture        ✅
-v1.9.1   Product Gallery                   ✅
-v1.9.1.1 Product Page Polish               ✅
-v1.9.2   Catalog Experience                 ✅
-v1.9.3   Collection Experience              ✅
-v1.9.4   Homepage Brand Experience          ✅
-```
+Google Workspace
 
-Current:
+        |
+        v
 
-```
-v1.9.5   Content & Asset Refinement         🚧
-```
+RIPPLE Content Pipeline
 
-Future:
+        |
+        v
 
-```
-v2.0     Inquiry / Ordering Workflow        ⏳
+Generated Website
+
+        |
+        v
+
+GitHub Pages
 ```
 
 ---
@@ -547,15 +442,32 @@ v2.0     Inquiry / Ordering Workflow        ⏳
 ```
 Google Sheets
       |
-      v
-Products + Collections + Options + Forms
       |
-      v
-Dynamic Astro Website
+Business Data
       |
-      v
-Product Discovery + Customization
       |
-      v
-Future Inquiry / Ordering Workflow
+      +----------------+
+                       |
+                       v
+
+              RIPPLE Content Pipeline
+
+                       ^
+                       |
+                       |
+
+Google Drive
+      |
+      |
+Business Assets
+
+                       |
+                       v
+
+             Astro Static Website
+
+                       |
+                       v
+
+              GitHub Pages
 ```
