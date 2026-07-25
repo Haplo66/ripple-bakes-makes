@@ -1,33 +1,11 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-25T15:54:34.544Z",
+    "generatedAt": "2026-07-25T16:37:26.485Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
   "data": [
-    {
-      "id": "BK-FB-001--size",
-      "productId": "BK-FB-001",
-      "optionName": "Size",
-      "optionType": "Dropdown",
-      "values": [],
-      "required": false,
-      "displayOrder": 0,
-      "placeholder": null,
-      "helpText": null
-    },
-    {
-      "id": "BK-FB-002--topping",
-      "productId": "BK-FB-002",
-      "optionName": "Topping",
-      "optionType": "Dropdown",
-      "values": [],
-      "required": false,
-      "displayOrder": 0,
-      "placeholder": null,
-      "helpText": null
-    },
     {
       "id": "BK-FP-001--filling",
       "productId": "BK-FP-001",
@@ -95,9 +73,9 @@
       "helpText": null
     },
     {
-      "id": "SW-BE-001--size",
-      "productId": "SW-BE-001",
-      "optionName": "Size",
+      "id": "SW-BC-001--color",
+      "productId": "SW-BC-001",
+      "optionName": "Color",
       "optionType": "Dropdown",
       "values": [],
       "required": false,
@@ -153,28 +131,6 @@
       "id": "SW-CS-001--theme",
       "productId": "SW-CS-001",
       "optionName": "Theme",
-      "optionType": "Dropdown",
-      "values": [],
-      "required": false,
-      "displayOrder": 0,
-      "placeholder": null,
-      "helpText": null
-    },
-    {
-      "id": "SW-RP-001--fabric",
-      "productId": "SW-RP-001",
-      "optionName": "Fabric",
-      "optionType": "Dropdown",
-      "values": [],
-      "required": false,
-      "displayOrder": 0,
-      "placeholder": null,
-      "helpText": null
-    },
-    {
-      "id": "SW-RP-001--size",
-      "productId": "SW-RP-001",
-      "optionName": "Size",
       "optionType": "Dropdown",
       "values": [],
       "required": false,
