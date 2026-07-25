@@ -59,6 +59,9 @@ export interface Product {
   /** All product image paths. */
   images: string[];
 
+  /** Resolved image folder (product-specific, collection-level, or business-area). */
+  imageFolder: string;
+
   /** Placeholder styling when image is unavailable. */
   imageTone?: CollectionImageTone;
 

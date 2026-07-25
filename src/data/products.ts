@@ -19,6 +19,7 @@ interface ProductRecord {
   image: string | null;
   primaryImage: string;
   images: string[];
+  imageFolder: string;
   imageTone?: string;
   active: boolean;
   displayOrder: number;
@@ -61,6 +62,7 @@ const toProduct = (record: ProductRecord): Product => {
     image: record.image || images[0] || null,
     primaryImage: record.primaryImage || '',
     images,
+    imageFolder: record.imageFolder || '',
     imageTone: (record.imageTone || 'cream') as CollectionImageTone,
     status: statusMap[record.status] || 'available',
     active: record.active ?? true,
