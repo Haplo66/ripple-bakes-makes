@@ -131,6 +131,36 @@ Why it mattered: Previously the owner had to run multiple technical commands in 
 
 ---
 
+### v1.12 — Ordering Workflow ✅
+
+**Goal:** Add a complete customer ordering workflow while keeping Google Workspace as the business operation center.
+
+Major capabilities added:
+- Customer cart and checkout workflow connected to real order submission
+- Google Apps Script order endpoint
+- Orders stored in Google Sheets
+- Separate Order Items sheet supporting multiple products per order
+- Email notifications for new orders
+- Order status management through Google Sheets
+- Retry handling and cart preservation on submission failure
+- Mock submission provider retained for development
+
+**Google Workspace integration:**
+- Orders workflow integrated with the existing Google Drive organization
+- Owner manages orders through Google Sheets
+- Website sends orders to Google Workspace
+- No website database or backend server required
+
+**Architecture decisions:**
+- Order flow: Website → Google Apps Script → Google Sheets
+- Existing content pipeline remains unchanged: Google Sheets → Astro Content Pipeline
+- Orders are operational data and are intentionally not imported back into Astro
+- Product/catalog management and order management remain separate systems
+
+Why it mattered: Browse → Customize → Add to Cart → Checkout → Owner Notification → Order Management. RIPPLE now supports the complete customer ordering journey while allowing the owner to operate through Google Workspace without touching code.
+
+---
+
 ## Current Architecture
 
 ### Data Flow
@@ -270,11 +300,25 @@ Includes:
 - Single `npm run update` command
 - Business workflow documentation for the owner
 
+### v1.12 — Ordering Workflow ✅
+
+Includes:
+- Customer cart and checkout connected to real order submission
+- Google Apps Script Web App endpoint
+- Orders stored in Google Sheets with status tracking
+- Order Items sheet supporting multiple products per order
+- Email notifications with full customization details
+- Async submission with loading state and error handling
+- Cart preserved on failure, cleared only on success
+- Retry support for failed submissions
+- Mock provider retained for development
+- Complete order workflow documentation
+
 ---
 
 ## Current Status
 
-**Version: v1.10.6**
+**Version: v1.12**
 
 ### What Works Today
 
@@ -283,6 +327,13 @@ Includes:
 - Google Drive manages all business assets: product images, collection images, business area images, homepage images, logo, and favicon
 - `npm run update` synchronises both sources and rebuilds the website in a single command
 - Data quality warnings catch missing fields before they reach production
+
+**Ordering Workflow**
+- Customers can browse, customize, add to cart, and submit orders
+- Orders are sent to Google Apps Script which writes to Google Sheets
+- Owner receives email notification for every new order
+- Order status managed directly in Google Sheets (Received → Confirmed → Preparing → Ready → Completed)
+- Product customizations preserved in the Order Items sheet
 
 **Image System**
 - Product-level images imported from Drive and linked by Product ID
@@ -299,14 +350,22 @@ Includes:
 **Website**
 - 17 products across Bakery and Sewing managed through Google Sheets
 - 13 collections with dynamic pages for each
+- Cart and checkout pages with real order submission
 - Static Astro site deployed on GitHub Pages
 
 ### Owner Workflow
 
+**Product and Content Management**
 1. Add or update products in Google Sheets
 2. Add or change images in Google Drive
 3. Run `npm run update`
 4. Website is updated with latest data and assets
+
+**Order Management**
+1. Receive email notification for new orders
+2. View order details and customizations in Google Sheets
+3. Update order status as it progresses
+4. Communicate with customer to arrange pickup
 
 ### Known Small Improvements
 
@@ -317,49 +376,47 @@ Includes:
 
 ## Next Milestones
 
-### v1.11 — Business Readiness
+### v1.13 — Business Readiness
 
-The current pipeline works technically. This milestone makes it work for the owner.
+The technical foundation is complete. This milestone focuses on validating and simplifying the real owner workflow.
 
-- Finalise owner workflow documentation and troubleshooting guide
-- Improve `npm run update` output for non-technical users
-- Test complete owner workflows:
-  - Add a new product (Sheet entry + Drive images)
-  - Add a new collection
-  - Upload images for existing products
-  - Update the website
-- Review remaining validation warnings and remove development assumptions
-- Improve error messages for common owner mistakes
-- Add pre-flight checks that catch setup issues early
+Goals:
 
-### v1.12 — Ordering Workflow
+- Review the complete workflow with the owner
+- Confirm Google Sheets usability
+- Confirm Google Drive folder structure
+- Create owner documentation
+- Test real business scenarios:
+  - Add a product
+  - Update pricing
+  - Upload images
+  - Receive an order
+  - Update order status
+- Improve validation messages for non-technical users
 
-RIPPLE currently supports enquiries but not direct ordering. This milestone introduces order management.
 
-- Design and implement Orders sheet schema
-- Support multiple products per order
-- Order status tracking (received, in progress, completed, delivered)
-- Email notification for new orders
-- Owner order management workflow
+### v1.14 — Customer Experience
 
-### v1.13 — Customer Experience
+Customer-facing improvements.
 
-Polishes the customer-facing side of the website.
+Possible improvements:
 
-- Improve product browsing and filtering
-- Enhance collection presentation
+- Improve product browsing
+- Improve collection presentation
+- Mobile UX refinements
+- Better inquiry/order experience
 - Gallery improvements
-- Better ordering UX and checkout flow
-- Mobile experience refinements
+
 
 ### Future — Business Operations
 
-Long-term capabilities that will be added as the business grows.
+Long-term operational tools:
 
-- Inventory tracking and stock availability indicators
-- Customer history and order history
-- Basic analytics (popular products, order trends)
-- Business workflow tools (reporting dashboards)
+- Inventory tracking
+- Order reporting
+- Customer history
+- Sales analytics
+- Business dashboards
 
 ---
 

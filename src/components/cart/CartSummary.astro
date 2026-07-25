@@ -1,3 +1,7 @@
+---
+import { sitePath } from '../../utils/paths';
+---
+
 <aside class="cart-summary" data-cart-summary>
   <span class="eyebrow">Summary</span>
   <p>
@@ -5,9 +9,9 @@
     <span data-cart-total-label>items</span>
   </p>
 
-  <button class="button button--honey" type="button" disabled>
-    Checkout coming soon
-  </button>
+  <a class="button button--honey" href={sitePath('checkout')}>
+    Checkout
+  </a>
 
   <button class="cart-summary__clear" type="button" data-cart-clear>
     Clear cart

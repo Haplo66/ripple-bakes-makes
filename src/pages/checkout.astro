@@ -64,7 +64,12 @@ import { sitePath } from '../utils/paths';
           <p class="checkout-message" data-checkout-error hidden></p>
 
           <button class="button button--honey checkout-submit" type="submit">
-            Prepare order
+            <span data-submit-text>Prepare order</span>
+            <span data-submit-loading hidden>Submitting...</span>
+          </button>
+
+          <button class="checkout-retry" type="button" data-checkout-retry hidden>
+            Try again
           </button>
         </div>
       </form>
@@ -116,7 +121,7 @@ import { sitePath } from '../utils/paths';
 </MainLayout>
 
 <script>
-  import { getCart } from '../utils/cart';
+  import { clearCart, getCart } from '../utils/cart';
   import { formatLabel, formatValue } from '../utils/format';
   import { createOrderFromCart } from '../utils/order';
   import { submitOrder } from '../utils/submission';
@@ -133,6 +138,10 @@ import { sitePath } from '../utils/paths';
   const resultTitle = document.querySelector('[data-checkout-result-title]');
   const resultMessage = document.querySelector('[data-checkout-result-message]');
   const resultReference = document.querySelector('[data-checkout-result-reference]');
+  const submitButton = document.querySelector('.checkout-submit');
+  const submitText = document.querySelector('[data-submit-text]');
+  const submitLoading = document.querySelector('[data-submit-loading]');
+  const retryButton = document.querySelector('[data-checkout-retry]');
 
   const getFieldValue = (formData, fieldName) =>
     String(formData.get(fieldName) || '').trim();
@@ -144,12 +153,20 @@ import { sitePath } from '../utils/paths';
     }
 
     if (confirmation) confirmation.hidden = true;
-    if (resultTitle) resultTitle.textContent = 'Order prepared successfully';
+    if (resultTitle) resultTitle.textContent = 'Order placed';
     if (resultMessage) resultMessage.textContent = '';
     if (resultReference) {
       resultReference.textContent = '';
       resultReference.hidden = true;
     }
+    if (retryButton) retryButton.hidden = true;
+  };
+
+  const setSubmitting = (submitting) => {
+    if (!submitButton || !submitText || !submitLoading) return;
+    submitButton.disabled = submitting;
+    submitText.hidden = submitting;
+    submitLoading.hidden = !submitting;
   };
 
   const renderCheckout = () => {
@@ -164,6 +181,7 @@ import { sitePath } from '../utils/paths';
     emptyState.hidden = hasItems;
     summaryList.textContent = '';
     clearSubmitFeedback();
+    setSubmitting(false);
 
     if (totalCount) totalCount.textContent = String(count);
     if (totalLabel) totalLabel.textContent = count === 1 ? 'item' : 'items';
@@ -194,11 +212,12 @@ import { sitePath } from '../utils/paths';
     });
   };
 
-  checkoutForm?.addEventListener('submit', (event) => {
-    event.preventDefault();
+  const doSubmit = async () => {
     clearSubmitFeedback();
 
-    const form = event.currentTarget;
+    if (!checkoutForm) return;
+
+    const form = checkoutForm;
 
     if (!form.checkValidity()) {
       form.reportValidity();
@@ -224,27 +243,53 @@ import { sitePath } from '../utils/paths';
       additionalNotes: getFieldValue(formData, 'additionalNotes'),
     };
 
-    const result = submitOrder(order);
+    setSubmitting(true);
 
-    if (result.success) {
-      if (confirmation) confirmation.hidden = false;
-      if (resultTitle) resultTitle.textContent = 'Order prepared successfully';
-      if (resultMessage) {
-        resultMessage.textContent =
-          result.message || 'Your order is ready for the future submission step.';
-      }
-      if (resultReference && result.externalReferenceId) {
-        resultReference.textContent = `Reference: ${result.externalReferenceId}`;
-        resultReference.hidden = false;
-      }
-      return;
-    }
+    try {
+      const result = await submitOrder(order);
 
-    if (checkoutError) {
-      checkoutError.textContent =
-        result.error || 'We could not prepare this order yet. Please review your details.';
-      checkoutError.hidden = false;
+      if (result.success) {
+        clearCart();
+        renderCheckout();
+
+        if (confirmation) confirmation.hidden = false;
+        if (resultTitle) resultTitle.textContent = 'Order placed';
+        if (resultMessage) {
+          resultMessage.textContent =
+            result.message || 'We have received your order and will be in touch soon.';
+        }
+        if (resultReference && result.externalReferenceId) {
+          resultReference.textContent = `Order reference: ${result.externalReferenceId}`;
+          resultReference.hidden = false;
+        }
+        return;
+      }
+
+      if (checkoutError) {
+        checkoutError.textContent =
+          result.error || 'We could not submit your order. Please try again.';
+        checkoutError.hidden = false;
+      }
+      if (retryButton) retryButton.hidden = false;
+    } catch {
+      if (checkoutError) {
+        checkoutError.textContent =
+          'An unexpected error occurred. Your cart has been preserved. Please try again.';
+        checkoutError.hidden = false;
+      }
+      if (retryButton) retryButton.hidden = false;
+    } finally {
+      setSubmitting(false);
     }
+  };
+
+  checkoutForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    doSubmit();
+  });
+
+  retryButton?.addEventListener('click', () => {
+    doSubmit();
   });
 
   window.addEventListener('ripple-cart:updated', renderCheckout);
@@ -264,7 +309,9 @@ import { sitePath } from '../utils/paths';
   .checkout-fields textarea{resize:vertical}
   .checkout-fields__wide{grid-column:1/-1}
   .checkout-submit{margin-top:1.4rem}
+  .checkout-submit:disabled{cursor:not-allowed;opacity:.7;transform:none}
   .checkout-message{border-left:2px solid var(--honey);color:var(--muted);font-size:.9rem;margin:1rem 0 0;padding-left:.75rem}
+  .checkout-retry{background:transparent;border:0;color:var(--sage);cursor:pointer;display:block;font-size:.82rem;font-weight:600;margin:.55rem 0 0;padding:.25rem;text-decoration:underline;text-underline-offset:.25rem}
   .order-summary{padding:1.5rem;position:sticky;top:1.5rem}
   .order-summary__heading{border-bottom:1px solid var(--line);margin-bottom:1.2rem;padding-bottom:1rem}
   .order-summary__heading p{font-family:'Playfair Display',Georgia,serif;font-size:1.75rem;font-weight:500;letter-spacing:-.035em;margin:.85rem 0 0}
