@@ -18,12 +18,12 @@ interface DriveItem {
 
 interface AssetSection {
   label: string;
-  type: 'product-images' | 'homepage-images' | 'business-area-images' | 'flat-files';
+  type: 'product-images' | 'homepage-images' | 'business-area-images' | 'flat-files' | 'collection-images';
 }
 
 const SECTIONS: AssetSection[] = [
   { label: 'Product Images', type: 'product-images' },
-  { label: 'Collection Images', type: 'flat-files' },
+  { label: 'Collection Images', type: 'collection-images' },
   { label: 'Homepage Images', type: 'homepage-images' },
   { label: 'Business Area Images', type: 'business-area-images' },
   { label: 'Logo and Symbol', type: 'flat-files' },
@@ -282,6 +282,26 @@ async function processFlatSection(
   return { checked, renamed, skipped, errors };
 }
 
+async function processCollectionImages(
+  drive: drive_v3.Drive,
+  sectionId: string,
+  dryRun: boolean,
+): Promise<{ checked: number; renamed: number; skipped: number; errors: number }> {
+  const subfolders = await listAll(drive, sectionId);
+  let total = { checked: 0, renamed: 0, skipped: 0, errors: 0 };
+
+  for (const sub of subfolders) {
+    if (sub.mimeType !== DRIVE_FOLDER_MIME) continue;
+    const result = await processFlatSection(drive, sub.id, `Collections/${sub.name}/`, dryRun);
+    total.checked += result.checked;
+    total.renamed += result.renamed;
+    total.skipped += result.skipped;
+    total.errors += result.errors;
+  }
+
+  return total;
+}
+
 async function processHomepageImages(
   drive: drive_v3.Drive,
   sectionId: string,
@@ -381,6 +401,9 @@ async function run(): Promise<void> {
     switch (section.type) {
       case 'product-images':
         result = await processProductImages(drive, sectionId, targetProduct, dryRun);
+        break;
+      case 'collection-images':
+        result = await processCollectionImages(drive, sectionId, dryRun);
         break;
       case 'homepage-images':
         result = await processHomepageImages(drive, sectionId, dryRun);

@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-25T16:37:26.076Z",
+    "generatedAt": "2026-07-25T19:46:30.947Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -37,7 +37,7 @@
       "shortDescription": "",
       "status": "Active",
       "featured": false,
-      "homepageFeatured": true,
+      "homepageFeatured": false,
       "formId": "bakery-bread",
       "image": "01.jpg",
       "images": [

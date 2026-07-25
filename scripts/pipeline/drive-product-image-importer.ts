@@ -27,12 +27,12 @@ interface ProductImageFolder {
 
 interface AssetSection {
   label: string;
-  type: 'product-images' | 'homepage-images' | 'business-area-images' | 'flat-files' | 'favicon';
+  type: 'product-images' | 'homepage-images' | 'business-area-images' | 'flat-files' | 'favicon' | 'collection-images';
 }
 
 const SECTIONS: AssetSection[] = [
   { label: 'Product Images', type: 'product-images' },
-  { label: 'Collection Images', type: 'flat-files' },
+  { label: 'Collection Images', type: 'collection-images' },
   { label: 'Homepage Images', type: 'homepage-images' },
   { label: 'Business Area Images', type: 'business-area-images' },
   { label: 'Logo and Symbol', type: 'flat-files' },
@@ -321,6 +321,28 @@ async function importFlatSection(
   return { items: images.length, downloaded, replaced, skipped, failed };
 }
 
+async function importCollectionImages(
+  drive: drive_v3.Drive,
+  sectionId: string,
+  dryRun: boolean,
+): Promise<{ items: number; downloaded: number; replaced: number; skipped: number; failed: number }> {
+  const subfolders = await listAll(drive, sectionId);
+  let total = { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0 };
+
+  for (const sub of subfolders) {
+    if (sub.mimeType !== DRIVE_FOLDER_MIME) continue;
+    const targetDir = `collections/${sub.name}`;
+    const result = await importFlatSection(drive, sub.id, targetDir, `Collections/${sub.name}`, dryRun);
+    total.items += result.items;
+    total.downloaded += result.downloaded;
+    total.replaced += result.replaced;
+    total.skipped += result.skipped;
+    total.failed += result.failed;
+  }
+
+  return total;
+}
+
 async function importHomepageImages(
   drive: drive_v3.Drive,
   sectionId: string,
@@ -488,6 +510,9 @@ async function run(): Promise<void> {
         break;
       case 'homepage-images':
         result = await importHomepageImages(drive, sectionId, dryRun);
+        break;
+      case 'collection-images':
+        result = await importCollectionImages(drive, sectionId, dryRun);
         break;
       case 'business-area-images':
         result = await importBusinessAreaImages(drive, sectionId, dryRun);
