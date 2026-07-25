@@ -202,6 +202,7 @@ Google Sheets                     Google Drive
 - **Read-only by default.** The asset importer uses read-only Drive credentials. Write access is isolated to the extension-repair utility with its own credentials.
 - **No hardcoded business catalog content.** Products, collections, and operational content come from Google Workspace. Only technical defaults and presentation assets remain in code.
 - **Images are a filesystem contract.** The pipeline writes to `public/images/` and the existing Astro image system reads from there. Astro does not know images came from Drive.
+- **Two independent featured flags.** `homepageFeatured` controls which products appear on the homepage. `featured` controls which products are highlighted within collections and business area pages.
 
 ---
 
@@ -277,13 +278,28 @@ Includes:
 
 ### What Works Today
 
-- The owner manages all products, collections, and forms in Google Sheets
-- The owner manages all images and branding in Google Drive
-- Running `npm run update` synchronises everything and rebuilds the website
-- The website is a fast, static Astro site deployed on GitHub Pages
-- 17 products across Bakery and Sewing managed through Google Sheets. Product images are synchronized from Google Drive where available.
-- Missing images gracefully fall back through a hierarchy to a default placeholder
+**Content Pipeline**
+- Google Sheets manages all structured business data: products, collections, forms, and product options
+- Google Drive manages all business assets: product images, collection images, business area images, homepage images, logo, and favicon
+- `npm run update` synchronises both sources and rebuilds the website in a single command
 - Data quality warnings catch missing fields before they reach production
+
+**Image System**
+- Product-level images imported from Drive and linked by Product ID
+- Collection-level images imported from Drive, stored under `public/images/collections/`, connected to collection metadata, and displayed on collection pages
+- Business-area-level fallback images for products without collection images
+- Graceful fallback hierarchy: product → collection → business area → default placeholder
+- MD5 checksums prevent redundant downloads — unchanged files are skipped
+
+**Featured Logic**
+- `homepageFeatured` controls which products appear on the homepage
+- `featured` controls which products are highlighted within collections and business area pages
+- The two flags operate independently
+
+**Website**
+- 17 products across Bakery and Sewing managed through Google Sheets
+- 13 collections with dynamic pages for each
+- Static Astro site deployed on GitHub Pages
 
 ### Owner Workflow
 
@@ -295,7 +311,6 @@ Includes:
 ### Known Small Improvements
 
 - `formId` is currently required for all products, but not all products need an order form (e.g., standard bakery items). Should be made optional in a future update.
-- Two products (BK-FP-003, BK-SB-002) have Drive folders but no uploaded images yet — the pipeline handles this gracefully with default placeholders.
 - Validation reports during `npm run update` could be more actionable for non-technical users.
 
 ---
@@ -306,11 +321,16 @@ Includes:
 
 The current pipeline works technically. This milestone makes it work for the owner.
 
-- Finalise owner documentation and troubleshooting guide
-- Improve `npm run update` output to be clearer for non-technical users
-- Test the full workflow with real business scenarios
-- Remove remaining development assumptions (optional formId, default values)
-- Add pre-flight checks that catch common setup issues early
+- Finalise owner workflow documentation and troubleshooting guide
+- Improve `npm run update` output for non-technical users
+- Test complete owner workflows:
+  - Add a new product (Sheet entry + Drive images)
+  - Add a new collection
+  - Upload images for existing products
+  - Update the website
+- Review remaining validation warnings and remove development assumptions
+- Improve error messages for common owner mistakes
+- Add pre-flight checks that catch setup issues early
 
 ### v1.12 — Ordering Workflow
 

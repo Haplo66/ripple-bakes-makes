@@ -1,6 +1,6 @@
 import { IMPORT_FILES, OUTPUT_FILES, PIPELINE_NAME, PIPELINE_VERSION } from './constants.ts';
 import { sortById, writeGeneratedJson } from './generators.ts';
-import { resolveProductImages } from './image-resolver.ts';
+import { resolveCollectionImages, resolveProductImages } from './image-resolver.ts';
 import {
   logDatasetResult,
   logGenerated,
@@ -66,6 +66,23 @@ const run = async (): Promise<void> => {
     }),
   );
   logDatasetResult('products', products.length);
+
+  const slugToCode: Record<string, string> = {};
+  for (const record of normalizeProducts(productInput.records)) {
+    slugToCode[record.collection] = record.id.replace(/-\d+$/, '');
+  }
+
+  for (const collection of collections) {
+    const code = slugToCode[collection.id];
+    if (code) {
+      const resolved = resolveCollectionImages(code);
+      if (resolved.imageFolder) {
+        collection.imageFolder = resolved.imageFolder;
+        collection.images = resolved.images;
+        collection.heroImage = resolved.primaryImage || null;
+      }
+    }
+  }
 
   const formInput = await readValidRecords('forms');
   const forms = sortById(

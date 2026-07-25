@@ -71,3 +71,24 @@ export function resolveProductImages(
     imageFolder: '',
   };
 }
+
+export function resolveCollectionImages(
+  collectionCode: string,
+): { images: string[]; primaryImage: string; imageFolder: string } {
+  const collectionFolder = join(IMAGE_DIR, 'collections', collectionCode);
+  const result = scanImageFolder(collectionFolder);
+
+  if (result.found) {
+    return {
+      images: result.files,
+      primaryImage: result.files[0],
+      imageFolder: `collections/${collectionCode}`,
+    };
+  }
+
+  return {
+    images: [],
+    primaryImage: '',
+    imageFolder: '',
+  };
+}

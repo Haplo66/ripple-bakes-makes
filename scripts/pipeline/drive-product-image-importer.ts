@@ -366,29 +366,6 @@ async function importHomepageImages(
   return total;
 }
 
-async function importCollectionImages(
-  drive: drive_v3.Drive,
-  sectionId: string,
-  dryRun: boolean,
-): Promise<{ items: number; downloaded: number; replaced: number; skipped: number; failed: number }> {
-  const subfolders = await listAll(drive, sectionId);
-  const folders = subfolders.filter((s) => s.mimeType === DRIVE_FOLDER_MIME);
-  console.log(`  Collection Images: ${folders.length} subfolder(s)`);
-  let total = { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0 };
-
-  for (const sub of folders) {
-    const targetDir = `collections/${sub.name}`;
-    const result = await importFlatSection(drive, sub.id, targetDir, `Collection/${sub.name}`, dryRun);
-    total.items += result.items;
-    total.downloaded += result.downloaded;
-    total.replaced += result.replaced;
-    total.skipped += result.skipped;
-    total.failed += result.failed;
-  }
-
-  return total;
-}
-
 async function importBusinessAreaImages(
   drive: drive_v3.Drive,
   sectionId: string,

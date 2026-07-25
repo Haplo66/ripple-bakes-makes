@@ -323,27 +323,6 @@ async function processHomepageImages(
   return total;
 }
 
-async function processCollectionImages(
-  drive: drive_v3.Drive,
-  sectionId: string,
-  dryRun: boolean,
-): Promise<{ checked: number; renamed: number; skipped: number; errors: number }> {
-  const subfolders = await listAll(drive, sectionId);
-  const folders = subfolders.filter((s) => s.mimeType === DRIVE_FOLDER_MIME);
-  console.log(`  Collection Images: ${folders.length} subfolder(s)`);
-  let total = { checked: 0, renamed: 0, skipped: 0, errors: 0 };
-
-  for (const sub of folders) {
-    const result = await processFlatSection(drive, sub.id, `${sub.name}/`, dryRun);
-    total.checked += result.checked;
-    total.renamed += result.renamed;
-    total.skipped += result.skipped;
-    total.errors += result.errors;
-  }
-
-  return total;
-}
-
 async function processBusinessAreaImages(
   drive: drive_v3.Drive,
   sectionId: string,
