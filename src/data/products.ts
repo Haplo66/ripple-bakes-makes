@@ -91,12 +91,14 @@ const orderedActive = (items: readonly Product[]): Product[] =>
 /** Returns all active products sorted by display order. */
 export const getAllProducts = (): Product[] => orderedActive(products);
 
-/** Returns active products belonging to a specific collection ID. */
+/** Returns active, featured products belonging to a specific collection ID. */
 export const getProductsByCollection = (
   collectionId: string,
 ): Product[] =>
   orderedActive(
-    products.filter((product) => product.collectionId === collectionId),
+    products.filter(
+      (product) => product.collectionId === collectionId && product.featured,
+    ),
   );
 
 /** Returns active products belonging to a specific business area. */
@@ -107,9 +109,13 @@ export const getProductsByBusinessArea = (
     products.filter((product) => product.businessArea === area),
   );
 
-/** Returns active featured products sorted by display order. */
-export const getFeaturedProducts = (): Product[] =>
-  orderedActive(products.filter((product) => product.featured));
+/** Returns active featured products sorted by display order, optionally scoped to a business area. */
+export const getFeaturedProducts = (
+  area?: Product['businessArea'],
+): Product[] =>
+  area
+    ? orderedActive(products.filter((p) => p.featured && p.businessArea === area))
+    : orderedActive(products.filter((p) => p.featured));
 
 /** Returns active homepage-featured products sorted by display order. */
 export const getHomepageFeatured = (): Product[] =>
