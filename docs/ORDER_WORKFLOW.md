@@ -61,12 +61,13 @@ PUBLIC_ORDER_TOKEN=your-shared-secret
 | additionalNotes | string | no | Freeform customer notes |
 | status | string | yes | Initial value: `Received` |
 | totalItems | number | yes | Sum of item quantities |
+| totalPrice | number | yes | Sum of all item totals (price × quantity) |
 
 ### Example Row
 
-| orderId | createdAt | customerName | customerEmail | customerPhone | preferredContactMethod | preferredPickupDate | additionalNotes | status | totalItems |
-|---|---|---|---|---|---|---|---|---|---|
-| RIP-20260725-001 | 2026-07-25T14:30:00Z | Eyal Tal | eyal@example.com | 555-0100 | email | 2026-07-28 | Red ribbon please | Received | 3 |
+| orderId | createdAt | customerName | customerEmail | customerPhone | preferredContactMethod | preferredPickupDate | additionalNotes | status | totalItems | totalPrice |
+|---|---|---|---|---|---|---|---|---|---|---|
+| RIP-20260725-001 | 2026-07-25T14:30:00Z | Eyal Tal | eyal@example.com | 555-0100 | email | 2026-07-28 | Red ribbon please | Received | 3 | 120 |
 
 ---
 
@@ -77,18 +78,20 @@ PUBLIC_ORDER_TOKEN=your-shared-secret
 ### Columns
 
 | Column | Type | Required | Description |
-|---|---|---|---|
+|---|---|---|---|---|
 | orderId | string | yes | FK to Orders.orderId |
 | productId | string | yes | Product identifier |
 | productTitle | string | yes | Product title at time of order (snapshot) |
 | collectionId | string | yes | Collection this product belongs to |
 | quantity | number | yes | Quantity ordered |
-| configuration | string | yes | JSON object of selected option values |
+| unitPrice | number | yes | Unit price at time of order |
+| totalPrice | number | yes | Price × quantity for this line |
+| configuration | string | yes | JSON object of selected option values (cleaned, without product ID prefix) |
 | notes | string | no | Per-item custom notes |
 
 ### Configuration Format
 
-The `configuration` column stores the customer's selected values as a JSON object using human-readable labels.
+The `configuration` column stores the customer's selected values as a JSON object using human-readable keys (the `{productId}--` prefix is stripped server-side).
 
 **Good** (stored value):
 ```json
@@ -97,10 +100,10 @@ The `configuration` column stores the customer's selected values as a JSON objec
 
 ### Example Rows for One Order
 
-| orderId | productId | productTitle | collectionId | quantity | configuration | notes |
-|---|---|---|---|---|---|---|
-| RIP-20260725-001 | bakery-cakes-birthday-cake | Birthday Cake | bakery-cakes | 1 | `{"Flavor":"Vanilla","Frosting":"Buttercream","Size":"8 inch"}` | |
-| RIP-20260725-001 | sewing-custom-sewing-adult-t-shirt | Adult T-Shirt | sewing-custom-sewing | 2 | `{"Size":"L","Color":"Navy"}` | One for Sarah |
+| orderId | productId | productTitle | collectionId | quantity | unitPrice | totalPrice | configuration | notes |
+|---|---|---|---|---|---|---|---|---|
+| RIP-20260725-001 | bakery-cakes-birthday-cake | Birthday Cake | bakery-cakes | 1 | 60 | 60 | `{"Flavor":"Vanilla","Frosting":"Buttercream","Size":"8 inch"}` | |
+| RIP-20260725-001 | sewing-custom-sewing-adult-t-shirt | Adult T-Shirt | sewing-custom-sewing | 2 | 30 | 60 | `{"Size":"L","Color":"Navy"}` | One for Sarah |
 
 ---
 
@@ -174,8 +177,14 @@ function doPost(e) {
     // Generate order ID (RIP-YYYYMMDD-###)
     const orderId = generateOrderId();
 
+    // Compute totals
+    var orderTotal = 0;
+    for (var i = 0; i < order.items.length; i++) {
+      orderTotal += (order.items[i].totalPrice || 0);
+    }
+
     // Write to Orders sheet
-    const ordersSheet = SpreadsheetApp.openById(SPREADSHEET_ID)
+    var ordersSheet = SpreadsheetApp.openById(SPREADSHEET_ID)
       .getSheetByName(ORDERS_SHEET_NAME);
     ordersSheet.appendRow([
       orderId,
@@ -187,28 +196,36 @@ function doPost(e) {
       order.customer.preferredPickupDate || '',
       order.customer.additionalNotes || '',
       'Received',
-      order.items.reduce((sum, item) => sum + (item.quantity || 1), 0),
+      order.items.reduce(function(sum, item) { return sum + (item.quantity || 1); }, 0),
+      orderTotal,
     ]);
 
     // Write to Order Items sheet
-    const itemsSheet = SpreadsheetApp.openById(SPREADSHEET_ID)
+    var itemsSheet = SpreadsheetApp.openById(SPREADSHEET_ID)
       .getSheetByName(ORDER_ITEMS_SHEET_NAME);
-    for (const item of order.items) {
+    for (var i = 0; i < order.items.length; i++) {
+      var item = order.items[i];
+      var itemQuantity = item.quantity || 1;
       itemsSheet.appendRow([
         orderId,
         item.productId,
         item.productTitle,
         item.collectionId,
-        item.quantity || 1,
+        itemQuantity,
+        item.price || 0,
+        item.totalPrice || 0,
         JSON.stringify(item.configuration || {}),
         item.notes || '',
       ]);
     }
 
     // Build formatted item list for email
-    const itemRows = order.items.map(function(item) {
+    var itemRows = order.items.map(function(item) {
       var lines = [];
-      lines.push(item.productTitle + ' x' + (item.quantity || 1));
+      var itemPrice = item.price || 0;
+      var itemTotal = item.totalPrice || 0;
+      var itemQty = item.quantity || 1;
+      lines.push(item.productTitle + ' x' + itemQty + '  \u00a3' + itemTotal.toFixed(2) + ' (\u00a3' + itemPrice.toFixed(2) + ' each)');
       if (item.configuration) {
         var config = item.configuration;
         Object.keys(config).forEach(function(key) {
@@ -242,6 +259,8 @@ function doPost(e) {
         'Items:',
         '',
         itemRows,
+        '',
+        'Total: \u00a3' + orderTotal.toFixed(2),
         '',
         'Additional notes:',
         '  ' + (order.customer.additionalNotes || 'None'),
@@ -283,6 +302,10 @@ function respond(statusCode, body) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 ```
+
+### Configuration Key Prefix Stripping
+
+Configuration option keys from the website use the pattern `{productId}--{optionName}` (e.g. `SW-CS-001--color`). Before sending to the sheet, the code strips the `{productId}--` prefix so only the human-readable key name remains (`color`). This applies to both the stored JSON and the email display.
 
 ### Updating the Script
 
@@ -360,15 +383,17 @@ Customer:
 
 Items:
 
-Birthday Cake x1
+Birthday Cake x1  £60.00 (£60.00 each)
   Flavor: Vanilla
   Frosting: Buttercream
   Size: 8 inch
 
-Adult T-Shirt x2
+Adult T-Shirt x2  £60.00 (£30.00 each)
   Size: L
   Color: Navy
   Notes: One for Sarah
+
+Total: £120.00
 
 Additional notes:
   Red ribbon please

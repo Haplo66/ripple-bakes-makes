@@ -131,19 +131,30 @@ Why it mattered: Previously the owner had to run multiple technical commands in 
 
 ---
 
-### v1.12 — Ordering Workflow ✅
+### v1.12 — Ordering Workflow ✅ Complete
 
 **Goal:** Add a complete customer ordering workflow while keeping Google Workspace as the business operation center.
 
-Major capabilities added:
-- Customer cart and checkout workflow connected to real order submission
-- Google Apps Script order endpoint
-- Orders stored in Google Sheets
-- Separate Order Items sheet supporting multiple products per order
-- Email notifications for new orders
-- Order status management through Google Sheets
-- Retry handling and cart preservation on submission failure
+**Customer Ordering Flow:**
+- Product browsing, customization, and cart functionality
+- Checkout workflow supporting multi-product orders with quantity handling
+- Order submission with retry handling and cart preservation on failure
 - Mock submission provider retained for development
+
+**Google Workspace Order Backend:**
+- Google Apps Script Web App endpoint with token validation
+- Order ID generation (RIP-YYYYMMDD-###)
+- Orders Sheet and Order Items Sheet integration
+- Email notifications with full product and customization details
+
+**Order Data Improvements:**
+- Product ID, name, collection, and quantity preserved
+- Unit price captured at add-to-cart time (not hardcoded)
+- Line total and order total computed server-side
+- Product customization options stored with cleaned configuration keys
+- Customer information (name, email, phone, pickup date, notes)
+- Order status tracking managed in Google Sheets
+- Owner-readable configuration (no {productId}-- prefix in keys)
 
 **Google Workspace integration:**
 - Orders workflow integrated with the existing Google Drive organization
@@ -156,6 +167,14 @@ Major capabilities added:
 - Existing content pipeline remains unchanged: Google Sheets → Astro Content Pipeline
 - Orders are operational data and are intentionally not imported back into Astro
 - Product/catalog management and order management remain separate systems
+- Pricing comes from the product data at build time, captured at add-to-cart time
+- Configuration keys are cleaned before storage: {productId}-- prefix is stripped server-side
+
+**Business configuration stored separately:**
+- Notification email address
+- Shared token for endpoint validation
+- Google Sheet identifiers
+- Sheet names for Orders and Order Items
 
 Why it mattered: Browse → Customize → Add to Cart → Checkout → Owner Notification → Order Management. RIPPLE now supports the complete customer ordering journey while allowing the owner to operate through Google Workspace without touching code.
 
@@ -163,7 +182,7 @@ Why it mattered: Browse → Customize → Add to Cart → Checkout → Owner Not
 
 ## Current Architecture
 
-### Data Flow
+### Content Pipeline (Product Data)
 
 ```
 Google Sheets                     Google Drive
@@ -196,6 +215,22 @@ Google Sheets                     Google Drive
                   │
                   ▼
           GitHub Pages
+```
+
+### Order Pipeline (Operational Data)
+
+```
+Customer Browser
+        │
+        ▼
+  Astro Website (Cart → Checkout)
+        │
+        ▼
+  Google Apps Script Web App
+        │
+        ├── Orders Sheet
+        ├── Order Items Sheet
+        └── Email Notification
 ```
 
 ### Sheets vs Drive Responsibility
@@ -233,6 +268,9 @@ Google Sheets                     Google Drive
 - **No hardcoded business catalog content.** Products, collections, and operational content come from Google Workspace. Only technical defaults and presentation assets remain in code.
 - **Images are a filesystem contract.** The pipeline writes to `public/images/` and the existing Astro image system reads from there. Astro does not know images came from Drive.
 - **Two independent featured flags.** `homepageFeatured` controls which products appear on the homepage. `featured` controls which products are highlighted within collections and business area pages.
+- **Orders are separate from product data.** Product data flows Sheets → Pipeline → Website. Orders flow Website → Apps Script → Sheets. They never cross. This keeps product updates (which require a rebuild) independent from incoming orders (which are real-time and must not require a rebuild).
+- **Pricing is sourced from product data at build time.** Price comes from the Product model and is captured into the cart at add-to-cart time. It is not hardcoded, re-fetched, or computed on the server side.
+- **Configuration keys are cleaned before storage.** The `{productId}--` prefix used internally is stripped in `createOrderFromCart()` so the stored JSON and email display use only the human-readable option names.
 
 ---
 
@@ -304,10 +342,12 @@ Includes:
 
 Includes:
 - Customer cart and checkout connected to real order submission
-- Google Apps Script Web App endpoint
+- Google Apps Script Web App endpoint with token validation
 - Orders stored in Google Sheets with status tracking
 - Order Items sheet supporting multiple products per order
-- Email notifications with full customization details
+- Pricing preserved (unit price, line total, order total)
+- Configuration keys cleaned ({productId}-- prefix stripped)
+- Email notifications with full customization details and pricing
 - Async submission with loading state and error handling
 - Cart preserved on failure, cleared only on success
 - Retry support for failed submissions
@@ -331,9 +371,10 @@ Includes:
 **Ordering Workflow**
 - Customers can browse, customize, add to cart, and submit orders
 - Orders are sent to Google Apps Script which writes to Google Sheets
-- Owner receives email notification for every new order
+- Owner receives email notification for every new order with pricing details
 - Order status managed directly in Google Sheets (Received → Confirmed → Preparing → Ready → Completed)
-- Product customizations preserved in the Order Items sheet
+- Product customizations preserved in the Order Items sheet with cleaned configuration keys
+- Pricing captured at add-to-cart time: unit price, line total, and order total stored in sheets
 
 **Image System**
 - Product-level images imported from Drive and linked by Product ID
@@ -362,8 +403,8 @@ Includes:
 4. Website is updated with latest data and assets
 
 **Order Management**
-1. Receive email notification for new orders
-2. View order details and customizations in Google Sheets
+1. Receive email notification for new orders with itemised pricing
+2. View order details, customizations, and pricing in Google Sheets
 3. Update order status as it progresses
 4. Communicate with customer to arrange pickup
 

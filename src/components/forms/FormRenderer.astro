@@ -11,6 +11,7 @@ interface Props {
     collectionId: string;
     productId: string;
     productTitle: string;
+    price?: number;
   };
 }
 
@@ -32,6 +33,7 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
   data-collection-id={product.collectionId}
   data-product-id={product.productId}
   data-product-title={product.productTitle}
+  data-product-price={product.price}
 >
   <div class="product-form__header">
     <span class="eyebrow">Customize Order</span>
@@ -160,10 +162,14 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
       const quantity = Number(formData.get('quantity') || 1);
       const notesValue = formData.get('notes');
 
+      const rawPrice = form.dataset.productPrice;
+      const price = rawPrice ? Number(rawPrice) : undefined;
+
       addToCart({
         collectionId: form.dataset.collectionId || '',
         productId: form.dataset.productId || '',
         productTitle: form.dataset.productTitle || '',
+        price: Number.isFinite(price) ? price : undefined,
         configuration: getConfiguration(),
         quantity,
         notes: notesValue ? String(notesValue) : undefined,

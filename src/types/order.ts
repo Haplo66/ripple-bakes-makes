@@ -16,6 +16,8 @@ export interface OrderItem {
   collectionId: string;
   productTitle: string;
   quantity: number;
+  price: number;
+  totalPrice: number;
   configuration: CartItemConfiguration;
   notes?: string;
 }

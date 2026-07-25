@@ -25,6 +25,8 @@ const isCartItem = (item: unknown): item is CartItem => {
     candidate.configuration !== null &&
     typeof candidate.quantity === 'number' &&
     candidate.quantity >= 1 &&
+    (typeof candidate.price === 'undefined' ||
+      typeof candidate.price === 'number') &&
     (typeof candidate.notes === 'undefined' ||
       typeof candidate.notes === 'string')
   );
