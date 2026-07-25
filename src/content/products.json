@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-25T14:30:26.908Z",
+    "generatedAt": "2026-07-25T15:39:53.054Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -17,14 +17,16 @@
       "featured": false,
       "homepageFeatured": true,
       "formId": "bakery-bread",
-      "image": null,
-      "images": [],
+      "image": "01.jpg",
+      "images": [
+        "01.jpg"
+      ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "",
-      "primaryImage": ""
+      "imageFolder": "products/BK-CH-001",
+      "primaryImage": "01.jpg"
     },
     {
       "id": "BK-CH-002",
@@ -37,14 +39,16 @@
       "featured": false,
       "homepageFeatured": true,
       "formId": "bakery-bread",
-      "image": null,
-      "images": [],
+      "image": "01.jpg",
+      "images": [
+        "01.jpg"
+      ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "",
-      "primaryImage": ""
+      "imageFolder": "products/BK-CH-002",
+      "primaryImage": "01.jpg"
     },
     {
       "id": "BK-FP-001",
@@ -57,14 +61,16 @@
       "featured": false,
       "homepageFeatured": false,
       "formId": "bakery-filled-pocket",
-      "image": null,
-      "images": [],
+      "image": "01.jpg",
+      "images": [
+        "01.jpg"
+      ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "",
-      "primaryImage": ""
+      "imageFolder": "products/BK-FP-001",
+      "primaryImage": "01.jpg"
     },
     {
       "id": "BK-FP-002",
@@ -77,14 +83,16 @@
       "featured": false,
       "homepageFeatured": true,
       "formId": "bakery-filled-pocket",
-      "image": null,
-      "images": [],
+      "image": "01.jpg",
+      "images": [
+        "01.jpg"
+      ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "",
-      "primaryImage": ""
+      "imageFolder": "products/BK-FP-002",
+      "primaryImage": "01.jpg"
     },
     {
       "id": "BK-FP-003",
@@ -117,14 +125,16 @@
       "featured": false,
       "homepageFeatured": true,
       "formId": "bakery-bread",
-      "image": null,
-      "images": [],
+      "image": "01.jpg",
+      "images": [
+        "01.jpg"
+      ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "",
-      "primaryImage": ""
+      "imageFolder": "products/BK-SB-001",
+      "primaryImage": "01.jpg"
     },
     {
       "id": "BK-SB-002",
@@ -157,14 +167,20 @@
       "featured": false,
       "homepageFeatured": true,
       "formId": "shirt-order",
-      "image": null,
-      "images": [],
+      "image": "01.jpg",
+      "images": [
+        "01.jpg",
+        "02.jpg",
+        "03.jpg",
+        "04.jpg",
+        "05.jpg"
+      ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 50,
-      "imageFolder": "",
-      "primaryImage": ""
+      "imageFolder": "products/SW-CS-001",
+      "primaryImage": "01.jpg"
     }
   ]
 }
