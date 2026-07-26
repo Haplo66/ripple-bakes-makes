@@ -403,6 +403,61 @@ View orders: https://docs.google.com/spreadsheets/d/...
 
 ---
 
+## Owner Publishing Workflow
+
+The owner can publish website updates (products, images, content) without running any commands locally, by triggering a GitHub Actions workflow from the browser.
+
+### Workflow
+
+```
+Google Workspace (Sheets + Drive)
+        ↓
+Owner clicks "Run workflow" on GitHub
+        ↓
+GitHub Actions: npm run update
+        ↓
+  ├── Validate environment
+  ├── Repair Drive image extensions
+  ├── Import Drive assets
+  ├── Import Google Sheets data
+  ├── Validate generated content
+  └── Astro build
+        ↓
+GitHub Pages deployment
+```
+
+### How to Publish
+
+1. Make changes in Google Sheets or Google Drive (products, collections, images, etc.)
+2. Go to the GitHub repository: `https://github.com/haplo66/ripple-bakes-makes`
+3. Click **Actions** → **Deploy Astro site to GitHub Pages** → **Run workflow**
+4. Click the green **Run workflow** button
+5. Wait for the workflow to complete (approx. 2–3 minutes)
+6. The website is updated at the live URL
+
+### Required GitHub Secrets
+
+These must be configured in the repository: **Settings → Secrets and variables → Actions → Repository secrets**
+
+| Secret | Description |
+|---|---|
+| `GOOGLE_SERVICE_ACCOUNT_EMAIL` | Service account email for Google API access |
+| `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` | Private key (`\n` escaped, single line — same format as `.env`) |
+| `GOOGLE_DRIVE_ROOT_FOLDER_ID` | Root folder ID for Drive asset import |
+| `INVENTORY_GOOGLE_SHEETS_ID` | Google Sheets spreadsheet ID |
+| `PUBLIC_ORDER_ENDPOINT` | Apps Script Web App URL for order submission |
+| `PUBLIC_ORDER_TOKEN` | Shared secret for Apps Script validation |
+
+All values must match what is currently in your local `.env` file.
+
+### Safety
+
+- If `npm run update` fails (bad data, missing credentials, build error), the workflow stops immediately and the existing website is **not** affected.
+- Only a successful update + build results in a deployment.
+- The `push` to `master` trigger also uses `npm run update`, so commits pushed directly to GitHub also deploy fresh content.
+
+---
+
 ## Testing
 
 ### Prerequisites

@@ -390,7 +390,7 @@ Includes:
 
 ## Current Status
 
-**Version: v1.12.1**
+**Version: v1.13**
 
 ### What Works Today
 
@@ -427,13 +427,20 @@ Includes:
 - Cart and checkout pages with real order submission
 - Static Astro site deployed on GitHub Pages
 
+**Publishing Workflow**
+- Owner can publish updates from the browser via GitHub Actions manual trigger
+- `npm run update` runs the full data import, validation, and build pipeline
+- `push` to `master` also runs the full pipeline
+- Failed updates stop before deployment — existing site remains live
+
 ### Owner Workflow
 
 **Product and Content Management**
 1. Add or update products in Google Sheets
 2. Add or change images in Google Drive
-3. Run `npm run update`
-4. Website is updated with latest data and assets
+3. **Option A:** Run `npm run update` locally (developer machine)
+4. **Option B:** Go to GitHub → Actions → Run workflow (any browser)
+5. Website is updated with latest data and assets
 
 **Order Management**
 1. Receive email notification for new orders with itemised pricing
@@ -449,46 +456,24 @@ Includes:
 
 ## Next Milestones
 
-### v1.13 — Owner Publishing Workflow
+### v1.13 — Owner Publishing Workflow (In Progress)
 
-**Goal:** Allow the business owner to publish website updates without developer involvement.
+**Goal:** Allow the business owner to publish website updates without running npm commands locally.
 
-### Automatic Publishing
+### What has been implemented
 
-- Scheduled GitHub Actions workflow
-- Automatically run the existing `npm run update`
-- Rebuild Astro site
-- Deploy to GitHub Pages
+- GitHub Actions `workflow_dispatch` trigger — owner can click **Run workflow** from the GitHub UI
+- The workflow executes the existing `npm run update` pipeline (no duplicate logic)
+- Environment variables provided via GitHub Secrets, written to `.env` before the update step
+- `push` to `master` also uses `npm run update` (not just `astro build`)
+- Validation safety: failed update or build stops the workflow before deployment
+- Documentation in `docs/ORDER_WORKFLOW.md`
 
-### Manual Publishing
+### Remaining
 
-Allow the owner to immediately publish changes by manually triggering the same GitHub workflow.
-
-The preferred implementation is:
-
-Google Apps Script → GitHub Actions API → Existing update pipeline
-
-This is intended for urgent changes only. Normal updates should rely on the scheduled workflow.
-
-### Validation Gate
-
-Every deployment must execute the existing validation pipeline before building.
-
-Validation outcomes:
-
-- **Success** → Deploy website
-- **Warning** → Deploy and report warnings
-- **Failure** → Stop deployment and keep current website online
-
-Critical validation failures must never publish a broken website.
-
-### Notifications
-
-On failed deployment:
-
-- Email the owner
-- Include validation errors
-- Explain why deployment was cancelled
+- Deploy on a schedule (cron trigger) — for automatic periodic updates
+- Notification on failure (email or GitHub notification)
+- Google Apps Script → GitHub API integration for trigger-from-Sheets workflow
 
 ---
 

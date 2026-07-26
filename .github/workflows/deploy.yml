@@ -32,8 +32,32 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Astro site
-        run: npm run build
+      - name: Configure environment
+        env:
+          INVENTORY_GOOGLE_SHEETS_ID: ${{ secrets.INVENTORY_GOOGLE_SHEETS_ID }}
+          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+          GOOGLE_DRIVE_ROOT_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_ROOT_FOLDER_ID }}
+          PUBLIC_ORDER_ENDPOINT: ${{ secrets.PUBLIC_ORDER_ENDPOINT }}
+          PUBLIC_ORDER_TOKEN: ${{ secrets.PUBLIC_ORDER_TOKEN }}
+        run: |
+          node -e "
+          var fs = require('fs');
+          var e = process.env;
+          var lines = [
+            'SHEETS_ENABLED=true',
+            'INVENTORY_GOOGLE_SHEETS_ID=\"' + (e.INVENTORY_GOOGLE_SHEETS_ID || '') + '\"',
+            'GOOGLE_SERVICE_ACCOUNT_EMAIL=\"' + (e.GOOGLE_SERVICE_ACCOUNT_EMAIL || '') + '\"',
+            'GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=\"' + (e.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || '').replace(/\n/g, '\\\\n') + '\"',
+            'GOOGLE_DRIVE_ROOT_FOLDER_ID=\"' + (e.GOOGLE_DRIVE_ROOT_FOLDER_ID || '') + '\"',
+            'PUBLIC_ORDER_ENDPOINT=\"' + (e.PUBLIC_ORDER_ENDPOINT || '') + '\"',
+            'PUBLIC_ORDER_TOKEN=\"' + (e.PUBLIC_ORDER_TOKEN || '') + '\"',
+          ];
+          fs.writeFileSync('.env', lines.join('\n') + '\n');
+          "
+
+      - name: Update site (import data, sync assets, build)
+        run: npm run update
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
