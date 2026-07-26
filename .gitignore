@@ -24,3 +24,7 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
+# Google service account credentials
+docs/*service-account*.json
+docs/*credentials*.json
+docs/ripple-makes-and-bakes-*.json
