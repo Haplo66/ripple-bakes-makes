@@ -479,12 +479,207 @@ GitHub Pages deployment
 
 If the scheduled run fails, the existing website stays online. No action is needed — the next day's run will retry.
 
-All three publishing methods use the same pipeline:
+### Sheets Publish Button
+
+The owner can publish directly from Google Sheets without visiting GitHub or running commands.
+
+**How it works:**
+
+```
+Google Sheets
+  ↓
+Custom menu → "Publish Website"
+  ↓
+Google Apps Script (bound to sheet)
+  ↓
+GitHub Actions API (workflow_dispatch)
+  ↓
+Existing deploy workflow (npm run update)
+  ↓
+GitHub Pages deployment
+```
+
+#### Setup
+
+##### Step 1: Create a GitHub Personal Access Token
+
+**Recommended: Fine-grained token**
+
+1. Go to GitHub: **Settings → Developer settings → Personal access tokens → Fine-grained tokens**
+2. Click **Generate new token**
+3. Set **Token name:** `RIPPLE Sheets Publisher`
+4. Set **Repository access:** Only select repositories → `haplo66/ripple-bakes-makes`
+5. Under **Permissions → Repository permissions**, set **Actions → Read and write**
+6. Click **Generate token**
+7. **Copy the token immediately** — you will not see it again
+
+**Fallback: Classic token** (if fine-grained tokens are unavailable)
+
+1. Go to: **Settings → Developer settings → Personal access tokens → Tokens (classic)**
+2. Click **Generate new token (classic)**
+3. Select the **`public_repo`** scope
+4. Generate and copy the token
+
+##### Step 2: Add the Apps Script to the Content Sheet
+
+1. Open the RIPPLE content spreadsheet (the one containing your Products, Collections, Forms sheets)
+2. Go to **Extensions → Apps Script**
+3. Name the project e.g. `RIPPLE Website Publisher`
+4. Replace the default code with the script below
+5. Click **Save** (💾 icon)
+
+##### Step 3: Store the GitHub Token
+
+In the Apps Script editor:
+
+1. Click **Project Settings** (⚙ icon)
+2. Scroll to **Script Properties**
+3. Click **Add script property**
+   - **Name:** `GITHUB_TOKEN`
+   - **Value:** paste the token from Step 1
+4. Click **Save script properties**
+
+##### Step 4: Authorize and Test
+
+1. In the Apps Script editor, select the function **`publishWebsite`** from the dropdown and click **Run** ▶
+   - This authorizes the `UrlFetchApp` and `SpreadsheetApp` permissions needed by the script
+   - `onOpen` only creates the menu — it does not test the API call
+2. You will be prompted to review permissions
+   - Click **Review Permissions** → choose your Google account → **Allow**
+3. The first run will attempt to call GitHub Actions — check the execution log for success or errors
+4. Return to the spreadsheet and refresh the page
+5. You should see a **🌐 RIPPLE Website** menu at the top (may take a few seconds to appear after opening the sheet)
+6. Click **🌐 RIPPLE Website → Publish Website**
+7. A confirmation dialog appears when the workflow starts
+
+#### Script Code
+
+Create a new script bound to the content spreadsheet:
+
+```javascript
+/**
+ * Adds the RIPPLE Publish menu when the spreadsheet opens.
+ */
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu('\u{1F310} RIPPLE Website')
+    .addItem('Publish Website', 'publishWebsite')
+    .addToUi();
+}
+
+/**
+ * Triggers the GitHub Actions workflow_dispatch via API.
+ * Uses a Personal Access Token stored in Script Properties.
+ */
+function publishWebsite() {
+  var ui = SpreadsheetApp.getUi();
+  var token = PropertiesService.getScriptProperties().getProperty('GITHUB_TOKEN');
+
+  if (!token) {
+    ui.alert(
+      'Token not configured',
+      'Set GITHUB_TOKEN in Script Properties:\n' +
+      'Extensions > Apps Script > Project Settings > Script Properties',
+      ui.ButtonSet.OK
+    );
+    return;
+  }
+
+  var owner = 'haplo66';
+  var repo = 'ripple-bakes-makes';
+  var workflow = 'deploy.yml';
+  var url = 'https://api.github.com/repos/' + owner + '/' + repo + '/actions/workflows/' + workflow + '/dispatches';
+
+  var options = {
+    method: 'post',
+    headers: {
+      'Accept': 'application/vnd.github.v3+json',
+      'Authorization': 'Bearer ' + token,
+    },
+    contentType: 'application/json',
+    payload: JSON.stringify({ ref: 'master' }),
+    muteHttpExceptions: true,
+  };
+
+  try {
+    var response = UrlFetchApp.fetch(url, options);
+    var statusCode = response.getResponseCode();
+
+    if (statusCode === 204) {
+      ui.alert(
+        'Publishing started',
+        'Website update is running (2\u20133 minutes).\n' +
+        'Check progress at:\n' +
+        'https://github.com/' + owner + '/' + repo + '/actions',
+        ui.ButtonSet.OK
+      );
+    } else {
+      ui.alert(
+        'Publishing failed (HTTP ' + statusCode + ')',
+        'Check your GITHUB_TOKEN and try again.\n' +
+        'Fallback: run the workflow manually at\n' +
+        'https://github.com/' + owner + '/' + repo + '/actions',
+        ui.ButtonSet.OK
+      );
+    }
+  } catch (err) {
+    ui.alert('Error', err.message, ui.ButtonSet.OK);
+  }
+}
+```
+
+#### How to Publish
+
+1. Make changes in Google Sheets or Google Drive
+2. In the content spreadsheet, click **🌐 RIPPLE Website → Publish Website**
+3. A dialog confirms the workflow has started
+4. Verify the workflow was triggered: go to **GitHub → Actions** and confirm a new run is in progress
+5. Wait for the workflow to complete (2–3 minutes)
+6. Visit the live website to confirm the changes appear
+7. The emergency fallback is always available: **GitHub → Actions → Run workflow**
+
+> **Note:** Apps Script has daily quotas for `UrlFetchApp`. Excessive publishing (many times per hour) may hit these limits. Normal usage — a few publishes per day — is well within the free quota.
+
+#### End-to-End Test Results
+
+**Test date:** July 26, 2026
+
+✅ **Owner workflow tested end-to-end:**
+
+```
+Google Sheets → Publish Website button → Apps Script → GitHub Actions → Build → Deploy → Website update
+```
+
+**Confirmed:**
+- Token stored securely in Apps Script Properties
+- GitHub API returned HTTP 204 dispatch success
+- GitHub Actions workflow triggered via API
+- Build job completed:
+  - Environment validation
+  - Google Drive asset repair
+  - Google Drive asset import
+  - Google Sheets data import
+  - Astro static build
+- Deploy job completed successfully
+- Website deployment verified
+
+#### Troubleshooting
+
+| Symptom | Likely Cause | Fix |
+|---|---|---|---|
+| Menu does not appear | Script not authorized, or sheet just opened | Run `publishWebsite` in the editor to trigger permission prompts, then refresh the sheet. The menu may take a few seconds to appear after opening |
+| "Token not configured" | GITHUB_TOKEN not set in Script Properties | Add it via Project Settings → Script Properties |
+| HTTP 401 or 403 | Token expired or lacks correct permissions | Regenerate the token with Actions: Read and write permission (fine-grained) or `public_repo` scope (classic) |
+| HTTP 422 | Invalid `ref` | Must be `master` (the default branch name) |
+| Script error | Quota exceeded (UrlFetchApp) | Wait a few minutes and try again. Apps Script has daily fetch limits — normal usage (a few publishes per day) is fine |
+
+All four publishing methods use the same pipeline:
 
 | Method | Trigger | When to Use |
 |---|---|---|
 | `push` to master | Automatic on commit | Code changes requiring a deploy |
 | Manual **Run workflow** | Browser click | Immediate publish after content changes |
+| Sheets **Publish Website** | Button click in Google Sheets | Immediate publish without leaving Google Workspace |
 | Scheduled (daily) | Automatic at midnight PT | Regular content sync
 
 ---

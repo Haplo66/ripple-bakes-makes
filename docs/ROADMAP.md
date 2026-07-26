@@ -390,7 +390,7 @@ Includes:
 
 ## Current Status
 
-**Version: v1.13.1**
+**Version: v1.14**
 
 ### What Works Today
 
@@ -478,7 +478,49 @@ Includes:
 ### Remaining
 
 - Notification on failure (email or GitHub notification)
-- Google Apps Script → GitHub API integration for trigger-from-Sheets workflow
+
+---
+
+### v1.14 — Sheets Publish Button ✅ Verified
+
+**Test date:** July 26, 2026
+
+**Goal:** Allow the owner to publish website updates directly from Google Sheets.
+
+**Implemented:**
+- Custom menu "RIPPLE Website → Publish Website" in the content spreadsheet
+- Google Apps Script bound to the content sheet calls the GitHub Actions API
+- GitHub Personal Access Token stored securely via Apps Script Script Properties
+- Triggers the existing `workflow_dispatch` on `deploy.yml`
+- Emergency fallback: GitHub Actions manual trigger remains available
+- Documentation and setup instructions in `docs/ORDER_WORKFLOW.md`
+
+**End-to-end verification:**
+- Google Sheets Publish Website button tested successfully
+- Google Apps Script successfully called GitHub Actions `workflow_dispatch` API
+- GitHub Actions build job completed successfully
+- Existing `npm run update` pipeline executed successfully:
+  - Environment validation
+  - Google Drive asset repair
+  - Google Drive asset import
+  - Google Sheets data import
+  - Astro static build
+- GitHub Pages deploy job completed successfully
+- Website deployment verified
+
+**Architecture:**
+
+```
+Google Sheets
+  ↓
+Apps Script (bound to sheet)
+  ↓
+GitHub Actions API (workflow_dispatch)
+  ↓
+Existing deploy workflow (npm run update)
+  ↓
+GitHub Pages
+```
 
 ---
 
