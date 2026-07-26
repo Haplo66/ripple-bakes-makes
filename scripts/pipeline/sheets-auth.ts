@@ -3,19 +3,19 @@ import { google } from 'googleapis';
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 
 export async function authenticateSheets() {
-  const clientEmail = process.env.GOOGLE_SHEETS_CLIENT_EMAIL;
-  const privateKey = process.env.GOOGLE_SHEETS_PRIVATE_KEY;
+  const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+  const privateKey = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
 
   if (!clientEmail) {
     throw new Error(
-      'Missing GOOGLE_SHEETS_CLIENT_EMAIL environment variable. ' +
+      'Missing GOOGLE_SERVICE_ACCOUNT_EMAIL environment variable. ' +
       'Set it to the service account email address.',
     );
   }
 
   if (!privateKey) {
     throw new Error(
-      'Missing GOOGLE_SHEETS_PRIVATE_KEY environment variable. ' +
+      'Missing GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY environment variable. ' +
       'Set it to the service account private key.',
     );
   }

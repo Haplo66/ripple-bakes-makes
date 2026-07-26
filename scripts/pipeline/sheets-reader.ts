@@ -65,12 +65,12 @@ export async function readSheet(
   spreadsheetId: string,
   warnings: PipelineWarning[],
 ): Promise<SheetsReadResult> {
-  const sheetId = spreadsheetId || process.env.GOOGLE_SHEETS_ID;
+  const sheetId = spreadsheetId || process.env.INVENTORY_GOOGLE_SHEETS_ID;
 
   if (!sheetId) {
     warnings.push({
       file: dataset,
-      reason: 'GOOGLE_SHEETS_ID is not set; skipping this dataset.',
+      reason: 'INVENTORY_GOOGLE_SHEETS_ID is not set; skipping this dataset.',
     });
     return { found: false, records: [] };
   }

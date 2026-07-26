@@ -16,8 +16,8 @@ function runScript(name: string, args: string[] = []): void {
 
 function validateEnv(): void {
   const required = [
-    'GOOGLE_SHEETS_CLIENT_EMAIL',
-    'GOOGLE_SHEETS_PRIVATE_KEY',
+    'GOOGLE_SERVICE_ACCOUNT_EMAIL',
+    'GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY',
     'GOOGLE_DRIVE_ROOT_FOLDER_ID',
   ];
 

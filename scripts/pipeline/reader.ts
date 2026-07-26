@@ -49,7 +49,7 @@ function createSheetsReader(): DatasetReader {
         return { found: false, records: [] };
       }
 
-      const spreadsheetId = process.env.GOOGLE_SHEETS_ID || '';
+      const spreadsheetId = process.env.INVENTORY_GOOGLE_SHEETS_ID || '';
 
       return readSheet(dataset, sheets, spreadsheetId, warnings);
     },
