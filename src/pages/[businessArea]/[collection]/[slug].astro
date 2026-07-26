@@ -6,8 +6,7 @@ import ProductGrid from '../../../components/products/ProductGrid.astro';
 import SectionTitle from '../../../components/SectionTitle.astro';
 import { getAllProducts, getProductsByCollection } from '../../../data/products';
 import { collections } from '../../../data/collections';
-import { getProductOptions } from '../../../data/product-options';
-import { productOptionsToFormFields } from '../../../utils/options-to-fields';
+import { getFormById } from '../../../data/forms';
 import { sitePath } from '../../../utils/paths';
 import { getProductPrimaryImage, getProductImages } from '../../../utils/images';
 import { formatPrice } from '../../../utils/format';
@@ -73,17 +72,8 @@ const businessAreaTitle =
 const matchedCollection = collections.find(c => c.id === product.collectionId);
 const relatedProducts = getProductsByCollection(product.collectionId).filter(p => p.id !== product.id);
 
-const options = getProductOptions(product.id);
 const displayPrice = formatPrice(product.price) || product.priceLabel;
-const customizationFields = productOptionsToFormFields(options);
-const customizationForm: Form | undefined = customizationFields.length > 0
-  ? {
-      id: `${product.id}-customization`,
-      name: product.title,
-      title: product.title,
-      fields: customizationFields,
-    }
-  : undefined;
+const customizationForm: Form | undefined = product.formId ? getFormById(product.formId) : undefined;
 
 ---
 
@@ -179,7 +169,6 @@ const customizationForm: Form | undefined = customizationFields.length > 0
 
           <FormRenderer
             form={customizationForm}
-            formId={customizationForm ? undefined : product.formId}
             fallbackTitle={product.title}
             product={{
               collectionId: product.collectionId,

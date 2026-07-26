@@ -13,10 +13,24 @@ const cleanConfiguration = (
   const cleaned: Record<string, string | string[] | boolean | number> = {};
 
   for (const [key, value] of Object.entries(config)) {
-    cleaned[stripPrefix(key, productId)] = value;
+    cleaned[stripPrefix(key, productId)] = sanitizeValue(value);
   }
 
   return cleaned;
+};
+
+const sanitizeValue = (
+  value: string | string[] | boolean | number,
+): string | string[] | boolean | number => {
+  if (typeof value === 'string') {
+    return value.replace(/^([=+\-@])/, "'$1");
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((v) => sanitizeValue(v) as string);
+  }
+
+  return value;
 };
 
 /** Converts the current cart into a checkout-ready order payload. */
@@ -29,8 +43,10 @@ export const createOrderFromCart = (cart: Cart): Order => ({
     price: item.price ?? 0,
     totalPrice: (item.price ?? 0) * item.quantity,
     configuration: cleanConfiguration(item.configuration, item.productId),
-    notes: item.notes,
+    notes: item.notes ? sanitizeValue(item.notes) as string : undefined,
   })),
   customer: {},
   createdAt: new Date().toISOString(),
 });
+
+export { sanitizeValue };

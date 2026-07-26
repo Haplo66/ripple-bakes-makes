@@ -3,8 +3,28 @@ import type { CsvRecord, DatasetName, PipelineWarning } from './types.ts';
 const requiredFields: Record<DatasetName, string[]> = {
   collections: ['id', 'businessArea', 'name'],
   products: ['id', 'businessArea', 'collection', 'name'],
-  forms: ['id', 'name'],
-  productOptions: ['productId', 'optionName', 'optionType'],
+  forms: ['formId', 'fieldName', 'fieldType'],
+};
+
+const getRequiredFields = (
+  dataset: DatasetName,
+  records: CsvRecord[],
+): string[] => {
+  if (dataset === 'forms' && records.length > 0) {
+    const firstValues = records[0].values;
+
+    if ('fields' in firstValues) {
+      return ['id', 'name'];
+    }
+
+    if ('fieldName' in firstValues || 'Field Name' in firstValues) {
+      return ['formId', 'fieldName', 'fieldType'];
+    }
+
+    return [];
+  }
+
+  return requiredFields[dataset];
 };
 
 export const validateRecords = (
@@ -12,9 +32,11 @@ export const validateRecords = (
   file: string,
   records: CsvRecord[],
   warnings: PipelineWarning[],
-): CsvRecord[] =>
-  records.filter((record) => {
-    const missing = requiredFields[dataset].filter(
+): CsvRecord[] => {
+  const fields = getRequiredFields(dataset, records);
+
+  return records.filter((record) => {
+    const missing = fields.filter(
       (field) => !record.values[field]?.trim(),
     );
 
@@ -29,3 +51,4 @@ export const validateRecords = (
 
     return missing.length === 0;
   });
+};

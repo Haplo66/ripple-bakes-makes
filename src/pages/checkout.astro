@@ -123,7 +123,7 @@ import { sitePath } from '../utils/paths';
 <script>
   import { clearCart, getCart } from '../utils/cart';
   import { formatLabel, formatValue } from '../utils/format';
-  import { createOrderFromCart } from '../utils/order';
+  import { createOrderFromCart, sanitizeValue } from '../utils/order';
   import { submitOrder } from '../utils/submission';
 
   const checkoutReady = document.querySelector('[data-checkout-ready]');
@@ -235,12 +235,12 @@ import { sitePath } from '../utils/paths';
     const order = createOrderFromCart(cart);
 
     order.customer = {
-      name: getFieldValue(formData, 'name'),
-      email: getFieldValue(formData, 'email'),
-      phone: getFieldValue(formData, 'phone'),
-      preferredContactMethod: getFieldValue(formData, 'preferredContactMethod'),
-      preferredPickupDate: getFieldValue(formData, 'preferredPickupDate'),
-      additionalNotes: getFieldValue(formData, 'additionalNotes'),
+      name: sanitizeValue(getFieldValue(formData, 'name')),
+      email: sanitizeValue(getFieldValue(formData, 'email')),
+      phone: sanitizeValue(getFieldValue(formData, 'phone')),
+      preferredContactMethod: sanitizeValue(getFieldValue(formData, 'preferredContactMethod')),
+      preferredPickupDate: sanitizeValue(getFieldValue(formData, 'preferredPickupDate')),
+      additionalNotes: sanitizeValue(getFieldValue(formData, 'additionalNotes')),
     };
 
     setSubmitting(true);

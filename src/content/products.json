@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-26T13:46:21.552Z",
+    "generatedAt": "2026-07-26T16:02:29.961Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -16,7 +16,7 @@
       "status": "Active",
       "featured": true,
       "homepageFeatured": true,
-      "formId": "bakery-bread",
+      "formId": "BK-CHALLAH",
       "image": "01.jpg",
       "images": [
         "01.jpg"
@@ -38,7 +38,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
-      "formId": "bakery-bread",
+      "formId": "BK-CHALLAH",
       "image": "01.jpg",
       "images": [
         "01.jpg"
@@ -60,7 +60,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
-      "formId": "bakery-filled-pocket",
+      "formId": "BK-POCKETS",
       "image": "01.jpg",
       "images": [
         "01.jpg"
@@ -82,7 +82,7 @@
       "status": "Active",
       "featured": true,
       "homepageFeatured": true,
-      "formId": "bakery-filled-pocket",
+      "formId": "BK-POCKETS",
       "image": "01.jpg",
       "images": [
         "01.jpg"
@@ -104,7 +104,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
-      "formId": "bakery-filled-pocket",
+      "formId": "BK-POCKETS",
       "image": "01.jpg",
       "images": [
         "01.jpg"
@@ -126,7 +126,7 @@
       "status": "Active",
       "featured": true,
       "homepageFeatured": false,
-      "formId": "",
+      "formId": "BK-GARLICBUNS",
       "image": "01.jpg",
       "images": [
         "01.jpg",
@@ -149,7 +149,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
-      "formId": "",
+      "formId": "BK-ROLLS",
       "image": "01.jpg",
       "images": [
         "01.jpg"
@@ -171,7 +171,7 @@
       "status": "Active",
       "featured": true,
       "homepageFeatured": true,
-      "formId": "bakery-bread",
+      "formId": "BK-SOURBEAD",
       "image": "01.jpg",
       "images": [
         "01.jpg"
@@ -193,7 +193,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
-      "formId": "bakery-bread",
+      "formId": "BK-SOURBEAD",
       "image": "01.jpg",
       "images": [
         "01.jpg"
@@ -215,7 +215,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
-      "formId": "",
+      "formId": "SW-BLANKETS",
       "image": "01.jpg",
       "images": [
         "01.jpg",
@@ -240,7 +240,7 @@
       "status": "Active",
       "featured": true,
       "homepageFeatured": true,
-      "formId": "",
+      "formId": "SW-BOWLCOZY",
       "image": "01.jpg",
       "images": [
         "01.jpg",
@@ -264,7 +264,7 @@
       "status": "Active",
       "featured": true,
       "homepageFeatured": true,
-      "formId": "shirt-order",
+      "formId": "SW-SHIRT",
       "image": "01.jpg",
       "images": [
         "01.jpg",
@@ -290,7 +290,7 @@
       "status": "Active",
       "featured": true,
       "homepageFeatured": false,
-      "formId": "",
+      "formId": "SW-BUCKET",
       "image": "01.jpg",
       "images": [
         "01.jpg",
@@ -315,7 +315,7 @@
       "status": "Active",
       "featured": true,
       "homepageFeatured": false,
-      "formId": "",
+      "formId": "SW-BEANIE",
       "image": "01.jpg",
       "images": [
         "01.jpg",
@@ -340,7 +340,7 @@
       "status": "Active",
       "featured": true,
       "homepageFeatured": true,
-      "formId": "",
+      "formId": "SW-RICEPACKS",
       "image": "01.jpg",
       "images": [
         "01.jpg",
@@ -365,7 +365,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
-      "formId": "",
+      "formId": "SW-RICEPACKS",
       "image": "01.jpg",
       "images": [
         "01.jpg",
@@ -389,7 +389,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
-      "formId": "",
+      "formId": "SW-TOYS",
       "image": "01.jpg",
       "images": [
         "01.jpg",
@@ -414,7 +414,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
-      "formId": "",
+      "formId": "SW-TOWEL",
       "image": "01.jpg",
       "images": [
         "01.jpg",

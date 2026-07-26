@@ -1,4 +1,4 @@
-export type DatasetName = 'collections' | 'products' | 'forms' | 'productOptions';
+export type DatasetName = 'collections' | 'products' | 'forms';
 
 export type CsvRow = Record<string, string>;
 

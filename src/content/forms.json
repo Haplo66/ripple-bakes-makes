@@ -1,40 +1,218 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-26T13:46:21.553Z",
+    "generatedAt": "2026-07-26T16:02:29.961Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
   "data": [
     {
-      "id": "bakery-bread",
-      "name": "Bread Order",
-      "fields": []
+      "id": "SW-BEANIE",
+      "name": "Beanie Hats",
+      "fields": [
+        {
+          "id": "color-a",
+          "label": "Color A",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "black",
+              "label": "Black"
+            },
+            {
+              "value": "white",
+              "label": "White"
+            },
+            {
+              "value": "blue",
+              "label": "Blue"
+            },
+            {
+              "value": "red",
+              "label": "Red"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        },
+        {
+          "id": "color-b",
+          "label": "Color B",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "black",
+              "label": "Black"
+            },
+            {
+              "value": "white",
+              "label": "White"
+            },
+            {
+              "value": "blue",
+              "label": "Blue"
+            },
+            {
+              "value": "red",
+              "label": "Red"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        }
+      ]
     },
     {
-      "id": "bakery-filled-pocket",
-      "name": "Filled Pocket Order",
-      "fields": []
+      "id": "SW-BUCKET",
+      "name": "Bucket Hats",
+      "fields": [
+        {
+          "id": "side-a-color",
+          "label": "Side A Color",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "black",
+              "label": "Black"
+            },
+            {
+              "value": "white",
+              "label": "White"
+            },
+            {
+              "value": "blue",
+              "label": "Blue"
+            },
+            {
+              "value": "red",
+              "label": "Red"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        },
+        {
+          "id": "side-b-color",
+          "label": "Side B Color",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "black",
+              "label": "Black"
+            },
+            {
+              "value": "white",
+              "label": "White"
+            },
+            {
+              "value": "blue",
+              "label": "Blue"
+            },
+            {
+              "value": "red",
+              "label": "Red"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        }
+      ]
     },
     {
-      "id": "blanket-order",
-      "name": "Baby Blanket Order",
-      "fields": []
-    },
-    {
-      "id": "hat-order",
-      "name": "Hat Order",
-      "fields": []
-    },
-    {
-      "id": "rice-pack-order",
-      "name": "Rice Pack Order",
-      "fields": []
-    },
-    {
-      "id": "shirt-order",
-      "name": "Custom Shirt Order",
-      "fields": []
+      "id": "SW-SHIRT",
+      "name": "Custom Shirts",
+      "fields": [
+        {
+          "id": "shirt-size",
+          "label": "Shirt size",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "small",
+              "label": "Small"
+            },
+            {
+              "value": "medium",
+              "label": "Medium"
+            },
+            {
+              "value": "large",
+              "label": "Large"
+            }
+          ]
+        },
+        {
+          "id": "shirt-color",
+          "label": "Shirt color",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "black",
+              "label": "Black"
+            },
+            {
+              "value": "white",
+              "label": "White"
+            },
+            {
+              "value": "blue",
+              "label": "Blue"
+            },
+            {
+              "value": "red",
+              "label": "Red"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        },
+        {
+          "id": "theme",
+          "label": "Theme",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "minecraft",
+              "label": "Minecraft"
+            },
+            {
+              "value": "dragons",
+              "label": "Dragons"
+            },
+            {
+              "value": "dogs",
+              "label": "Dogs"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        },
+        {
+          "id": "nametext",
+          "label": "Name\\Text",
+          "type": "text",
+          "required": true
+        }
+      ]
     }
   ]
 }

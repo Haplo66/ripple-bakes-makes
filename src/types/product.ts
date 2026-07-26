@@ -1,5 +1,4 @@
 import type { CollectionCategory, CollectionImageTone } from './collection';
-import type { ProductCustomization } from './product-options';
 
 /** Specific product types offered by RIPPLE Bakes & Makes. */
 export type ProductCategory =
@@ -84,7 +83,4 @@ export interface Product {
 
   /** Display-only price information. */
   priceLabel?: string;
-
-  /** Optional customization metadata for future product detail and inquiry flows. */
-  customization?: ProductCustomization;
 }

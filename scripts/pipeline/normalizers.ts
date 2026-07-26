@@ -121,19 +121,120 @@ export const normalizeProductOptions = (records: CsvRecord[]) =>
     helpText: parseNullableString(values.helpText ?? ''),
   }));
 
+interface FormOptionRecord {
+  value: string;
+  label: string;
+}
+
+interface FormFieldRecord {
+  id: string;
+  label: string;
+  type: string;
+  required: boolean;
+  options?: FormOptionRecord[];
+}
+
+interface FormRecordOutput {
+  id: string;
+  name: string;
+  fields: FormFieldRecord[];
+}
+
+const fieldTypeMap: Record<string, string> = {
+  dropdown: 'select',
+  textbox: 'text',
+  select: 'select',
+  text: 'text',
+  textarea: 'textarea',
+  number: 'number',
+  checkbox: 'checkbox',
+  radio: 'radio',
+  multiselect: 'multiselect',
+};
+
+const mapFieldType = (rawType: string): string => {
+  const key = rawType.trim().toLowerCase();
+  return fieldTypeMap[key] || 'text';
+};
+
+const normalizeFormsNewFormat = (
+  records: CsvRecord[],
+): FormRecordOutput[] => {
+  const groups = new Map<string, FormRecordOutput>();
+
+  for (const { values } of records) {
+    const formId = values.formId?.trim() || values['Form ID']?.trim() || '';
+    const formName = values.formName?.trim() || values['Form Name']?.trim() || '';
+    const fieldName = values.fieldName?.trim() || values['Field Name']?.trim() || '';
+    const fieldType = values.fieldType?.trim() || values['Field Type']?.trim() || '';
+    const valuesStr = values.values?.trim() || values.Values?.trim() || '';
+    const required = values.required?.trim() || values.Required?.trim() || '';
+
+    if (!formId || !fieldName) continue;
+
+    if (!groups.has(formId)) {
+      groups.set(formId, {
+        id: formId,
+        name: formName,
+        fields: [],
+      });
+    }
+
+    const group = groups.get(formId)!;
+
+    const rawValues = valuesStr
+      ? valuesStr.split(/[|,]/).map((v) => v.trim()).filter(Boolean)
+      : [];
+
+    group.fields.push({
+      id: slugify(fieldName),
+      label: fieldName,
+      type: mapFieldType(fieldType),
+      required: parseBoolean(required),
+      options: rawValues.length > 0
+        ? rawValues.map((v) => ({ value: slugify(v), label: v }))
+        : undefined,
+    });
+  }
+
+  return Array.from(groups.values());
+};
+
 export const normalizeForms = (
   records: CsvRecord[],
   file: string,
   warnings: PipelineWarning[],
-) =>
-  records.map(({ rowNumber, values }) => ({
-    id: values.id,
-    name: values.name,
-    description: values.description,
-    fields: parseJsonField(values.fields ?? '', [], {
-      file,
-      rowNumber,
-      column: 'fields',
-      warnings,
-    }),
-  }));
+): FormRecordOutput[] => {
+  if (records.length === 0) return [];
+
+  const record = records[0];
+  const hasFieldsKey = 'fields' in record.values;
+  const hasFieldRowKeys =
+    ('fieldName' in record.values) ||
+    ('Field Name' in record.values) ||
+    (('formId' in record.values || 'Form ID' in record.values) && !hasFieldsKey);
+
+  if (hasFieldRowKeys) {
+    return normalizeFormsNewFormat(records);
+  }
+
+  if (hasFieldsKey) {
+    return records.map(({ rowNumber, values }) => ({
+      id: values.id || values.formId || '',
+      name: values.name || values.formName || '',
+      fields: parseJsonField(values.fields ?? '', [], {
+        file,
+        rowNumber,
+        column: 'fields',
+        warnings,
+      }),
+    }));
+  }
+
+  warnings.push({
+    file,
+    reason: 'Forms data format not recognized. Expected row-per-field or JSON fields column.',
+  });
+
+  return [];
+};

@@ -43,6 +43,15 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
   <div class="product-form__fields" data-cart-fields>
     {form.fields.map((field) => <FormField field={field} />)}
 
+    <label class="product-form__notes">
+      Comments
+      <textarea
+        name="notes"
+        placeholder="Special requests, dietary needs, or anything else..."
+        rows="3"
+      ></textarea>
+    </label>
+
     <label class="product-form__quantity">
       Quantity
       <input
@@ -123,6 +132,22 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
   cartForms.forEach((form) => {
     const confirmation = form.querySelector('[data-cart-confirmation]');
 
+    const otherInputs = form.querySelectorAll('[data-other-input]');
+
+    otherInputs.forEach((otherInput) => {
+      const fieldId = otherInput.dataset.otherInput;
+      const select = form.querySelector(`[name="${fieldId}"]`);
+
+      if (!select) return;
+
+      const toggleOther = () => {
+        otherInput.hidden = select.value !== 'other';
+      };
+
+      select.addEventListener('change', toggleOther);
+      toggleOther();
+    });
+
     const getConfiguration = () => {
       const data = new FormData(form);
       const configuration = {};
@@ -132,7 +157,24 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
           return;
         }
 
+        if (key.endsWith('-other')) {
+          return;
+        }
+
         const stringValue = String(value);
+
+        if (stringValue === 'other') {
+          const otherKey = `${key}-other`;
+          const otherValue = data.get(otherKey);
+          configuration[key] = stringValue;
+
+          if (otherValue) {
+            configuration[otherKey] = String(otherValue);
+          }
+
+          return;
+        }
+
         const currentValue = configuration[key];
 
         if (Array.isArray(currentValue)) {
@@ -213,6 +255,27 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
   .product-form__fields :global(.form-field:has(textarea)),
   .product-form__fields :global(.form-field:has(fieldset)) {
     grid-column: span 2;
+  }
+
+  .product-form__notes {
+    color: var(--cocoa);
+    display: flex;
+    flex-direction: column;
+    font-size: .78rem;
+    font-weight: 600;
+    gap: .4rem;
+    grid-column: span 2;
+  }
+
+  .product-form__notes textarea {
+    background: #fffdfa;
+    border: 1px solid var(--line);
+    border-radius: .55rem;
+    color: var(--cocoa);
+    font-size: .92rem;
+    outline-color: var(--honey);
+    padding: .72rem .8rem;
+    resize: vertical;
   }
 
   .product-form__quantity {

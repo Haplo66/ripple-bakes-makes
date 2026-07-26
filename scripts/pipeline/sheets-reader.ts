@@ -26,18 +26,14 @@ const HEADER_MAP: Record<DatasetName, Record<string, string>> = {
     'Homepage Featured': 'homepageFeatured',
   },
   forms: {
-    'Form ID': 'id',
-    'Form Name': 'name',
-  },
-  productOptions: {
-    'Product ID': 'productId',
-    'Option Name': 'optionName',
-    'Option Type': 'optionType',
+    'Form ID': 'formId',
+    'Form Name': 'formName',
+    'Field Name': 'fieldName',
+    'Field Type': 'fieldType',
+    'Values': 'values',
     'Required': 'required',
-    'Display Order': 'displayOrder',
-    'Placeholder': 'placeholder',
-    'Help Text': 'helpText',
   },
+
 };
 
 const normalizeHeader = (header: string, dataset: DatasetName): string =>

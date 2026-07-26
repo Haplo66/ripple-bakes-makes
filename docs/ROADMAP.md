@@ -23,7 +23,7 @@ RIPPLE Bakes & Makes is a premium artisan small business website for handmade ba
 | Layer | Technology | Responsibility |
 |-------|-----------|----------------|
 | Static Site | Astro 6 | SSG, routing, components |
-| Business Data | Google Sheets | Products, collections, forms, options |
+| Business Data | Google Sheets | Products, collections, forms |
 | Business Assets | Google Drive | Product images, branding, banners, favicon |
 | Deployment | GitHub Pages | Free static hosting |
 | Language | TypeScript | All pipeline and site code |
@@ -180,6 +180,31 @@ Why it mattered: Browse → Customize → Add to Cart → Checkout → Owner Not
 
 ---
 
+### v1.12.1 — Unified Product Form System ✅ Complete
+
+**Goal:** Replace the duplicated Product Options system with the Forms system as the single source of truth for all product customization.
+
+**Completed capabilities:**
+- Forms sheet becomes the single source of customization definitions
+- Row-per-field structure (Form ID, Field Name, Field Type, Values, Required)
+- Product Form ID controls which form is rendered on the product page
+- Support for both new row-based and legacy JSON-blob form formats during migration
+- Product Options dependency fully removed
+- Universal customer comments field on every product
+- Dynamic "Other" option handling with inline text input
+- Dropdown and Textbox field types supported
+- Products without a Form ID display comments and quantity only
+
+**Migration approach:**
+- Pipeline supports both formats for backward compatibility
+- Product Options sheet is no longer read by the pipeline
+- Legacy generated data preserved until the next pipeline run
+- Existing cart and checkout workflow unchanged
+
+**Why it mattered:** The owner manages all customization options from Google Sheets. New customizable products require no code changes. Simpler and more maintainable product management.
+
+---
+
 ## Current Architecture
 
 ### Content Pipeline (Product Data)
@@ -189,7 +214,6 @@ Google Sheets                     Google Drive
   Products                          Product Images
   Collections                       Collection Images
   Forms                             Homepage Images
-  Product Options                   Business Area Images
        │                            Logo and Symbol
        │                            Favicon
        │                                  │
@@ -240,7 +264,6 @@ Customer Browser
 | Product metadata | Google Sheets | Generated JSON |
 | Collection metadata | Google Sheets | Generated JSON |
 | Form definitions | Google Sheets | Generated JSON |
-| Product options | Google Sheets | Generated JSON |
 | Product images | Google Drive | `public/images/products/` |
 | Collection images | Google Drive | `public/images/collections/` |
 | Homepage banners | Google Drive | `public/images/home/` |
@@ -358,15 +381,17 @@ Includes:
 
 ## Current Status
 
-**Version: v1.12**
+**Version: v1.12.1**
 
 ### What Works Today
 
 **Content Pipeline**
-- Google Sheets manages all structured business data: products, collections, forms, and product options
+- Google Sheets manages all structured business data: products, collections, and forms
 - Google Drive manages all business assets: product images, collection images, business area images, homepage images, logo, and favicon
 - `npm run update` synchronises both sources and rebuilds the website in a single command
 - Data quality warnings catch missing fields before they reach production
+- Forms sheet uses row-per-field structure for simpler management
+- Product Options sheet is no longer required
 
 **Ordering Workflow**
 - Customers can browse, customize, add to cart, and submit orders
@@ -410,7 +435,6 @@ Includes:
 
 ### Known Small Improvements
 
-- `formId` is currently required for all products, but not all products need an order form (e.g., standard bakery items). Should be made optional in a future update.
 - Validation reports during `npm run update` could be more actionable for non-technical users.
 
 ---

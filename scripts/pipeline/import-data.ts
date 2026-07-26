@@ -12,7 +12,6 @@ import {
 import {
   normalizeCollections,
   normalizeForms,
-  normalizeProductOptions,
   normalizeProducts,
 } from './normalizers.ts';
 import type { DatasetName, PipelineWarning } from './types.ts';
@@ -103,17 +102,6 @@ const run = async (): Promise<void> => {
   if (formInput.found) {
     writeGeneratedJson(OUTPUT_FILES.forms, forms);
     generatedFiles.push(OUTPUT_FILES.forms);
-  }
-
-  const productOptionsInput = await readValidRecords('productOptions');
-  const productOptions = sortById(
-    normalizeProductOptions(productOptionsInput.records),
-  );
-  logDatasetResult('productOptions', productOptions.length);
-
-  if (productOptionsInput.found) {
-    writeGeneratedJson(OUTPUT_FILES.productOptions, productOptions);
-    generatedFiles.push(OUTPUT_FILES.productOptions);
   }
 
   logWarnings(warnings);
