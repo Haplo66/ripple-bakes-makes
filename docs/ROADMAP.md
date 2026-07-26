@@ -214,22 +214,17 @@ Google Sheets                     Google Drive
   Products                          Product Images
   Collections                       Collection Images
   Forms                             Homepage Images
-       │                            Logo and Symbol
-       │                            Favicon
+                                    Business Area Images
+                                    Logo and Symbol
+                                    Favicon
        │                                  │
        └──────────┬───────────────────────┘
                   │
                   ▼
          RIPPLE Content Pipeline
                   │
-          ┌───────┴────────┐
-          │                 │
-          ▼                 ▼
-   Import: Data        Import: Assets
-   (normalize,         (MD5 sync,
-    validate)           download)
-          │                 │
-          └───────┬─────────┘
+          Import: Data
+          Import: Assets
                   │
                   ▼
          Validate Content
@@ -261,15 +256,15 @@ Customer Browser
 
 | Content Type | Source | Target |
 |-------------|--------|--------|
-| Product metadata | Google Sheets | Generated JSON |
-| Collection metadata | Google Sheets | Generated JSON |
-| Form definitions | Google Sheets | Generated JSON |
-| Product images | Google Drive | `public/images/products/` |
-| Collection images | Google Drive | `public/images/collections/` |
-| Homepage banners | Google Drive | `public/images/home/` |
-| Business area images | Google Drive | `public/images/business-areas/` |
-| Logo and symbol | Google Drive | `public/images/logo/` |
-| Favicon files | Google Drive | `public/` |
+| Products | Google Sheets | Generated JSON |
+| Collections | Google Sheets | Generated JSON |
+| Forms | Google Sheets | Generated JSON |
+| Product Images | Google Drive | `public/images/products/` |
+| Collection Images | Google Drive | `public/images/collections/` |
+| Homepage Images | Google Drive | `public/images/home/` |
+| Business Area Images | Google Drive | `public/images/business-areas/` |
+| Logo | Google Drive | `public/images/logo/` |
+| Favicon | Google Drive | `public/` |
 
 ### The Update Command
 
@@ -377,6 +372,20 @@ Includes:
 - Mock provider retained for development
 - Complete order workflow documentation
 
+### v1.12.1 — Unified Product Form System ✅
+
+Includes:
+- Forms sheet as the single customization source
+- Row-per-field structure for simpler management
+- Product Form ID selects dynamic forms on product pages
+- Backward-compatible importer supporting both row-based and legacy JSON-blob formats
+- Product Options system fully removed
+- Universal Comments field for every product
+- Dynamic "Other" dropdown support with inline text input
+- Dropdown and Textbox field types supported
+- Products without a Form ID display comments and quantity only
+- Existing cart and checkout workflow unchanged
+
 ---
 
 ## Current Status
@@ -391,7 +400,6 @@ Includes:
 - `npm run update` synchronises both sources and rebuilds the website in a single command
 - Data quality warnings catch missing fields before they reach production
 - Forms sheet uses row-per-field structure for simpler management
-- Product Options sheet is no longer required
 
 **Ordering Workflow**
 - Customers can browse, customize, add to cart, and submit orders
@@ -441,47 +449,46 @@ Includes:
 
 ## Next Milestones
 
-### v1.13 — Business Readiness
+### v1.13 — Owner Publishing Workflow
 
-The technical foundation is complete. This milestone focuses on validating and simplifying the real owner workflow.
+**Goal:** Allow the business owner to publish website updates without developer involvement.
 
-Goals:
+### Automatic Publishing
 
-- Review the complete workflow with the owner
-- Confirm Google Sheets usability
-- Confirm Google Drive folder structure
-- Create owner documentation
-- Test real business scenarios:
-  - Add a product
-  - Update pricing
-  - Upload images
-  - Receive an order
-  - Update order status
-- Improve validation messages for non-technical users
+- Scheduled GitHub Actions workflow
+- Automatically run the existing `npm run update`
+- Rebuild Astro site
+- Deploy to GitHub Pages
 
+### Manual Publishing
 
-### v1.14 — Customer Experience
+Allow the owner to immediately publish changes by manually triggering the same GitHub workflow.
 
-Customer-facing improvements.
+The preferred implementation is:
 
-Possible improvements:
+Google Apps Script → GitHub Actions API → Existing update pipeline
 
-- Improve product browsing
-- Improve collection presentation
-- Mobile UX refinements
-- Better inquiry/order experience
-- Gallery improvements
+This is intended for urgent changes only. Normal updates should rely on the scheduled workflow.
 
+### Validation Gate
 
-### Future — Business Operations
+Every deployment must execute the existing validation pipeline before building.
 
-Long-term operational tools:
+Validation outcomes:
 
-- Inventory tracking
-- Order reporting
-- Customer history
-- Sales analytics
-- Business dashboards
+- **Success** → Deploy website
+- **Warning** → Deploy and report warnings
+- **Failure** → Stop deployment and keep current website online
+
+Critical validation failures must never publish a broken website.
+
+### Notifications
+
+On failed deployment:
+
+- Email the owner
+- Include validation errors
+- Explain why deployment was cancelled
 
 ---
 
@@ -493,6 +500,10 @@ Long-term operational tools:
 - **Free solutions only.** The entire stack uses free tiers — GitHub Pages, Google Workspace, open-source tools.
 - **Add complexity when needed, not before.** Every feature must justify its existence against the business need.
 - **The owner should never touch code.** Every interaction with the website should be through Google Workspace or the `npm run update` command.
+- **Publishing should not require a developer.** The owner must be able to publish updates independently.
+- **The owner should only manage Google Workspace.** All content and configuration changes happen in Sheets or Drive.
+- **Automation should execute the existing pipeline, not replace it.** The `npm run update` workflow is the source of truth.
+- **Failed validation must never publish a broken website.** The validation gate is a hard safety boundary.
 
 ---
 
