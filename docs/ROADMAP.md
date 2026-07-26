@@ -390,7 +390,7 @@ Includes:
 
 ## Current Status
 
-**Version: v1.13**
+**Version: v1.13.1**
 
 ### What Works Today
 
@@ -469,9 +469,14 @@ Includes:
 - Validation safety: failed update or build stops the workflow before deployment
 - Documentation in `docs/ORDER_WORKFLOW.md`
 
+**v1.13.1 — Added daily scheduled GitHub Actions publishing**
+- Automatic daily trigger (08:00 UTC / midnight Pacific)
+- Preserved manual `workflow_dispatch` trigger
+- Preserved local `npm run update` workflow
+- Preserved `push` to `master` trigger
+
 ### Remaining
 
-- Deploy on a schedule (cron trigger) — for automatic periodic updates
 - Notification on failure (email or GitHub notification)
 - Google Apps Script → GitHub API integration for trigger-from-Sheets workflow
 

@@ -456,6 +456,37 @@ All values must match what is currently in your local `.env` file.
 - Only a successful update + build results in a deployment.
 - The `push` to `master` trigger also uses `npm run update`, so commits pushed directly to GitHub also deploy fresh content.
 
+### Automatic Daily Publishing
+
+The website also updates automatically every day around midnight Pacific Time (08:00 UTC).
+
+```
+Google Workspace (Sheets + Drive)
+        ↓
+GitHub Actions scheduled workflow (daily)
+        ↓
+npm run update
+        ↓
+  ├── Validate environment
+  ├── Repair Drive image extensions
+  ├── Import Drive assets
+  ├── Import Google Sheets data
+  ├── Validate generated content
+  └── Astro build
+        ↓
+GitHub Pages deployment
+```
+
+If the scheduled run fails, the existing website stays online. No action is needed — the next day's run will retry.
+
+All three publishing methods use the same pipeline:
+
+| Method | Trigger | When to Use |
+|---|---|---|
+| `push` to master | Automatic on commit | Code changes requiring a deploy |
+| Manual **Run workflow** | Browser click | Immediate publish after content changes |
+| Scheduled (daily) | Automatic at midnight PT | Regular content sync
+
 ---
 
 ## Testing
