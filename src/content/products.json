@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-26T19:21:17.623Z",
+    "generatedAt": "2026-07-26T20:53:42.128Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -202,7 +202,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "business-areas/BK",
+      "imageFolder": "collections/BK-SB",
       "primaryImage": "01.jpg"
     },
     {

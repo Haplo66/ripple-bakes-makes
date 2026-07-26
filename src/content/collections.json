@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-26T19:21:17.618Z",
+    "generatedAt": "2026-07-26T20:53:42.123Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -162,8 +162,11 @@
       "businessArea": "bakery",
       "slug": "rolls",
       "name": "Rolls",
-      "heroImage": null,
-      "images": [],
+      "imageFolder": "collections/BK-RL",
+      "heroImage": "01.jpg",
+      "images": [
+        "01.jpg"
+      ],
       "featured": false,
       "status": "Active",
       "displayOrder": 0,
@@ -192,8 +195,11 @@
       "businessArea": "bakery",
       "slug": "sourdough-bread",
       "name": "Sourdough Bread",
-      "heroImage": null,
-      "images": [],
+      "imageFolder": "collections/BK-SB",
+      "heroImage": "01.jpg",
+      "images": [
+        "01.jpg"
+      ],
       "featured": false,
       "status": "Active",
       "displayOrder": 0,
