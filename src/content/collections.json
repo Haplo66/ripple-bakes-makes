@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-26T17:26:24.573Z",
+    "generatedAt": "2026-07-26T19:21:17.618Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -71,8 +71,11 @@
       "businessArea": "bakery",
       "slug": "challah-bread",
       "name": "Challah Bread",
-      "heroImage": null,
-      "images": [],
+      "imageFolder": "collections/BK-CH",
+      "heroImage": "01.jpg",
+      "images": [
+        "01.jpg"
+      ],
       "featured": false,
       "status": "Active",
       "displayOrder": 0,
@@ -108,8 +111,11 @@
       "businessArea": "bakery",
       "slug": "filled-pockets",
       "name": "Filled Pockets",
-      "heroImage": null,
-      "images": [],
+      "imageFolder": "collections/BK-FP",
+      "heroImage": "01.jpg",
+      "images": [
+        "01.jpg"
+      ],
       "featured": false,
       "status": "Active",
       "displayOrder": 0,
@@ -123,8 +129,11 @@
       "businessArea": "bakery",
       "slug": "garlic-buns",
       "name": "Garlic Buns",
-      "heroImage": null,
-      "images": [],
+      "imageFolder": "collections/BK-GB",
+      "heroImage": "01.jpg",
+      "images": [
+        "01.jpg"
+      ],
       "featured": false,
       "status": "Active",
       "displayOrder": 0,
