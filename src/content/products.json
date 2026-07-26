@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-26T17:21:05.959Z",
+    "generatedAt": "2026-07-26T17:26:24.574Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -68,7 +68,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 10,
+      "price": 20,
       "imageFolder": "products/BK-FP-001",
       "primaryImage": "01.jpg"
     },
@@ -250,7 +250,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 0,
+      "price": 20,
       "imageFolder": "products/SW-BC-001",
       "primaryImage": "01.jpg"
     },
@@ -301,7 +301,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 0,
+      "price": 20,
       "imageFolder": "business-areas/SW",
       "primaryImage": "01.jpg"
     },
@@ -326,7 +326,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 0,
+      "price": 20,
       "imageFolder": "business-areas/SW",
       "primaryImage": "01.jpg"
     },
@@ -351,7 +351,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 0,
+      "price": 20,
       "imageFolder": "products/SW-RP-001",
       "primaryImage": "01.jpg"
     },
@@ -375,7 +375,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 0,
+      "price": 20,
       "imageFolder": "products/SW-RP-002",
       "primaryImage": "01.jpg"
     },
@@ -400,7 +400,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 0,
+      "price": 20,
       "imageFolder": "business-areas/SW",
       "primaryImage": "01.jpg"
     },
@@ -425,7 +425,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 0,
+      "price": 20,
       "imageFolder": "business-areas/SW",
       "primaryImage": "01.jpg"
     }
