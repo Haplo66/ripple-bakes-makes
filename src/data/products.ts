@@ -121,6 +121,10 @@ export const getFeaturedProducts = (
 export const getHomepageFeatured = (): Product[] =>
   orderedActive(products.filter((product) => product.homepageFeatured));
 
+/** Returns all products (including inactive) sorted by display order, for static path generation. */
+export const getAllProductsForPaths = (): Product[] =>
+  products.slice().sort((a, b) => a.displayOrder - b.displayOrder);
+
 /** Returns a product by unique ID, including inactive records. */
 export const getProductById = (id: string): Product | undefined =>
   products.find((product) => product.id === id);

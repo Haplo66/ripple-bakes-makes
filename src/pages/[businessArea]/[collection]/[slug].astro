@@ -4,17 +4,19 @@ import FormRenderer from '../../../components/forms/FormRenderer.astro';
 import ProductGallery from '../../../components/products/ProductGallery.astro';
 import ProductGrid from '../../../components/products/ProductGrid.astro';
 import SectionTitle from '../../../components/SectionTitle.astro';
-import { getAllProducts, getProductsByCollection } from '../../../data/products';
+import { getAllProductsForPaths, getProductsByCollection } from '../../../data/products';
 import { collections } from '../../../data/collections';
 import { getFormById } from '../../../data/forms';
 import { sitePath } from '../../../utils/paths';
 import { getProductPrimaryImage, getProductImages } from '../../../utils/images';
 import { formatPrice } from '../../../utils/format';
+import { getPurchaseState } from '../../../utils/purchase-state';
+import type { PurchaseState } from '../../../utils/purchase-state';
 import type { Product } from '../../../types/product';
 import type { Form } from '../../../types/form';
 
 export async function getStaticPaths() {
-  const products = getAllProducts();
+  const products = getAllProductsForPaths();
 
   return products.map((product) => {
     let collectionSlug = '';
@@ -72,8 +74,9 @@ const businessAreaTitle =
 const matchedCollection = collections.find(c => c.id === product.collectionId);
 const relatedProducts = getProductsByCollection(product.collectionId).filter(p => p.id !== product.id);
 
-const displayPrice = formatPrice(product.price) || product.priceLabel;
-const customizationForm: Form | undefined = product.formId ? getFormById(product.formId) : undefined;
+const purchaseState = getPurchaseState(product);
+const displayPrice = purchaseState === 'purchasable' ? formatPrice(product.price) || product.priceLabel : null;
+const customizationForm: Form | undefined = purchaseState === 'purchasable' && product.formId ? getFormById(product.formId) : undefined;
 
 ---
 
@@ -167,16 +170,29 @@ const customizationForm: Form | undefined = product.formId ? getFormById(product
             </div>
           </div>
 
-          <FormRenderer
-            form={customizationForm}
-            fallbackTitle={product.title}
-            product={{
-              collectionId: product.collectionId,
-              productId: product.id,
-              productTitle: product.title,
-              price: product.price,
-            }}
-          />
+          {
+            purchaseState === 'purchasable' ? (
+              <FormRenderer
+                form={customizationForm}
+                fallbackTitle={product.title}
+                product={{
+                  collectionId: product.collectionId,
+                  productId: product.id,
+                  productTitle: product.title,
+                  price: product.price,
+                }}
+              />
+            ) : (
+              <div class="purchase-state">
+                <p class="purchase-state__title">
+                  {purchaseState === 'coming-soon' ? 'Coming Soon' : 'Currently Unavailable'}
+                </p>
+                {purchaseState === 'coming-soon' && (
+                  <p class="purchase-state__message">Contact us for availability.</p>
+                )}
+              </div>
+            )
+          }
         </div>
       </div>
     </div>
@@ -315,6 +331,28 @@ const customizationForm: Form | undefined = product.formId ? getFormById(product
   .status-badge--preorder {
     background: var(--cocoa);
     color: #fff;
+  }
+
+  .purchase-state {
+    background: #f6eddf;
+    border-radius: 1.1rem;
+    margin-top: 1.75rem;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .purchase-state__title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    color: var(--cocoa);
+  }
+
+  .purchase-state__message {
+    color: var(--muted);
+    font-size: 0.92rem;
+    margin: 0;
   }
 
   @media (min-width: 768px) {

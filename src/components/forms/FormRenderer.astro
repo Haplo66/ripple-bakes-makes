@@ -200,12 +200,16 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
         return;
       }
 
+      const rawPrice = form.dataset.productPrice;
+      const price = rawPrice ? Number(rawPrice) : undefined;
+
+      if (!price || !Number.isFinite(price)) {
+        return;
+      }
+
       const formData = new FormData(form);
       const quantity = Number(formData.get('quantity') || 1);
       const notesValue = formData.get('notes');
-
-      const rawPrice = form.dataset.productPrice;
-      const price = rawPrice ? Number(rawPrice) : undefined;
 
       addToCart({
         collectionId: form.dataset.collectionId || '',

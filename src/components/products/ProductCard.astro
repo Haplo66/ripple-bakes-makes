@@ -3,6 +3,7 @@ import type { Product } from '../../types/product';
 import { getProductPath } from '../../utils/paths';
 import { getProductPrimaryImage } from '../../utils/images';
 import { formatPrice, formatProductStatus } from '../../utils/format';
+import { getPurchaseState } from '../../utils/purchase-state';
 
 interface Props {
   product: Product;
@@ -15,8 +16,9 @@ const primaryImage = getProductPrimaryImage(product);
 const cardStyle = primaryImage ? `background-image: url(${primaryImage});` : undefined;
 const href = getProductPath(product);
 
+const purchaseState = getPurchaseState(product);
 const statusLabel = formatProductStatus(product.status);
-const displayPrice = formatPrice(product.price) || product.priceLabel;
+const displayPrice = purchaseState === 'purchasable' ? formatPrice(product.price) || product.priceLabel : null;
 ---
 
 <article class="product-card">
@@ -37,6 +39,8 @@ const displayPrice = formatPrice(product.price) || product.priceLabel;
       {product.subtitle && <p class="product-card__subtitle">{product.subtitle}</p>}
       <p class="product-card__description">{product.shortDescription}</p>
       {displayPrice && <span class="product-card__price">{displayPrice}</span>}
+      {purchaseState === 'coming-soon' && <span class="product-card__state product-card__state--coming-soon">Coming Soon</span>}
+      {purchaseState === 'unavailable' && <span class="product-card__state product-card__state--unavailable">Currently Unavailable</span>}
       <span class="product-card__cta">
         View Details <span aria-hidden="true">→</span>
       </span>
@@ -139,6 +143,22 @@ const displayPrice = formatPrice(product.price) || product.priceLabel;
     font-size: 1.1rem;
     font-weight: 700;
     margin-top: 0.75rem;
+  }
+
+  .product-card__state {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
+    letter-spacing: 0.04em;
+  }
+
+  .product-card__state--coming-soon {
+    color: var(--honey);
+  }
+
+  .product-card__state--unavailable {
+    color: #a36e62;
   }
 
   .product-card__content {

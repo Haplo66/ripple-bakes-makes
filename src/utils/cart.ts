@@ -1,4 +1,5 @@
 import type { Cart, CartItem, CartItemInput } from '../types/cart';
+import { getProductById } from '../data/products';
 
 const CART_STORAGE_KEY = 'ripple-cart';
 
@@ -125,6 +126,12 @@ export const saveCart = (cart: Cart): Cart => {
 
 /** Adds a new item to the cart while preserving its selected configuration. */
 export const addToCart = (item: CartItemInput): Cart => {
+  const product = getProductById(item.productId);
+
+  if (!product || !product.active || product.price == null || !Number.isFinite(product.price)) {
+    return getCart();
+  }
+
   const cart = getCart();
   const cartItem: CartItem = {
     ...item,
