@@ -236,20 +236,27 @@ Google Sheets                     Google Drive
           GitHub Pages
 ```
 
-### Order Pipeline (Operational Data)
+### Submission Pipeline (Operational Data)
 
 ```
 Customer Browser
         │
-        ▼
-  Astro Website (Cart → Checkout)
+        ├── Astro Website (Cart → Checkout)
+        │           │
+        │           ▼
+        │   Google Apps Script Web App
+        │           │
+        │           ├── Orders Sheet
+        │           ├── Order Items Sheet
+        │           └── Email Notification
         │
-        ▼
-  Google Apps Script Web App
-        │
-        ├── Orders Sheet
-        ├── Order Items Sheet
-        └── Email Notification
+        └── Astro Website (Contact Form)
+                    │
+                    ▼
+            Google Apps Script Web App
+                    │
+                    ├── Inquiries Sheet
+                    └── Email Notification
 ```
 
 ### Sheets vs Drive Responsibility
@@ -390,7 +397,7 @@ Includes:
 
 ## Current Status
 
-**Version: v1.14**
+**Version: v1.15**
 
 ### What Works Today
 
@@ -421,10 +428,19 @@ Includes:
 - `featured` controls which products are highlighted within collections and business area pages
 - The two flags operate independently
 
+**Contact Inquiry Workflow**
+- Contact form with topic dropdown (7 options), preferred contact, and message
+- Submission sent to the same Apps Script endpoint as orders
+- Inquiries sheet receives every submission with full details
+- Email notification to owner for every inquiry
+- Loading, success, and error UI states implemented
+- Mock submission for development (no endpoint configured)
+
 **Website**
 - 17 products across Bakery and Sewing managed through Google Sheets
 - 13 collections with dynamic pages for each
 - Cart and checkout pages with real order submission
+- Contact page with working inquiry form and backend integration
 - Static Astro site deployed on GitHub Pages
 
 **Publishing Workflow**
@@ -447,6 +463,12 @@ Includes:
 2. View order details, customizations, and pricing in Google Sheets
 3. Update order status as it progresses
 4. Communicate with customer to arrange pickup
+
+**Inquiry Management**
+1. Receive email notification for new inquiries
+2. View inquiry details and topic in the Inquiries sheet
+3. Respond to the customer via their preferred contact method
+4. Update inquiry status as needed (New → In Progress → Resolved)
 
 ### Known Small Improvements
 
@@ -482,6 +504,67 @@ Includes:
 ---
 
 ### v1.14 — Sheets Publish Button ✅ Verified
+
+**Test date:** July 26, 2026
+
+**Goal:** Allow the owner to publish website updates directly from Google Sheets.
+
+**Implemented:**
+- Custom menu "RIPPLE Website → Publish Website" in the content spreadsheet
+- Google Apps Script bound to the content sheet calls the GitHub Actions API
+- GitHub Personal Access Token stored securely via Apps Script Script Properties
+- Triggers the existing `workflow_dispatch` on `deploy.yml`
+- Emergency fallback: GitHub Actions manual trigger remains available
+- Documentation and setup instructions in `docs/ORDER_WORKFLOW.md`
+
+**End-to-end verification:**
+- Google Sheets Publish Website button tested successfully
+- Google Apps Script successfully called GitHub Actions `workflow_dispatch` API
+- GitHub Actions build job completed successfully
+- Existing `npm run update` pipeline executed successfully:
+  - Environment validation
+  - Google Drive asset repair
+  - Google Drive asset import
+  - Google Sheets data import
+  - Astro static build
+- GitHub Pages deploy job completed successfully
+- Website deployment verified
+
+**Architecture:**
+
+```
+Google Sheets
+  ↓
+Apps Script (bound to sheet)
+  ↓
+GitHub Actions API (workflow_dispatch)
+  ↓
+Existing deploy workflow (npm run update)
+  ↓
+GitHub Pages
+```
+
+---
+
+### v1.15 — Contact Inquiry Workflow ✅
+
+**Goal:** Add a complete contact inquiry workflow that integrates with the existing Google Apps Script backend.
+
+**Completed:**
+- Contact form with polished UI (topic dropdown, preferred contact, name, email, phone, message)
+- Form validation and submission UX (loading, success, error states)
+- Shared endpoint with orders: same `PUBLIC_SUBMISSION_ENDPOINT` serves both flows
+- Apps Script routes payloads by type: `handleOrder()` for orders, `handleInquiry()` for inquiries
+- Inquiries sheet with structured columns (inquiry ID, timestamp, status, name, email, phone, topic, preferred contact, message, source)
+- Inquiry ID generation (`INQ-YYYYMMDD-###`)
+- Email notification for every inquiry submission
+- Mock submission for development (simulates success when no endpoint is configured)
+
+**Environment consolidation:**
+- `PUBLIC_ORDER_ENDPOINT` and `PUBLIC_INQUIRY_ENDPOINT` merged into single `PUBLIC_SUBMISSION_ENDPOINT`
+- GitHub repository secret and all docs references updated
+
+**Why it mattered:** Customers can now reach out with custom requests, questions, and feedback directly through the website. The owner receives organized inquiries in Google Sheets and email notifications — matching the same professional workflow as orders. The shared endpoint keeps maintenance simple.
 
 **Test date:** July 26, 2026
 
@@ -613,7 +696,20 @@ Do not add implementation history, debugging notes, terminal output, bug fixes, 
 - Email list
 - Local community marketing
 
-### 3. Future Business Platform Expansion
+### 3. Inquiry → Convert to Order
+
+**Goal:** Allow the owner to convert an inquiry into an order directly from Google Sheets.
+
+**Planned:**
+- Copy inquiry data (name, email, phone, preferred contact) into a new Orders row
+- Generate a new order ID (`RIP-YYYYMMDD-###`)
+- Update the inquiry status to `Converted`
+- Link the inquiry ID to the new order ID
+- Trigger a notification to the customer
+
+This is planned but not yet implemented.
+
+### 4. Future Business Platform Expansion
 
 Long-term possibility of expanding Google Workspace into a lightweight business operating system:
 
@@ -636,10 +732,7 @@ RIPPLE Website → Customers
 - build automated test suite (both code review, and scraping)
 **- simplify images upload workflow (no product id, no picture numbering)**
   - if replacing pictures - it won't update
-- get in touch form - review and implement email?
 - wording and pages improvements
-  - available only local / serving bay-area
-  - update generic email
   - our story page + images
   - consider removing collection feature items 
   - ask about buttons - if from sawing need to set dropdown to sewing
@@ -647,6 +740,3 @@ RIPPLE Website → Customers
   - images getting cut (sizing issue?)
   - home page first sentence - wording and font
   - instead of pressing "discover more" for baking or sewing, also press on the picture
-- potential bugs
-
-- move script files 

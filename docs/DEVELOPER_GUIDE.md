@@ -177,14 +177,33 @@ Checkout page
   appsScriptSubmissionProvider (fetch POST)
        |
        v
-  Google Apps Script Web App
+  Google Apps Script Web App (doPost)
        |
-       ├── Orders sheet
-       ├── Order Items sheet
-       └── Email notification to owner
+       ├── handleOrder()
+       │   ├── Orders sheet
+       │   ├── Order Items sheet
+       │   └── Email notification to owner
 ```
 
-The submission provider is auto-selected: if `PUBLIC_SUBMISSION_ENDPOINT` is set, the Apps Script provider is used; otherwise the mock provider handles submissions locally.
+### Inquiry Submission
+
+Inquiries flow from the contact form to the same Google Apps Script Web App:
+
+```
+Contact page (ContactForm.astro)
+       |
+       v
+  Client-side fetch POST
+       |
+       v
+  Google Apps Script Web App (doPost)
+       |
+       ├── handleInquiry()
+       │   ├── Inquiries sheet
+       │   └── Email notification to owner
+```
+
+The submission endpoint is shared: if `PUBLIC_SUBMISSION_ENDPOINT` is set, both orders and inquiries are sent to the Apps Script, which routes them by payload type. Without it, the mock provider handles submissions locally (no data written to Sheets).
 
 ## GitHub Actions
 

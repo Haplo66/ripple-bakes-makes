@@ -7,6 +7,7 @@
 - [Collections Worksheet](#collections-worksheet)
 - [Products Worksheet](#products-worksheet)
 - [Forms Worksheet](#forms-worksheet)
+- [Inquiries Worksheet](#inquiries-worksheet)
 - [Mapping To JSON](#mapping-to-json)
 - [Related Documentation](#related-documentation)
 
@@ -18,13 +19,22 @@ For pipeline internals, see [IMPORT_PIPELINE.md](./IMPORT_PIPELINE.md). For runt
 
 ## Worksheets
 
-The workbook contains three worksheets:
+The workbook is organized into content worksheets (read by the pipeline) and operational worksheets (written by the Apps Script backend):
 
 ```mermaid
-flowchart LR
-  collections["Collections worksheet"] --> pipeline["Import pipeline"]
-  products["Products worksheet"] --> pipeline
-  forms["Forms worksheet"] --> pipeline
+flowchart TD
+  subgraph content["Content Worksheets (pipeline reads)"]
+    collections["Collections"]
+    products["Products"]
+    forms["Forms"]
+  end
+  subgraph operational["Operational Worksheets (Apps Script writes)"]
+    orders["Orders"]
+    orderItems["Order Items"]
+    inquiries["Inquiries"]
+  end
+
+  content --> pipeline["Import pipeline"]
   pipeline --> json["src/content/*.json"]
   json --> website["Astro website"]
 ```
@@ -143,6 +153,33 @@ birthday-cake-form,Birthday Cake,Flavor,dropDown,Vanilla|Chocolate|Lemon|Marble,
 birthday-cake-form,Birthday Cake,Frosting,dropDown,Buttercream|Cream Cheese|Chocolate Ganache,Yes
 birthday-cake-form,Birthday Cake,Custom Message,text,,No
 ```
+
+## Inquiries Worksheet
+
+**Sheet name:** `Inquiries`
+
+This sheet is written by the Apps Script `handleInquiry()` function when a contact form is submitted.
+
+Columns:
+
+| Column | Type | Required | Description |
+| --- | --- | --- | --- |
+| `inquiryId` | string | yes | Auto-generated: `INQ-YYYYMMDD-###` |
+| `createdAt` | string | yes | ISO timestamp of submission |
+| `status` | string | yes | Initial value: `New` |
+| `name` | string | yes | Customer full name |
+| `email` | string | yes | Customer email address |
+| `phone` | string | no | Customer phone number |
+| `topic` | string | yes | Inquiry topic from form dropdown |
+| `preferredContact` | string | yes | email / phone / text |
+| `message` | string | yes | Freeform inquiry message |
+| `source` | string | yes | Always `ripple-website` |
+
+Example row:
+
+| inquiryId | createdAt | status | name | email | phone | topic | preferredContact | message | source |
+|---|---|---|---|---|---|---|---|---|---|
+| INQ-20260727-001 | 2026-07-27T10:15:00Z | New | Eyal Tal | eyal@example.com | 555-0100 | custom | email | I'd like a custom quilted table runner. | ripple-website |
 
 ## Mapping To JSON
 

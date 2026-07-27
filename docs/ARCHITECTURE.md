@@ -8,6 +8,8 @@
 - [Data Flow](#data-flow)
 - [Build Pipeline](#build-pipeline)
 - [Runtime Architecture](#runtime-architecture)
+  - [Order Submission](#order-submission)
+  - [Inquiry Submission](#inquiry-submission)
 - [Data Loaders](#data-loaders)
 - [Component Relationships](#component-relationships)
 - [Design Principles](#design-principles)
@@ -142,10 +144,44 @@ Astro generates:
 - collection pages such as `/bakery/cakes`
 - product pages such as `/bakery/cakes/birthday-cake`
 
-Cart and checkout behavior is client-side (localStorage). Order submission uses a provider abstraction under `src/utils/submission/`:
+Cart and checkout behavior is client-side (localStorage). The contact form is also client-side and submits inquiries through the same backend.
 
-- **`appsScriptSubmissionProvider`** — active when `PUBLIC_SUBMISSION_ENDPOINT` is set; sends orders to a Google Apps Script Web App
-- **`mockSubmissionProvider`** — fallback for local development without an endpoint
+Both submission types use a provider abstraction under `src/utils/submission/` and share a single endpoint:
+
+### Order Submission
+
+```
+Checkout page
+    ↓
+appsScriptSubmissionProvider (fetch POST)
+    ↓
+PUBLIC_SUBMISSION_ENDPOINT
+    ↓
+Google Apps Script Web App (doPost)
+    ↓
+handleOrder()
+    ├── Orders sheet
+    ├── Order Items sheet
+    └── Email notification to owner
+```
+
+### Inquiry Submission
+
+```
+Contact Form (ContactForm.astro)
+    ↓
+Client-side fetch POST
+    ↓
+PUBLIC_SUBMISSION_ENDPOINT
+    ↓
+Google Apps Script Web App (doPost)
+    ↓
+handleInquiry()
+    ├── Inquiries sheet
+    └── Email notification to owner
+```
+
+**Provider selection:** `PUBLIC_SUBMISSION_ENDPOINT` is shared by both flows. When set, the Apps Script provider is active and handles both orders and inquiries. Without it, the mock provider handles submissions locally (no data written to Sheets).
 
 Products without a numeric price display as **Coming Soon** and cannot be added to the cart. Products with `price: 0` are purchasable. Inactive products are hidden from listings.
 
@@ -221,3 +257,4 @@ These should extend the relevant layer, not move business logic into Astro pages
 - [GOOGLE_SHEET_SCHEMA.md](./GOOGLE_SHEET_SCHEMA.md): worksheet columns and JSON mapping
 - [IMPORT_PIPELINE.md](./IMPORT_PIPELINE.md): import process internals and commands
 - [BUSINESS_WORKFLOW.md](./BUSINESS_WORKFLOW.md): owner update instructions
+- [ORDER_WORKFLOW.md](./ORDER_WORKFLOW.md): order and inquiry submission flows
