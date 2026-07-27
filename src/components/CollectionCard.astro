@@ -9,13 +9,16 @@ interface Props {
 
 const { collection } = Astro.props;
 const primaryImage = getCollectionPrimaryImage(collection);
-const cardStyle = primaryImage ? `background-image: url(${primaryImage});` : undefined;
 const href = collectionPath(collection.category, collection.slug);
 ---
 
 <article class="collection-card" id={collection.slug}>
   <a class="collection-card__link" href={href} aria-label={`Explore the ${collection.title} collection`}>
-    <div class:list={['collection-card__image', `image-panel--${collection.imageTone}`]} style={cardStyle} role="img" aria-label={primaryImage ? `${collection.title} collection` : `${collection.title} collection image placeholder`}>
+    <div class:list={['collection-card__image', `image-panel--${collection.imageTone}`]}>
+      {primaryImage
+        ? <img class="collection-card__img" src={primaryImage} alt={collection.title} />
+        : <div class="collection-card__img-placeholder" />}
+      <div class="collection-card__image-overlay" />
       {collection.badge && <span class="collection-card__badge">{collection.badge}</span>}
       <span class="collection-card__image-label">{collection.subtitle}</span>
     </div>
@@ -28,5 +31,5 @@ const href = collectionPath(collection.category, collection.slug);
 </article>
 
 <style>
-  .collection-card{height:100%}.collection-card__link{border:1px solid var(--line);border-radius:1.15rem;display:block;height:100%;overflow:hidden;transition:box-shadow .25s ease,transform .25s ease}.collection-card__link:hover{box-shadow:var(--shadow);transform:translateY(-5px)}.collection-card__link:focus-visible{box-shadow:0 0 0 4px rgba(214,165,75,.45);outline:none}.collection-card__image{background-color:var(--cream);background-position:center;background-size:contain;background-repeat:no-repeat;min-height:290px;overflow:hidden;position:relative}.collection-card__image:after{background:linear-gradient(180deg,transparent 42%,rgba(74,51,38,.36));content:'';inset:0;position:absolute}.collection-card__image-label{bottom:1rem;color:#fff;font-family:'Playfair Display',serif;font-size:1.15rem;left:1.15rem;position:absolute;z-index:1}.collection-card__badge{background:var(--cocoa);border-radius:99px;color:#fff;font-size:.68rem;font-weight:600;left:1rem;letter-spacing:.08em;padding:.4rem .65rem;position:absolute;text-transform:uppercase;top:1rem;z-index:1}.collection-card__content{background:var(--paper);padding:1.4rem 1.5rem 1.5rem}.collection-card h2{font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:500;letter-spacing:-.04em;margin:0}.collection-card p{color:var(--muted);font-size:.9rem;margin:.35rem 0 1.1rem}.collection-card__cta{font-size:.82rem;font-weight:600}.collection-card__cta span{color:var(--honey);font-size:1.1rem;margin-left:.2rem}
+  .collection-card{height:100%}.collection-card__link{border:1px solid var(--line);border-radius:1.15rem;display:block;height:100%;overflow:hidden;transition:box-shadow .25s ease,transform .25s ease}.collection-card__link:hover{box-shadow:var(--shadow);transform:translateY(-5px)}.collection-card__link:focus-visible{box-shadow:0 0 0 4px rgba(214,165,75,.45);outline:none}.collection-card__image{background-color:var(--cream);min-height:290px;overflow:hidden;position:relative}.collection-card__img{display:block;height:100%;left:0;object-fit:contain;position:absolute;top:0;width:100%}.collection-card__img-placeholder{height:100%;width:100%}.collection-card__image-overlay{background:linear-gradient(180deg,transparent 42%,rgba(74,51,38,.36));inset:0;pointer-events:none;position:absolute;z-index:1}.collection-card__image-label{bottom:1rem;color:#fff;font-family:'Playfair Display',serif;font-size:1.15rem;left:1.15rem;position:absolute;z-index:2}.collection-card__badge{background:var(--cocoa);border-radius:99px;color:#fff;font-size:.68rem;font-weight:600;left:1rem;letter-spacing:.08em;padding:.4rem .65rem;position:absolute;text-transform:uppercase;top:1rem;z-index:2}.collection-card__content{background:var(--paper);padding:1.4rem 1.5rem 1.5rem}.collection-card h2{font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:500;letter-spacing:-.04em;margin:0}.collection-card p{color:var(--muted);font-size:.9rem;margin:.35rem 0 1.1rem}.collection-card__cta{font-size:.82rem;font-weight:600}.collection-card__cta span{color:var(--honey);font-size:1.1rem;margin-left:.2rem}
 </style>

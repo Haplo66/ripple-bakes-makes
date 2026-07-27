@@ -13,7 +13,6 @@ const { product } = Astro.props;
 
 const imageTone = product.imageTone || 'cream';
 const primaryImage = getProductPrimaryImage(product);
-const cardStyle = primaryImage ? `background-image: url(${primaryImage});` : undefined;
 const href = getProductPath(product);
 
 const purchaseState = getPurchaseState(product);
@@ -23,12 +22,11 @@ const displayPrice = purchaseState === 'purchasable' ? formatPrice(product.price
 
 <article class="product-card">
   <a class="product-card__link" href={href}>
-    <div
-      class:list={['product-card__image', `image-panel--${imageTone}`]}
-      style={cardStyle}
-      role="img"
-      aria-label={primaryImage ? product.title : `${product.title} image placeholder`}
-    >
+    <div class:list={['product-card__image', `image-panel--${imageTone}`]}>
+      {primaryImage
+        ? <img class="product-card__img" src={primaryImage} alt={product.title} />
+        : <div class="product-card__img-placeholder" />}
+      <div class="product-card__image-overlay" />
       <span class:list={['product-card__status', `product-card__status--${product.status}`]}>
         {statusLabel}
       </span>
@@ -76,16 +74,26 @@ const displayPrice = purchaseState === 'purchasable' ? formatPrice(product.price
 
   .product-card__image {
     aspect-ratio: 4 / 3;
-    background-position: center;
-    background-size: cover;
     overflow: hidden;
     position: relative;
   }
 
-  .product-card__image::after {
+  .product-card__img {
+    display: block;
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .product-card__img-placeholder {
+    height: 100%;
+    width: 100%;
+  }
+
+  .product-card__image-overlay {
     background: linear-gradient(180deg, transparent 40%, rgba(74, 51, 38, 0.3));
-    content: '';
     inset: 0;
+    pointer-events: none;
     position: absolute;
   }
 

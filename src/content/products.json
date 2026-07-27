@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-27T21:20:26.388Z",
+    "generatedAt": "2026-07-27T21:49:12.500Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -352,9 +352,9 @@
       "featured": false,
       "homepageFeatured": false,
       "formId": "SW-RICEPACKS",
-      "image": "main-sewing.jpg",
+      "image": "main-rice-pack.jpg",
       "images": [
-        "main-sewing.jpg",
+        "main-rice-pack.jpg",
         "gallery-01.jpg",
         "gallery-02.jpg",
         "gallery-03.jpg"
@@ -363,8 +363,8 @@
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "business-areas/Sewing",
-      "primaryImage": "main-sewing.jpg"
+      "imageFolder": "products/Sewing/Rice Heating Packs/Rice Pack",
+      "primaryImage": "main-rice-pack.jpg"
     },
     {
       "id": "SW-RP-002",
@@ -377,19 +377,18 @@
       "featured": false,
       "homepageFeatured": false,
       "formId": "SW-RICEPACKS",
-      "image": "main-sewing.jpg",
+      "image": "main-shoulder-rice-pack.jpg",
       "images": [
-        "main-sewing.jpg",
+        "main-shoulder-rice-pack.jpg",
         "gallery-01.jpg",
-        "gallery-02.jpg",
-        "gallery-03.jpg"
+        "gallery-02.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "business-areas/Sewing",
-      "primaryImage": "main-sewing.jpg"
+      "imageFolder": "products/Sewing/Rice Heating Packs/Shoulder Rice Pack",
+      "primaryImage": "main-shoulder-rice-pack.jpg"
     },
     {
       "id": "SW-ST-001",
@@ -426,19 +425,20 @@
       "featured": false,
       "homepageFeatured": false,
       "formId": "SW-TOWEL",
-      "image": "main-sewing.jpg",
+      "image": "main-towel-hanger.jpg",
       "images": [
-        "main-sewing.jpg",
+        "main-towel-hanger.jpg",
         "gallery-01.jpg",
         "gallery-02.jpg",
-        "gallery-03.jpg"
+        "gallery-03.jpg",
+        "gallery-04.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "business-areas/Sewing",
-      "primaryImage": "main-sewing.jpg"
+      "imageFolder": "products/Sewing/Towels/Towel Hanger",
+      "primaryImage": "main-towel-hanger.jpg"
     }
   ]
 }

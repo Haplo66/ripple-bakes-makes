@@ -73,11 +73,24 @@ export function resolveProductImages(
   const resolvedAreaName = areaName || toBusinessAreaName(businessAreaId);
   const areaCode = toBusinessAreaCode(businessAreaId);
 
-  if (productName && collectionName) {
-    candidates.push({
-      path: join(IMAGE_DIR, 'products', resolvedAreaName, collectionName, productName),
-      folderKey: `products/${resolvedAreaName}/${collectionName}/${productName}`,
-    });
+  if (productName && resolvedAreaName) {
+    const baDir = join(IMAGE_DIR, 'products', resolvedAreaName);
+    if (existsSync(baDir)) {
+      for (const entry of readdirSync(baDir, { withFileTypes: true })) {
+        if (!entry.isDirectory()) continue;
+        const subPath = join(baDir, entry.name, productName);
+        if (existsSync(subPath)) {
+          const result = scanImageFolder(subPath);
+          if (result.found) {
+            return {
+              images: result.files,
+              primaryImage: result.files[0],
+              imageFolder: `products/${resolvedAreaName}/${entry.name}/${productName}`,
+            };
+          }
+        }
+      }
+    }
   }
 
   if (productName) {
