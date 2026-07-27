@@ -41,8 +41,8 @@ The following products intentionally have no images to verify the fallback hiera
 ## Generation
 
 - Product images: `scripts/tools/generate-demo-images.ps1`
-- Gallery images: generated inline during the v1.9.5.1 asset structure fix
+- Gallery images: generated placeholder images
 
 ## Build Note
 
-Run `npm run import:data` after adding or removing images to regenerate product data.
+Run `npm run update` after adding or removing images to regenerate product data and rebuild the site.

@@ -1,6 +1,6 @@
 # Gallery Test Products
 
-Reference for QA testing gallery scenarios (v1.9.1).
+Reference for QA testing gallery scenarios.
 
 | Product ID | Name | Images | Gallery Behaviour | Page Route |
 |---|---|---|---|---|
@@ -8,7 +8,7 @@ Reference for QA testing gallery scenarios (v1.9.1).
 | BK-FP-002 | Chocolate Filled Pocket | 1 | Single image, no thumbnails | /bakery/filled-pockets/chocolate-filled-pocket |
 | BK-FP-003 | Savory Filled Pocket | 0 | Placeholder fallback panel | /bakery/filled-pockets/savory-filled-pocket |
 | BK-CA-001 | Classic Celebration Cake | 2 | Two-image gallery | /bakery/other-bakery/classic-celebration-cake |
-| SW-SH-001 | Premium Custom Shirt | 5 | Maximum gallery (5 images) | /sewing/custom-shirts/premium-custom-shirt |
+| SW-SH-001 | Premium Custom Shirt | 5 | Gallery with thumbnail strip | /sewing/custom-shirts/premium-custom-shirt |
 | SW-HAT-001 | Premium Bucket Hat | 3 | Standard gallery | /sewing/bucket-hats/premium-bucket-hat |
 
 ## Image Folder Locations
@@ -28,7 +28,7 @@ public/images/products/
 - [ ] BK-FP-002: No thumbnail strip, single image displayed
 - [ ] BK-FP-003: Placeholder gradient panel, no broken image
 - [ ] BK-CA-001: Two thumbnails, switching works
-- [ ] SW-SH-001: All 5 thumbnails visible and clickable, no layout breakage
+- [ ] SW-SH-001: All thumbnails visible and clickable, no layout breakage
 - [ ] SW-HAT-001: 3 thumbnails, standard gallery layout
 - [ ] All pages: Responsive at mobile/tablet/desktop widths
 - [ ] All pages: `npm run build` succeeds with no errors

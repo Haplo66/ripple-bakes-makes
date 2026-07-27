@@ -6,7 +6,7 @@ How to keep your website up to date.
 
 ## Business Data
 
-Your website content — products, collections, forms, and options — is managed in **Google Sheets**.
+Your website content — products, collections, and forms — is managed in **Google Sheets**.
 
 You can edit the spreadsheet directly on Google Drive:
 
@@ -14,8 +14,10 @@ You can edit the spreadsheet directly on Google Drive:
 - Update prices or descriptions
 - Change product availability
 - Organise into collections
+- Set which products appear on the homepage
+- Define order forms and customization fields
 
-The website reads from these sheets automatically. You never need to touch code or files.
+The website reads from these sheets when you publish. You never need to touch code or files.
 
 ---
 
@@ -75,6 +77,21 @@ The command will show each step as it runs:
 
 If something needs attention, you will see a warning. The website will still build, but you should check the warning message.
 
+### About Product Prices
+
+- **With a price** (any number, including `0`) — the product can be added to the cart and ordered.
+- **Without a price** (empty cell) — the product shows a "Coming Soon" label on the website and cannot be ordered.
+- The `price` column must contain numbers only (e.g. `45`). Use the `priceLabel` column for display text like "From $45".
+
+### About Featured Products
+
+The spreadsheet has two featured columns that work independently:
+
+- **`featured`** — controls which products are highlighted in featured sections throughout the site (collection pages, business area pages).
+- **`homepageFeatured`** — controls which products appear in the spotlight section on the homepage.
+
+Neither flag controls whether a product is listed on the site — only `active` does that. A product can be featured, homepage-featured, both, or neither.
+
 ---
 
 ## Adding a Product
@@ -118,9 +135,9 @@ Your new product will appear on the site with its images.
 For best results:
 
 - Use `.jpg` or `.png` files
-- Name them in order: `01.jpg`, `02.jpg`, `03.jpg`
-- Maximum 5 images per product
-- The first image (`01.jpg`) is the main product photo
+- Name them in order: `01.jpg`, `02.jpg`, `03.jpg`, and so on
+- The first image (alphabetically) is the main product photo
+- There is no limit on the number of images per product
 
 ---
 
@@ -132,7 +149,8 @@ These messages do not stop the update. They let you know something might need at
 |---------|---------------|
 | *Product is using default image* | No product image was found. A placeholder will be shown on the website. Add images to the product folder in Drive. |
 | *Missing description* | The product has no description in the spreadsheet. Add one so customers know what it is. |
-| *Form ID is missing* | The product does not have an order form assigned. Customers will not be able to order it online. |
+| *Form ID is missing* | The product does not have an order form assigned. Customers will still be able to order it, but no customization form will be shown. |
+| *Product has no price* | The product will display as "Coming Soon" on the website. Add a price to make it orderable. |
 
 ---
 

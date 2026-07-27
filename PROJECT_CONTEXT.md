@@ -21,20 +21,23 @@ Technology:
 - GitHub Pages deployment
 - No paid services
 - No backend server
-- GitHub-backed form handling
+- Google Sheets + Google Drive as data sources
+- Google Apps Script order workflow
 - Mobile-first responsive design
 
 
 Current status:
 - Website already builds successfully
 - Deployment to GitHub Pages works
-- Six routes exist:
+- Routes:
   /
   /bakery
   /sewing
   /gallery
   /contact
   /about
+  /cart
+  /checkout
 
 
 Existing architecture:
@@ -42,16 +45,16 @@ Components:
 - Header
 - Footer
 - Logo
-- SectionTitle
-- ServiceCard
+- ProductCard
+- CollectionGrid
+- FormRenderer
+- CartSummary
 - GalleryGrid
-- TestimonialCard
-- ContactForm
 
 Data:
-- gallery.ts
-- services.ts
-- testimonials.ts
+- Google Sheets → generated JSON → typed loaders (src/data/)
+- Google Drive → dynamic image discovery (public/images/)
+- Static data (gallery, testimonials) in src/data/static/
 
 
 Brand identity:

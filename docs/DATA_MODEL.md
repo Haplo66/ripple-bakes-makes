@@ -12,7 +12,7 @@
 
 ## Purpose
 
-This document describes the domain data consumed by the Astro website. It focuses on the generated JSON records and the TypeScript types in `src/types/`. For spreadsheet column details, see [GOOGLE_SHEET_SCHEMA.md](./GOOGLE_SHEET_SCHEMA.md).
+This document describes the domain data consumed by the Astro website. It focuses on the generated JSON records (stored in `src/content/`) and the TypeScript types in `src/types/`. For spreadsheet column details, see [GOOGLE_SHEET_SCHEMA.md](./GOOGLE_SHEET_SCHEMA.md).
 
 ## Generated Data Wrapper
 
@@ -30,7 +30,7 @@ Generated JSON files use a shared wrapper:
 }
 ```
 
-Loader modules read `data` and map records into runtime types.
+Loader modules in `src/data/` read from the generated JSON in `src/content/` and map records into runtime types.
 
 ## Collections
 
@@ -91,26 +91,46 @@ Properties:
 | `subtitle` | string | Recommended | `Classic layers made to celebrate.` | Product detail subtitle. |
 | `shortDescription` | string | Recommended | `Customizable layer cake...` | Card summary. |
 | `description` | string | Recommended | `Our signature birthday cake...` | Product detail copy. |
-| `image` | string or null | Optional | `null` | Product image path when available. |
-| `imageFolder` | string | Optional | `bakery/cakes/birthday-cake` | Future image organization hint. |
-| `imageTone` | tone string | Optional | `cream` | Placeholder visual treatment. |
-| `status` | product status | Optional | `available` | Loader maps source labels like `Active` to runtime values. |
-| `active` | boolean | Optional | `true` | Controls public listing. |
-| `featured` | boolean | Optional | `true` | Used for featured sections. |
-| `displayOrder` | number | Recommended | `1` | Sort order within a group. |
-| `formId` | string | Yes in source | `birthday-cake-form` | References a form definition. |
+| `image` | string or null | Resolver-derived | `null` | Primary product image, resolved via fallback hierarchy. |
+| `primaryImage` | string | Resolver-derived | `/images/products/bakery-cakes-birthday-cake/01.jpg` | First image from the resolved image folder. |
+| `images` | string array | Resolver-derived | `["01.jpg", "02.jpg"]` | All images discovered in the product's image folder. |
+| `imageFolder` | string | Resolver-derived | `products/bakery-cakes-birthday-cake` | Resolved relative path under `public/images/`. |
+| `imageTone` | tone string | Optional | `cream` | Placeholder visual treatment when no image is found. |
+| `price` | number | Optional | `45` | Numeric price. `null` or missing renders the product as Coming Soon. `0` is valid and purchasable. |
 | `priceLabel` | string | Optional | `From $45` | Display-only pricing copy. |
+| `status` | product status | Optional | `available` | Loader maps source labels like `Active` to runtime values. |
+| `active` | boolean | Optional | `true` | Controls public listing. Inactive products are hidden from all listings. |
+| `featured` | boolean | Optional | `true` | Controls highlighting in featured sections. Does not affect product existence or homepage display. |
+| `homepageFeatured` | boolean | Optional | `true` | Controls spotlight placement on the homepage. Independent of `featured`. |
+| `displayOrder` | number | Recommended | `1` | Sort order within a group. |
+| `formId` | string | Optional | `birthday-cake-form` | References a form definition. Products without a form can still be ordered via cart (no customization form is rendered). |
 | `customization` | object | Optional | `{}` | Reserved for richer product customization metadata. |
 
 Products connect to:
 
 - collections through `collection` in source data and `collectionId` at runtime
 - forms through `formId`
-- images through `image` or future assets organized under `imageFolder`
+- images through the image resolver, which scans `public/images/products/<productId>/` and falls back to collection-level or business-area-level folders
+
+### Purchase State
+
+Product availability is determined by the `active` flag and the `price` field:
+
+| Condition | State |
+|-----------|-------|
+| `active: true` and `price` is a valid finite number (including `0`) | **purchasable** — can be added to cart and ordered |
+| `active: true` and `price` is `null`, `undefined`, or non-finite | **coming-soon** — displayed on the site with a "Coming Soon" label, cannot be ordered |
+| `active: false` | **unavailable** — hidden from all listings |
+
+### Featured vs HomepageFeatured
+
+- `featured`: used by `getFeaturedProducts()` for highlighting on collection and business-area pages. Multiple products can be featured. Does not control homepage display.
+- `homepageFeatured`: used by `getHomepageFeatured()` for the homepage spotlight section. Independent of `featured`.
+- Neither flag controls whether a product is listed — only `active` does that.
 
 ## Forms
 
-A form describes configurable fields rendered by `FormRenderer`.
+A form describes configurable fields rendered by `FormRenderer`. Forms are stored in Google Sheets using a **row-per-field** format. Each row represents one field belonging to a form.
 
 Properties:
 
@@ -120,21 +140,34 @@ Properties:
 | `name` | string | Yes | `Birthday Cake` | Sheet-friendly label. |
 | `title` | string | Loader-derived | `Birthday Cake` | UI title, defaults from `name`. |
 | `description` | string | Optional | `Customize a birthday cake order.` | Short form summary. |
-| `fields` | array | Recommended | `[{ "id": "flavor" }]` | Dynamic field definitions. |
+| `fields` | array | Recommended | `[{ "id": "flavor" }]` | Dynamic field definitions, assembled from all rows sharing the same form ID. |
 
 ### Field Structure
 
+Fields are defined as rows in the Forms worksheet with these source columns:
+
+| Source Column | Maps To | Notes |
+| --- | --- | --- |
+| `formId` / `Form ID` | `id` (form-level) | Groups rows into a single form. |
+| `formName` / `Form Name` | `name` (form-level) | Display name for the form. |
+| `fieldName` / `Field Name` | `label` | Display label for the field. |
+| `fieldType` / `Field Type` | `type` | Mapped to supported field types (e.g. `dropdown` → `select`). |
+| `values` / `Values` | `options` | Pipe-delimited list of option values for choice fields. |
+| `required` / `Required` | `required` | Whether the field is required. |
+
+Each generated field has these properties:
+
 | Property | Type | Required | Example | Notes |
 | --- | --- | --- | --- | --- |
-| `id` | string | Yes | `flavor` | Field key stored in cart configuration. |
+| `id` | string | Yes | `flavor` | Field key stored in cart configuration (slugified from label). |
 | `label` | string | Yes | `Flavor` | Display label. |
 | `type` | string | Yes | `select` | Must be a supported field type. |
 | `required` | boolean | Yes | `true` | Enables required validation. |
+| `options` | array | For choice fields | `[{ "value": "vanilla", "label": "Vanilla" }]` | Used by select, radio, and multiselect fields. |
 | `section` | string | Optional | `Cake Details` | Groups related fields. |
 | `placeholder` | string | Optional | `Happy birthday, Maya!` | Input hint. |
 | `helpText` | string | Optional | `Optional short message...` | Supporting text. |
 | `defaultValue` | string | Optional | `vanilla` | Initial value. |
-| `options` | array | For choice fields | `[{ "value": "vanilla", "label": "Vanilla" }]` | Used by select, radio, and multiselect fields. |
 | `condition` | object | Optional | `{ "fieldId": "theme", "equals": "other" }` | Shows a field based on another field's value. |
 | `validation` | object | Optional | `{ "maxLength": 60 }` | Browser validation hints. |
 
@@ -195,5 +228,5 @@ Collection and product relationships drive dynamic routes. Product and form rela
 
 - [ARCHITECTURE.md](./ARCHITECTURE.md): system architecture and runtime structure
 - [GOOGLE_SHEET_SCHEMA.md](./GOOGLE_SHEET_SCHEMA.md): source worksheet columns
-- [IMPORT_PIPELINE.md](./IMPORT_PIPELINE.md): generated JSON process
-- [DEVELOPER_GUIDE.md](./DEVELOPER_GUIDE.md): common maintainer workflows
+- [IMPORT_PIPELINE.md](./IMPORT_PIPELINE.md): import process and generated JSON format
+- [BUSINESS_WORKFLOW.md](./BUSINESS_WORKFLOW.md): owner guide for managing content

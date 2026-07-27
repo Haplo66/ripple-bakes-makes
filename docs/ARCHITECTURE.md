@@ -16,86 +16,119 @@
 
 ## Purpose
 
-RIPPLE Bakes & Makes is a static Astro website for a premium handmade bakery and sewing business. The architecture keeps business content in data files, renders collection and product pages from that data, and avoids any required backend so the site remains compatible with GitHub Pages.
-
-The current source of truth is a manually exported Google Sheet. The website does not read Google Sheets directly. CSV exports are processed by the RIPPLE Data Pipeline into JSON files under `src/data/`.
+RIPPLE Bakes & Makes is a static Astro website for a premium handmade bakery and sewing business. The architecture keeps business content in Google Sheets and images in Google Drive, processes them through a data pipeline into generated JSON, then renders collection and product pages from that data. There is no server backend.
 
 ## System Overview
 
 ```mermaid
 flowchart TD
   owner["Business owner"] --> sheet["Google Sheet"]
-  sheet --> csv["Manual CSV export"]
-  csv --> import["data/import/*.csv"]
-  import --> pipeline["RIPPLE Data Pipeline"]
-  pipeline --> json["src/data/*.json"]
+  owner --> drive["Google Drive"]
+  sheet --> reader["Sheets reader / CSV reader"]
+  reader --> pipeline["RIPPLE Data Pipeline"]
+  drive --> importer["Drive asset importer"]
+  importer --> images["public/images"]
+  images --> resolver["Image scanner/resolver"]
+  pipeline --> json["src/content/*.json"]
   json --> loaders["src/data/*.ts loaders"]
+  resolver --> loaders
   loaders --> pages["Astro pages"]
   pages --> static["Static HTML/CSS/JS"]
   static --> github["GitHub Pages"]
 ```
 
-The key design decision is separation between source import and website rendering. Astro only depends on generated JSON and typed loaders. Future source systems should replace only the input adapter, not the website.
+The pipeline supports two input modes:
+- **Google Sheets API** (production, `SHEETS_ENABLED=true`) — reads worksheets directly
+- **CSV files** (local development fallback) — reads from `data/import/*.csv`
+
+The key design decision is separation between source import and website rendering. Astro only depends on generated JSON and typed loaders.
 
 ## Project Structure
 
 ```text
-data/import/              CSV exports and sample CSV files
+data/import/              CSV files (local fallback) and sample CSV files
 docs/                     Maintainer documentation
-scripts/pipeline/         Import pipeline stages
+scripts/pipeline/         Import pipeline, Drive sync, image scanning
 src/components/           Reusable Astro UI components
 src/components/cart/      Cart-specific components
 src/components/forms/     Dynamic form renderer components
 src/components/products/  Product listing components
-src/data/                 JSON data and loader modules
+src/content/              Generated JSON (collections.json, products.json, forms.json)
+src/data/                 Typed loader modules (read generated JSON, expose query helpers)
+src/data/static/          Static page data (gallery, testimonials)
 src/layouts/              Shared page layouts
 src/pages/                Static and dynamic Astro routes
 src/styles/               Global styles
 src/types/                Shared TypeScript data contracts
-src/utils/                Cart, order, path, and submission helpers
+src/utils/                Cart, order, path, submission helpers, purchase state
+public/images/            Product, collection, business-area, and homepage images
 ```
 
 ## Data Flow
 
 ```mermaid
 flowchart LR
-  collectionsCsv["collections.csv"] --> reader["csv-reader.ts"]
-  productsCsv["products.csv"] --> reader
-  formsCsv["forms.csv"] --> reader
+  reader["reader.ts (CSV or Sheets)"]
+  sheets["Google Sheets (SHEETS_ENABLED=true)"] --> reader
+  csv["data/import/*.csv"] --> reader
   reader --> validators["validators.ts"]
   validators --> normalizers["normalizers.ts"]
-  normalizers --> sort["Sort by id"]
+  normalizers --> resolver["image-resolver.ts"]
+  resolver --> sort["Sort by id"]
   sort --> generators["generators.ts"]
-  generators --> collectionsJson["collections.json"]
-  generators --> productsJson["products.json"]
-  generators --> formsJson["forms.json"]
+  generators --> collectionsJson["src/content/collections.json"]
+  generators --> productsJson["src/content/products.json"]
+  generators --> formsJson["src/content/forms.json"]
 ```
 
-Pipeline output is deterministic except for `_metadata.generatedAt`, which records the import timestamp. See [IMPORT_PIPELINE.md](./IMPORT_PIPELINE.md) for operational details and [GOOGLE_SHEET_SCHEMA.md](./GOOGLE_SHEET_SCHEMA.md) for the CSV schema.
+Product images are resolved separately via dynamic file-system scanning:
+
+```mermaid
+flowchart LR
+  drive["Google Drive"] --> importer["drive-product-image-importer.ts"]
+  importer --> productDirs["public/images/products/<ProductID>/"]
+  productDirs --> scanner["image-scanner.ts"]
+  scanner --> resolver["image-resolver.ts"]
+  resolver --> primaryImage["primaryImage"]
+  resolver --> images["images[]"]
+  resolver --> imageFolder["imageFolder"]
+```
+
+The image resolver uses a fallback hierarchy: product folder → collection folder → business-area folder → default placeholder warning.
+
+Pipeline output is deterministic except for `_metadata.generatedAt`, which records the import timestamp. See [IMPORT_PIPELINE.md](./IMPORT_PIPELINE.md) for operational details and [GOOGLE_SHEET_SCHEMA.md](./GOOGLE_SHEET_SCHEMA.md) for the sheet schema.
 
 ## Build Pipeline
 
-Local build workflow:
+Full update workflow:
 
 ```mermaid
 sequenceDiagram
-  participant Dev as Developer
-  participant CSV as data/import CSVs
-  participant Pipeline as npm run import:data
-  participant Astro as npm run build
+  participant Owner as Business owner
+  participant Sheets as Google Sheets
+  participant Drive as Google Drive
+  participant Update as npm run update
+  participant Astro as Astro build
   participant Dist as dist/
 
-  Dev->>CSV: Copy exported CSV files
-  Dev->>Pipeline: Generate src/data JSON
-  Pipeline->>Astro: JSON files are ready
-  Dev->>Astro: Build static site
+  Owner->>Sheets: Edit products, collections, forms
+  Owner->>Drive: Add/update product images
+  Owner->>Update: Trigger update
+  Update->>Update: Validate environment
+  Update->>Update: Repair Drive image extensions
+  Update->>Drive: Download assets
+  Update->>Sheets: Import data via API
+  Update->>Update: Validate generated content
+  Update->>Astro: Build static site
   Astro->>Dist: Generate static pages
 ```
 
 Commands:
 
-- `npm run import:data`: converts CSV files into generated JSON.
-- `npm run build`: builds the static Astro site.
+- `npm run update`: full pipeline — validate, sync Drive assets, import sheets data, validate content, build site.
+- `npm run import:data`: data-only import (Google Sheets or CSV), generates JSON to `src/content/`.
+- `npm run import:assets`: Drive asset sync only.
+- `npm run build`: builds the static Astro site from current generated JSON.
 - `npm run dev`: starts local Astro development.
 - `npm run preview`: previews the built site.
 
@@ -109,7 +142,12 @@ Astro generates:
 - collection pages such as `/bakery/cakes`
 - product pages such as `/bakery/cakes/birthday-cake`
 
-Cart and checkout behavior is client-side. Submission currently uses an abstraction under `src/utils/submission/`, with `mockSubmissionProvider.ts` as the active no-backend provider.
+Cart and checkout behavior is client-side (localStorage). Order submission uses a provider abstraction under `src/utils/submission/`:
+
+- **`appsScriptSubmissionProvider`** — active when `PUBLIC_ORDER_ENDPOINT` is set; sends orders to a Google Apps Script Web App
+- **`mockSubmissionProvider`** — fallback for local development without an endpoint
+
+Products without a numeric price display as **Coming Soon** and cannot be added to the cart. Products with `price: 0` are purchasable. Inactive products are hidden from listings.
 
 ## Data Loaders
 
@@ -121,10 +159,10 @@ The website imports JSON only through loader modules:
 
 These loaders:
 
-- read generated JSON from `json.data`
-- still tolerate the previous root-array format
+- read generated JSON from `src/content/*.json`
+- tolerate both the wrapper format (`{ data: [...] }`) and root-array format
 - map sheet-friendly values into UI-friendly types
-- provide query helpers such as `getAllCollections`, `getProductsByCollection`, and `getFormById`
+- provide query helpers such as `getAllCollections`, `getProductsByCollection`, `getFeaturedProducts`, `getHomepageFeatured`, and `getFormById`
 
 Keeping this mapping in loaders protects UI components from spreadsheet vocabulary and generated metadata.
 
@@ -144,6 +182,11 @@ flowchart TD
   formRenderer --> formField["FormField"]
   pages --> cartSummary["CartSummary"]
   cartSummary --> cartItem["CartItem"]
+  pages --> checkoutPage["/checkout"]
+  checkoutPage --> orderPrep["prepareOrder"]
+  orderPrep --> submission["submission provider"]
+  productCard --> purchaseState["purchase-state.ts"]
+  productDetail --> purchaseState
 ```
 
 Components should stay generic. Business-specific content belongs in data, not component branches such as `CakeForm` or `CookiePage`.
@@ -160,23 +203,21 @@ Components should stay generic. Business-specific content belongs in data, not c
 
 ## Extension Points
 
-Current architecture intentionally leaves room for:
+The architecture leaves room for future additions at each layer:
 
-- Google Sheets API input adapter
-- image validation
+- image validation and optimization
 - duplicate ID detection
 - broken image detection
-- pricing and availability
 - tags and search indexes
 - sitemap generation
 - multilingual content
-- real submission provider behind the existing submission abstraction
+- richer pricing models (option-based pricing, quantity discounts)
 
-These should be added by extending the relevant layer, not by moving business logic into Astro pages.
+These should extend the relevant layer, not move business logic into Astro pages.
 
 ## Related Documentation
 
 - [DATA_MODEL.md](./DATA_MODEL.md): complete domain model and relationships
 - [GOOGLE_SHEET_SCHEMA.md](./GOOGLE_SHEET_SCHEMA.md): worksheet columns and JSON mapping
 - [IMPORT_PIPELINE.md](./IMPORT_PIPELINE.md): import process internals and commands
-- [DEVELOPER_GUIDE.md](./DEVELOPER_GUIDE.md): local setup and common development tasks
+- [BUSINESS_WORKFLOW.md](./BUSINESS_WORKFLOW.md): owner update instructions
