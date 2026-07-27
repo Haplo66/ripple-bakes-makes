@@ -33,10 +33,14 @@ const { items } = Astro.props;
 
         grid.querySelectorAll('[data-business-area]').forEach((card) => {
           const area = card.getAttribute('data-business-area');
-          if (filter === 'all' || filter === area) {
+          const srcType = card.getAttribute('data-source-type');
+
+          if (filter === 'all') {
             (card as HTMLElement).style.display = '';
+          } else if (filter === 'personal') {
+            (card as HTMLElement).style.display = srcType === 'personal' ? '' : 'none';
           } else {
-            (card as HTMLElement).style.display = 'none';
+            (card as HTMLElement).style.display = filter === area ? '' : 'none';
           }
         });
       });

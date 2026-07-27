@@ -126,12 +126,17 @@ async function run(): Promise<void> {
   runScript('drive-product-image-importer.ts');
   console.log('');
 
-  console.log('── Step 4: Import Google Sheets Data ──');
+  console.log('── Step 4: Import Gallery Images ──');
+  console.log('');
+  runScript('drive-gallery-image-importer.ts');
+  console.log('');
+
+  console.log('── Step 5: Import Google Sheets Data ──');
   console.log('');
   runScript('import-data.ts');
   console.log('');
 
-  console.log('── Step 5: Validate Generated Content ──');
+  console.log('── Step 6: Validate Generated Content ──');
   console.log('');
   const { warnings } = validateGeneratedContent();
   if (warnings > 0) {
@@ -141,7 +146,7 @@ async function run(): Promise<void> {
   }
   console.log('');
 
-  console.log('── Step 6: Build Website ──');
+  console.log('── Step 7: Build Website ──');
   console.log('');
   execSync('npx astro build', { stdio: 'inherit', cwd: PROJECT_ROOT });
 

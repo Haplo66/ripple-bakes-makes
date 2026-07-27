@@ -140,6 +140,7 @@ Google Drive
     Collection Images/  -- {BA}/{Collection}/ banners
     Homepage Images/    -- hero banners
     Business Area Images/  -- {BA}/ bakery / sewing imagery
+    Gallery Images/      -- gallery-only photos (Personal/)
     Logo and Symbol/    -- brand logos
     Favicon/            -- browser icons
        |
@@ -151,6 +152,7 @@ Google Drive
     products/{BA}/{Collection}/{Product}/  -- main-*.jpg, main-*.png
     collections/{BA}/{Collection}/
     business-areas/{BA}/
+    gallery/personal/
     home/
     logo/
 ```

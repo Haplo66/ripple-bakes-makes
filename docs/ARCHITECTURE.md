@@ -63,7 +63,7 @@ src/pages/                Static and dynamic Astro routes
 src/styles/               Global styles
 src/types/                Shared TypeScript data contracts
 src/utils/                Cart, order, path, submission helpers, purchase state
-public/images/            Product, collection, business-area, and homepage images
+public/images/            Product, collection, business-area, homepage, and gallery images
 ```
 
 ## Data Flow

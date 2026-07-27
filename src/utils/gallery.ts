@@ -1,13 +1,14 @@
 import { getAllProducts } from '../data/products';
 import { getAllCollections } from '../data/collections';
-import { getProductPrimaryImage } from './images';
-import { getCollectionPrimaryImage } from './images';
+import { getProductPrimaryImage, getCollectionPrimaryImage } from './images';
+import { sitePath } from './paths';
+import galleryAssets from '../content/gallery-assets.json';
 
 export interface GalleryItem {
   image: string;
   title: string;
-  businessArea: 'bakery' | 'sewing';
-  source: 'product' | 'collection';
+  businessArea: 'bakery' | 'sewing' | null;
+  sourceType: 'product' | 'collection' | 'personal';
 }
 
 function isDistinctImage(url: string, seen: Set<string>): boolean {
@@ -16,7 +17,7 @@ function isDistinctImage(url: string, seen: Set<string>): boolean {
   return true;
 }
 
-export function getGalleryItems(): GalleryItem[] {
+export function getProductGalleryItems(): GalleryItem[] {
   const items: GalleryItem[] = [];
   const seen = new Set<string>();
 
@@ -27,9 +28,16 @@ export function getGalleryItems(): GalleryItem[] {
       image,
       title: product.title,
       businessArea: product.businessArea,
-      source: 'product',
+      sourceType: 'product',
     });
   }
+
+  return items;
+}
+
+export function getCollectionGalleryItems(): GalleryItem[] {
+  const items: GalleryItem[] = [];
+  const seen = new Set<string>();
 
   for (const collection of getAllCollections()) {
     const image = getCollectionPrimaryImage(collection);
@@ -38,9 +46,35 @@ export function getGalleryItems(): GalleryItem[] {
       image,
       title: collection.title,
       businessArea: collection.category,
-      source: 'collection',
+      sourceType: 'collection',
     });
   }
 
   return items;
+}
+
+export function getPersonalGalleryItems(): GalleryItem[] {
+  const images = galleryAssets.data as string[];
+  return images.map((file) => {
+    const title = file
+      .replace(/\.[^.]+$/, '')
+      .replace(/[-_]/g, ' ')
+      .replace(/(^\w|\s\w)/g, (c) => c.toUpperCase());
+    return {
+      image: sitePath(`images/gallery/personal/${file}`),
+      title,
+      businessArea: null,
+      sourceType: 'personal',
+    };
+  });
+}
+
+export function getGalleryItems(): GalleryItem[] {
+  const seen = new Set<string>();
+  const all = [
+    ...getProductGalleryItems(),
+    ...getCollectionGalleryItems(),
+    ...getPersonalGalleryItems(),
+  ];
+  return all.filter((item) => isDistinctImage(item.image, seen));
 }

@@ -1,4 +1,6 @@
-import { IMPORT_FILES, OUTPUT_FILES, PIPELINE_NAME, PIPELINE_VERSION } from './constants.ts';
+import { existsSync, readdirSync } from 'node:fs';
+import { basename, extname, join } from 'node:path';
+import { IMPORT_FILES, IMAGE_DIR, OUTPUT_FILES, PIPELINE_NAME, PIPELINE_VERSION } from './constants.ts';
 import { sortById, writeGeneratedJson } from './generators.ts';
 import { resolveCollectionImages, resolveProductImages } from './image-resolver.ts';
 import {
@@ -150,6 +152,18 @@ const run = async (): Promise<void> => {
   if (formInput.found) {
     writeGeneratedJson(OUTPUT_FILES.forms, forms);
     generatedFiles.push(OUTPUT_FILES.forms);
+  }
+
+  const personalDir = join(IMAGE_DIR, 'gallery', 'personal');
+  if (existsSync(personalDir)) {
+    const ALLOWED = /\.(jpg|jpeg|png|webp)$/i;
+    const files = readdirSync(personalDir)
+      .filter((f) => ALLOWED.test(f))
+      .sort();
+    if (files.length > 0) {
+      writeGeneratedJson(OUTPUT_FILES.galleryAssets, files);
+      generatedFiles.push(OUTPUT_FILES.galleryAssets);
+    }
   }
 
   logWarnings(warnings);

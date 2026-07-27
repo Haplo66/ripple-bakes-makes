@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-27T23:09:29.881Z",
+    "generatedAt": "2026-07-27T23:47:48.491Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -25,7 +25,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 10,
+      "price": 25,
       "imageFolder": "products/Bakery/Challah Bread/Challah Bread",
       "primaryImage": "main-challah-bread.jpg"
     },
@@ -48,7 +48,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 10,
+      "price": 25,
       "imageFolder": "products/Bakery/Challah Bread/Mini Challah Bread",
       "primaryImage": "main-mini-challah-bread.jpg"
     },
@@ -71,7 +71,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 20,
+      "price": 40,
       "imageFolder": "products/Bakery/Filled Pockets/Cheese Filled Pocket",
       "primaryImage": "main-cheese-filled-pocket.jpg"
     },
@@ -94,7 +94,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 10,
+      "price": 40,
       "imageFolder": "products/Bakery/Filled Pockets/Tuna Filled Pocket",
       "primaryImage": "main-tuna-filled-pocket.jpg"
     },
@@ -117,7 +117,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 10,
+      "price": 40,
       "imageFolder": "collections/Bakery/Filled Pockets",
       "primaryImage": "main-filled-pockets.jpg"
     },
@@ -141,7 +141,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 10,
+      "price": 35,
       "imageFolder": "products/Bakery/Garlic Buns/Garlic Buns",
       "primaryImage": "main-garlic-buns.jpg"
     },
@@ -164,7 +164,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 10,
+      "price": 30,
       "imageFolder": "products/Bakery/Rolls/Rolls",
       "primaryImage": "main-rolls.jpg"
     },
@@ -187,7 +187,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 10,
+      "price": 30,
       "imageFolder": "products/Bakery/Sourdough Bread/Classic Sourdough Loaf",
       "primaryImage": "main-classic-sourdough-loaf.jpg"
     },
@@ -210,7 +210,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 10,
+      "price": 30,
       "imageFolder": "collections/Bakery/Sourdough Bread",
       "primaryImage": "main-sourdough-bread.jpg"
     },
@@ -237,6 +237,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
+      "price": 75,
       "imageFolder": "products/Sewing/Baby Blankets/Custom Baby Blanket",
       "primaryImage": "main-custom-baby-blanket.jpg"
     },
@@ -299,7 +300,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 50,
+      "price": 55,
       "imageFolder": "products/Sewing/Custom Shirts/Custom Design Shirt",
       "primaryImage": "main-custom-design-shirt.jpg"
     },
@@ -325,7 +326,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 20,
+      "price": 30,
       "imageFolder": "business-areas/Sewing",
       "primaryImage": "main-sewing.jpg"
     },
@@ -351,7 +352,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 20,
+      "price": 30,
       "imageFolder": "business-areas/Sewing",
       "primaryImage": "main-sewing.jpg"
     },
@@ -377,7 +378,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 20,
+      "price": 25,
       "imageFolder": "products/Sewing/Rice Heating Packs/Rice Pack",
       "primaryImage": "main-rice-pack.jpg"
     },
@@ -402,7 +403,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 20,
+      "price": 40,
       "imageFolder": "products/Sewing/Rice Heating Packs/Shoulder Rice Pack",
       "primaryImage": "main-shoulder-rice-pack.jpg"
     },
@@ -427,7 +428,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 20,
+      "price": 25,
       "imageFolder": "products/Sewing/Soft Toys/Soft Toy",
       "primaryImage": "main-soft-toy.jpg"
     },
@@ -454,7 +455,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 20,
+      "price": 25,
       "imageFolder": "products/Sewing/Towels/Towel Hanger",
       "primaryImage": "main-towel-hanger.jpg"
     }

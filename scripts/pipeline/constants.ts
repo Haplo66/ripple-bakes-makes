@@ -17,6 +17,7 @@ export const OUTPUT_FILES = {
   collections: 'collections.json',
   products: 'products.json',
   forms: 'forms.json',
+  galleryAssets: 'gallery-assets.json',
 } as const;
 
 export const IMAGE_DIR = path.join(PROJECT_ROOT, 'public', 'images');

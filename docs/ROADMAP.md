@@ -418,7 +418,7 @@ Includes:
 
 ## Current Status
 
-**Version: v1.17**
+**Version: v1.17.2**
 
 ### What Works Today
 
@@ -591,18 +591,30 @@ GitHub Pages
 
 #### v1.17.2 — Personal Gallery
 
-**Status:** Future
+**Status:** Implemented
 
 **Purpose:** Allow owner-managed storytelling images independent of products — behind-the-scenes baking, sewing process, workspace photos, events, seasonal creations, customer stories (future).
 
-**Proposed structure:**
+**Drive structure:**
 ```
 Assets/
-└── Gallery/
-    ├── Personal/
-    ├── Bakery/
-    └── Sewing/
+└── Gallery Images/
+    ├── Personal/     → public/images/gallery/personal/
+    ├── Bakery/       → public/images/gallery/bakery/
+    └── Sewing/       → public/images/gallery/sewing/
 ```
+
+**Implementation:**
+- Dedicated `scripts/pipeline/drive-gallery-image-importer.ts` — standalone importer that scans `Assets/Gallery Images/` subfolders and downloads to `public/images/gallery/{category}/`
+- Integrated into `update-site.ts` as Step 4 (before Sheets import so gallery-assets.json picks up new files)
+- `import-data.ts` scans `public/images/gallery/personal/` and generates `src/content/gallery-assets.json`
+- Gallery data layer (`src/utils/gallery.ts`) merges three sources: `getProductGalleryItems()`, `getCollectionGalleryItems()`, `getPersonalGalleryItems()`
+- Gallery page filter bar: All | Bakery | Sewing | Personal
+- Personal filter shows only manually uploaded gallery images (sourceType: 'personal')
+- Gallery card labels: only [Business Area] badge ("Bakery" / "Sewing") for product and collection items; personal items show title only — no literal type badges are displayed
+- `GalleryItem.sourceType` values: `'product' | 'collection' | 'personal'`
+- Personal images are standalone — no product or collection mapping required
+- Missing gallery folder does not fail build; empty folders allowed
 
 **Design goals:**
 - Simple folder management — no product ID mapping

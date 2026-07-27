@@ -6,13 +6,20 @@ interface Props {
 }
 
 const { item } = Astro.props;
+
+const areaLabels: Record<string, string> = {
+  bakery: 'Bakery',
+  sewing: 'Sewing',
+};
+
+const areaLabel = item.businessArea ? areaLabels[item.businessArea] : '';
 ---
 
-<article class="gallery-card" data-business-area={item.businessArea}>
+<article class="gallery-card" data-business-area={item.businessArea || ''} data-source-type={item.sourceType}>
   <button class="gallery-card__trigger" type="button" aria-label={`View larger: ${item.title}`} data-gallery-trigger data-gallery-image={item.image} data-gallery-title={item.title}>
     <img class="gallery-card__img" src={item.image} alt={item.title} loading="lazy" />
     <div class="gallery-card__overlay">
-      <span class="gallery-card__badge">{item.businessArea === 'bakery' ? 'Bakery' : 'Sewing'}</span>
+      {areaLabel && <span class="gallery-card__badge">{areaLabel}</span>}
       <h3 class="gallery-card__title">{item.title}</h3>
     </div>
   </button>

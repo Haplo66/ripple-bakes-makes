@@ -9,10 +9,11 @@ const filters = [
   { value: 'all', label: 'All' },
   { value: 'bakery', label: 'Bakery' },
   { value: 'sewing', label: 'Sewing' },
+  { value: 'personal', label: 'Personal' },
 ];
 ---
 
-<div class="gallery-filters" role="tablist" aria-label="Filter gallery by business area">
+<div class="gallery-filters" role="tablist" aria-label="Filter gallery images">
   {filters.map((f) => (
     <button
       class:list={['gallery-filters__btn', { 'gallery-filters__btn--active': activeFilter === f.value }]}

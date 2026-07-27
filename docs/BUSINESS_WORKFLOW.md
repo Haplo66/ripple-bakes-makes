@@ -43,6 +43,7 @@ Assets/
 ├── Collection Images/   → {Business Area}/{Collection}/ banners
 ├── Homepage Images/     → Hero banners
 ├── Business Area Images/ → Bakery / Sewing imagery
+├── Gallery Images/     → Gallery-only photos (Personal/)
 ├── Logo and Symbol/     → Brand logos
 └── Favicon/             → Browser icons
 ```

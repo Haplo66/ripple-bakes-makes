@@ -28,7 +28,8 @@ scripts/pipeline/
   sheets-auth.ts          Sheets API authentication
   drive-auth.ts           Drive API authentication
   drive-write-auth.ts     Drive write-scoped authentication
-  drive-product-image-importer.ts  Drive → local asset sync
+  drive-product-image-importer.ts  Drive → local asset sync (products, collections, etc.)
+  drive-gallery-image-importer.ts  Drive → local gallery image sync
   drive-fix-image-extensions.ts    Repair missing file extensions
   validators.ts           Required-field validation
   normalizers.ts          Data normalization and type mapping
@@ -58,10 +59,11 @@ The GitHub Actions workflow sets `SHEETS_ENABLED=true` and reads data directly f
 
 1. **Validate environment** — checks required env vars
 2. **Repair Drive image extensions** — fixes files missing extensions in Drive
-3. **Import Drive assets** — syncs images from Drive to `public/images/`
-4. **Import Google Sheets data** — reads collections, products, forms from Sheets (or CSV fallback) → generates JSON to `src/content/`
-5. **Validate generated content** — checks for missing images, descriptions, empty datasets
-6. **Build website** — runs `astro build`
+3. **Import Drive assets** — syncs product, collection, business-area, homepage images from Drive to `public/images/`
+4. **Import Gallery Images** — syncs gallery images from Drive `Assets/Gallery Images/{Personal,Bakery,Sewing}/` to `public/images/gallery/{category}/`
+5. **Import Google Sheets data** — reads collections, products, forms from Sheets (or CSV fallback) → generates JSON to `src/content/` (also scans gallery folder for `gallery-assets.json`)
+6. **Validate generated content** — checks for missing images, descriptions, empty datasets
+7. **Build website** — runs `astro build`
 
 Missing CSV files (when using CSV mode) are reported as warnings. The pipeline continues processing any files that are present.
 
