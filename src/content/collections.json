@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-27T19:46:00.704Z",
+    "generatedAt": "2026-07-27T20:00:13.160Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -11,7 +11,7 @@
       "businessArea": "sewing",
       "slug": "baby-blankets",
       "name": "Baby Blankets",
-      "imageFolder": "collections/Baby Blankets",
+      "imageFolder": "collections/Sewing/Baby Blankets",
       "heroImage": "main-baby-blankets.jpg",
       "images": [
         "main-baby-blankets.jpg"
@@ -44,7 +44,7 @@
       "businessArea": "sewing",
       "slug": "bowl-cozy",
       "name": "Bowl Cozy",
-      "imageFolder": "collections/Bowl Cozy",
+      "imageFolder": "collections/Sewing/Bowl Cozy",
       "heroImage": "main-bowl-cozy.jpg",
       "images": [
         "main-bowl-cozy.jpg"
@@ -77,7 +77,7 @@
       "businessArea": "bakery",
       "slug": "challah-bread",
       "name": "Challah Bread",
-      "imageFolder": "collections/Challah Bread",
+      "imageFolder": "collections/Bakery/Challah Bread",
       "heroImage": "main-challah-bread.jpg",
       "images": [
         "main-challah-bread.jpg"
@@ -95,7 +95,7 @@
       "businessArea": "sewing",
       "slug": "custom-shirts",
       "name": "Custom Shirts",
-      "imageFolder": "collections/Custom Shirts",
+      "imageFolder": "collections/Sewing/Custom Shirts",
       "heroImage": "main-custom-shirts.jpg",
       "images": [
         "main-custom-shirts.jpg"
@@ -113,7 +113,7 @@
       "businessArea": "bakery",
       "slug": "filled-pockets",
       "name": "Filled Pockets",
-      "imageFolder": "collections/Filled Pockets",
+      "imageFolder": "collections/Bakery/Filled Pockets",
       "heroImage": "main-filled-pockets.jpg",
       "images": [
         "main-filled-pockets.jpg"
@@ -131,7 +131,7 @@
       "businessArea": "bakery",
       "slug": "garlic-buns",
       "name": "Garlic Buns",
-      "imageFolder": "collections/Garlic Buns",
+      "imageFolder": "collections/Bakery/Garlic Buns",
       "heroImage": "main-garlic-buns.jpg",
       "images": [
         "main-garlic-buns.jpg"
@@ -164,7 +164,7 @@
       "businessArea": "bakery",
       "slug": "rolls",
       "name": "Rolls",
-      "imageFolder": "collections/Rolls",
+      "imageFolder": "collections/Bakery/Rolls",
       "heroImage": "main-rolls.jpg",
       "images": [
         "main-rolls.jpg"
@@ -182,7 +182,7 @@
       "businessArea": "sewing",
       "slug": "soft-toys",
       "name": "Soft Toys",
-      "imageFolder": "collections/Soft Toys",
+      "imageFolder": "collections/Sewing/Soft Toys",
       "heroImage": "main-soft-toys.jpg",
       "images": [
         "main-soft-toys.jpg"
@@ -200,7 +200,7 @@
       "businessArea": "bakery",
       "slug": "sourdough-bread",
       "name": "Sourdough Bread",
-      "imageFolder": "collections/Sourdough Bread",
+      "imageFolder": "collections/Bakery/Sourdough Bread",
       "heroImage": "main-sourdough-bread.jpg",
       "images": [
         "main-sourdough-bread.jpg"

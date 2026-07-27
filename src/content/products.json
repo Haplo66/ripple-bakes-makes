@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-27T19:46:00.707Z",
+    "generatedAt": "2026-07-27T20:00:13.162Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -25,7 +25,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "collections/Challah Bread",
+      "imageFolder": "collections/Bakery/Challah Bread",
       "primaryImage": "main-challah-bread.jpg"
     },
     {
@@ -113,7 +113,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "collections/Filled Pockets",
+      "imageFolder": "collections/Bakery/Filled Pockets",
       "primaryImage": "main-filled-pockets.jpg"
     },
     {
@@ -135,7 +135,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "collections/Garlic Buns",
+      "imageFolder": "collections/Bakery/Garlic Buns",
       "primaryImage": "main-garlic-buns.jpg"
     },
     {
@@ -157,7 +157,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "collections/Rolls",
+      "imageFolder": "collections/Bakery/Rolls",
       "primaryImage": "main-rolls.jpg"
     },
     {
@@ -201,7 +201,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "collections/Sourdough Bread",
+      "imageFolder": "collections/Bakery/Sourdough Bread",
       "primaryImage": "main-sourdough-bread.jpg"
     },
     {
@@ -248,7 +248,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "collections/Bowl Cozy",
+      "imageFolder": "collections/Sewing/Bowl Cozy",
       "primaryImage": "main-bowl-cozy.jpg"
     },
     {
@@ -302,10 +302,6 @@
       "image": "main-sewing.jpg",
       "images": [
         "main-sewing.jpg",
-        "01.jpg",
-        "02.jpg",
-        "03.jpg",
-        "04.jpg",
         "gallery-01.jpg",
         "gallery-02.jpg",
         "gallery-03.jpg"
@@ -314,7 +310,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "business-areas/SW",
+      "imageFolder": "business-areas/Sewing",
       "primaryImage": "main-sewing.jpg"
     },
     {
@@ -331,10 +327,6 @@
       "image": "main-sewing.jpg",
       "images": [
         "main-sewing.jpg",
-        "01.jpg",
-        "02.jpg",
-        "03.jpg",
-        "04.jpg",
         "gallery-01.jpg",
         "gallery-02.jpg",
         "gallery-03.jpg"
@@ -343,7 +335,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "business-areas/SW",
+      "imageFolder": "business-areas/Sewing",
       "primaryImage": "main-sewing.jpg"
     },
     {

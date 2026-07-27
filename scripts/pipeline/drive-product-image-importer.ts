@@ -415,9 +415,9 @@ async function importCollectionImages(
     const subfolders = children.filter(c => c.mimeType === DRIVE_FOLDER_MIME);
 
     if (subfolders.length > 0) {
-      // BA subfolder with nested collection folders — recurse
+      // BA subfolder with nested collection folders — include BA name in path
       for (const collFolder of subfolders) {
-        const targetDir = `collections/${collFolder.name}`;
+        const targetDir = `collections/${entry.name}/${collFolder.name}`;
         const result = await importFlatSection(drive, collFolder.id, targetDir, `Collections/${entry.name}/${collFolder.name}`, dryRun);
         total.items += result.items;
         total.downloaded += result.downloaded;
@@ -478,14 +478,16 @@ async function importBusinessAreaImages(
       console.log(`  ${area.name}: unknown area, skipping`);
       continue;
     }
-    const targetDir = `business-areas/${code}`;
-    const label = `${area.name} → ${code}`;
 
     const innerFolderId = await findChildFolder(drive, area.id, code);
-    const scanFolderId = innerFolderId || area.id;
-    const scanLabel = innerFolderId ? `${label}/${code}` : label;
 
-    const result = await importFlatSection(drive, scanFolderId, targetDir, scanLabel, dryRun);
+    // Post-migration: files directly in BA-named folder → use display name as target
+    // Pre-migration: files in inner code-named folder → use code as target for backward compat
+    const targetDir = innerFolderId ? `business-areas/${code}` : `business-areas/${area.name}`;
+    const scanFolderId = innerFolderId || area.id;
+    const label = innerFolderId ? `${area.name} → ${code}` : area.name;
+
+    const result = await importFlatSection(drive, scanFolderId, targetDir, label, dryRun);
     total.items += result.items;
     total.downloaded += result.downloaded;
     total.replaced += result.replaced;

@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { existsSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 import { IMAGE_DIR } from './constants.ts';
 import { scanImageFolder } from './image-scanner.ts';
 import type { PipelineWarning } from './types.ts';
@@ -83,6 +83,19 @@ export function resolveProductImages(
   });
 
   if (collectionName) {
+    const collectionsDir = join(IMAGE_DIR, 'collections');
+    if (existsSync(collectionsDir)) {
+      for (const entry of readdirSync(collectionsDir, { withFileTypes: true })) {
+        if (!entry.isDirectory()) continue;
+        const subPath = join(collectionsDir, entry.name, collectionName);
+        if (existsSync(subPath)) {
+          candidates.push({
+            path: subPath,
+            folderKey: `collections/${entry.name}/${collectionName}`,
+          });
+        }
+      }
+    }
     candidates.push({
       path: join(IMAGE_DIR, 'collections', collectionName),
       folderKey: `collections/${collectionName}`,
@@ -118,6 +131,23 @@ export function resolveCollectionImages(
   collectionName?: string,
 ): { images: string[]; primaryImage: string; imageFolder: string } {
   const candidates: { path: string; folderKey: string }[] = [];
+
+  // Check BA subfolder paths first: collections/{BA}/{collectionName}/
+  if (collectionName) {
+    const collectionsDir = join(IMAGE_DIR, 'collections');
+    if (existsSync(collectionsDir)) {
+      for (const entry of readdirSync(collectionsDir, { withFileTypes: true })) {
+        if (!entry.isDirectory()) continue;
+        const subPath = join(collectionsDir, entry.name, collectionName);
+        if (existsSync(subPath)) {
+          candidates.push({
+            path: subPath,
+            folderKey: `collections/${entry.name}/${collectionName}`,
+          });
+        }
+      }
+    }
+  }
 
   if (collectionName) {
     candidates.push({
