@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-26T20:53:42.131Z",
+    "generatedAt": "2026-07-27T01:00:18.483Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -43,6 +43,62 @@
           "label": "Color B",
           "type": "select",
           "required": true,
+          "options": [
+            {
+              "value": "black",
+              "label": "Black"
+            },
+            {
+              "value": "white",
+              "label": "White"
+            },
+            {
+              "value": "blue",
+              "label": "Blue"
+            },
+            {
+              "value": "red",
+              "label": "Red"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SW-BLANKETS",
+      "name": "Baby Blankets",
+      "fields": [
+        {
+          "id": "accessories",
+          "label": "Accessories",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "hat",
+              "label": "Hat"
+            },
+            {
+              "value": "elephant",
+              "label": "Elephant"
+            }
+          ]
+        },
+        {
+          "id": "name",
+          "label": "Name",
+          "type": "text",
+          "required": false
+        },
+        {
+          "id": "color",
+          "label": "Color",
+          "type": "select",
+          "required": false,
           "options": [
             {
               "value": "black",

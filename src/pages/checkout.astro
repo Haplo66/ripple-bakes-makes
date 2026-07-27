@@ -231,21 +231,34 @@ import { sitePath } from '../utils/paths';
       return;
     }
 
-    const formData = new FormData(form);
-    const order = createOrderFromCart(cart);
+    const invalidItems = cart.items.filter(
+      (item) => item.price == null || !Number.isFinite(item.price),
+    );
 
-    order.customer = {
-      name: sanitizeValue(getFieldValue(formData, 'name')),
-      email: sanitizeValue(getFieldValue(formData, 'email')),
-      phone: sanitizeValue(getFieldValue(formData, 'phone')),
-      preferredContactMethod: sanitizeValue(getFieldValue(formData, 'preferredContactMethod')),
-      preferredPickupDate: sanitizeValue(getFieldValue(formData, 'preferredPickupDate')),
-      additionalNotes: sanitizeValue(getFieldValue(formData, 'additionalNotes')),
-    };
+    if (invalidItems.length > 0) {
+      if (checkoutError) {
+        checkoutError.textContent =
+          'Some items in your cart have no price and cannot be ordered. Please remove them and try again.';
+        checkoutError.hidden = false;
+      }
+      return;
+    }
 
     setSubmitting(true);
 
     try {
+      const formData = new FormData(form);
+      const order = createOrderFromCart(cart);
+
+      order.customer = {
+        name: sanitizeValue(getFieldValue(formData, 'name')),
+        email: sanitizeValue(getFieldValue(formData, 'email')),
+        phone: sanitizeValue(getFieldValue(formData, 'phone')),
+        preferredContactMethod: sanitizeValue(getFieldValue(formData, 'preferredContactMethod')),
+        preferredPickupDate: sanitizeValue(getFieldValue(formData, 'preferredPickupDate')),
+        additionalNotes: sanitizeValue(getFieldValue(formData, 'additionalNotes')),
+      };
+
       const result = await submitOrder(order);
 
       if (result.success) {

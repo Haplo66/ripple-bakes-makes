@@ -203,7 +203,7 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
       const rawPrice = form.dataset.productPrice;
       const price = rawPrice ? Number(rawPrice) : undefined;
 
-      if (!price || !Number.isFinite(price)) {
+      if (price == null || !Number.isFinite(price)) {
         return;
       }
 

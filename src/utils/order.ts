@@ -33,20 +33,34 @@ const sanitizeValue = (
   return value;
 };
 
+/** Validates that a cart item has a usable price. */
+const isValidPrice = (price: unknown): price is number =>
+  typeof price === 'number' && Number.isFinite(price);
+
 /** Converts the current cart into a checkout-ready order payload. */
-export const createOrderFromCart = (cart: Cart): Order => ({
-  items: cart.items.map((item) => ({
-    productId: item.productId,
-    collectionId: item.collectionId,
-    productTitle: item.productTitle,
-    quantity: item.quantity,
-    price: item.price ?? 0,
-    totalPrice: (item.price ?? 0) * item.quantity,
-    configuration: cleanConfiguration(item.configuration, item.productId),
-    notes: item.notes ? sanitizeValue(item.notes) as string : undefined,
-  })),
-  customer: {},
-  createdAt: new Date().toISOString(),
-});
+export const createOrderFromCart = (cart: Cart): Order => {
+  const invalidItem = cart.items.find((item) => !isValidPrice(item.price));
+
+  if (invalidItem) {
+    throw new Error(
+      `Cannot order "${invalidItem.productTitle}" — no price is set. Remove it from your cart and try again.`,
+    );
+  }
+
+  return {
+    items: cart.items.map((item) => ({
+      productId: item.productId,
+      collectionId: item.collectionId,
+      productTitle: item.productTitle,
+      quantity: item.quantity,
+      price: item.price as number,
+      totalPrice: (item.price as number) * item.quantity,
+      configuration: cleanConfiguration(item.configuration, item.productId),
+      notes: item.notes ? sanitizeValue(item.notes) as string : undefined,
+    })),
+    customer: {},
+    createdAt: new Date().toISOString(),
+  };
+};
 
 export { sanitizeValue };

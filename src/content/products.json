@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-26T20:53:42.128Z",
+    "generatedAt": "2026-07-27T01:00:18.481Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -218,16 +218,12 @@
       "formId": "SW-BLANKETS",
       "image": "01.jpg",
       "images": [
-        "01.jpg",
-        "02.jpg",
-        "03.jpg",
-        "04.jpg"
+        "01.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 0,
-      "imageFolder": "business-areas/SW",
+      "imageFolder": "collections/SW-BB",
       "primaryImage": "01.jpg"
     },
     {
