@@ -630,3 +630,24 @@ Long-term possibility of expanding Google Workspace into a lightweight business 
 RIPPLE Website → Customers
 
 **Principle:** Add complexity only when it directly supports business growth.
+
+
+### **DEVELOPER NOTES - DO NOT REMOVE**
+- build automated test suite (both code review, and scraping)
+**- simplify images upload workflow (no product id, no picture numbering)**
+  - if replacing pictures - it won't update
+- get in touch form - review and implement email?
+- wording and pages improvements
+  - available only local / serving bay-area
+  - update generic email
+  - our story page + images
+  - consider removing collection feature items 
+  - ask about buttons - if from sawing need to set dropdown to sewing
+  - hero picture area
+  - images getting cut (sizing issue?)
+  - home page first sentence - wording and font
+  - instead of pressing "discover more" for baking or sewing, also press on the picture
+- potential bugs
+  - bowl cozy cant be reached from collection card
+
+- move script files 

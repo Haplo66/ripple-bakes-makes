@@ -83,6 +83,32 @@ const run = async (): Promise<void> => {
     }
   }
 
+  const collectionIds = new Set(collections.map((c) => c.id));
+  for (const product of products) {
+    if (!collectionIds.has(product.collection)) {
+      warnings.push({
+        file: IMPORT_FILES.products,
+        reason: `Product ${product.id} references unknown collection "${product.collection}"`,
+      });
+    }
+  }
+
+  const productCountByCollection = new Map<string, number>();
+  for (const product of products) {
+    productCountByCollection.set(
+      product.collection,
+      (productCountByCollection.get(product.collection) ?? 0) + 1,
+    );
+  }
+  for (const collection of collections) {
+    if ((productCountByCollection.get(collection.id) ?? 0) === 0) {
+      warnings.push({
+        file: IMPORT_FILES.collections,
+        reason: `Collection "${collection.id}" contains no products.`,
+      });
+    }
+  }
+
   const formInput = await readValidRecords('forms');
   const forms = sortById(
     normalizeForms(formInput.records, IMPORT_FILES.forms, warnings),

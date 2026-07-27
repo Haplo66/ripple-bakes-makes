@@ -16,13 +16,17 @@ const parseNullableString = (value: string): string | null =>
 const parsePipeField = (value: string): string[] =>
   value.trim() ? value.split('|').map((part) => part.trim()).filter(Boolean) : [];
 
-const slugify = (value: string): string =>
+/** Shared normalization: lowercase, spaces/underscores → hyphens, strip non-alphanumeric. */
+export const normalizeId = (value: string): string =>
   value
     .trim()
     .toLowerCase()
-    .replace(/\s+/g, '-')
+    .replace(/[\s_]+/g, '-')
     .replace(/[^a-z0-9-]/g, '')
-    .replace(/-+/g, '-');
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+
+const slugify = normalizeId;
 
 const parseJsonField = <T>(
   value: string,
@@ -55,7 +59,7 @@ export const normalizeCollections = (
   warnings: PipelineWarning[],
 ) =>
   records.map(({ rowNumber, values }) => ({
-    id: values.id,
+    id: normalizeId(values.id),
     businessArea: values.businessArea.toLowerCase(),
     slug: values.slug || slugify(values.name),
     name: values.name,

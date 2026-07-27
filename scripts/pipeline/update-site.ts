@@ -70,6 +70,37 @@ function validateGeneratedContent(): { warnings: number } {
     }
   }
 
+  try {
+    const productsFile = join(OUTPUT_DIR, OUTPUT_FILES.products);
+    const collectionsFile = join(OUTPUT_DIR, OUTPUT_FILES.collections);
+    if (existsSync(productsFile) && existsSync(collectionsFile)) {
+      const productsData = JSON.parse(readFileSync(productsFile, 'utf-8')).data || [];
+      const collectionsData = JSON.parse(readFileSync(collectionsFile, 'utf-8')).data || [];
+      const collectionIds = new Set(collectionsData.map((c: { id: string }) => c.id));
+
+      for (const product of productsData) {
+        if (!collectionIds.has(product.collection)) {
+          console.warn(`  ⚠ Product ${product.id} "${product.name}" references unknown collection "${product.collection}"`);
+          warnings += 1;
+        }
+      }
+
+      const productCountByCollection = new Map<string, number>();
+      for (const product of productsData) {
+        productCountByCollection.set(product.collection, (productCountByCollection.get(product.collection) ?? 0) + 1);
+      }
+      for (const collection of collectionsData) {
+        if ((productCountByCollection.get(collection.id) ?? 0) === 0) {
+          console.warn(`  ⚠ Collection "${collection.id}" contains no products.`);
+          warnings += 1;
+        }
+      }
+    }
+  } catch {
+    console.warn('  ⚠ Could not validate collection-product cross-references');
+    warnings += 1;
+  }
+
   return { warnings };
 }
 

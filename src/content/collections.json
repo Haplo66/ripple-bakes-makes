@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-27T01:37:51.169Z",
+    "generatedAt": "2026-07-27T14:08:32.881Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -40,12 +40,15 @@
       "customizationNote": ""
     },
     {
-      "id": "bowl_cozy",
+      "id": "bowl-cozy",
       "businessArea": "sewing",
       "slug": "bowl-cozy",
       "name": "Bowl Cozy",
-      "heroImage": null,
-      "images": [],
+      "imageFolder": "collections/SW-BC",
+      "heroImage": "01.jpg",
+      "images": [
+        "01.jpg"
+      ],
       "featured": false,
       "status": "Active",
       "displayOrder": 0,
@@ -183,8 +186,11 @@
       "businessArea": "sewing",
       "slug": "soft-toys",
       "name": "Soft Toys",
-      "heroImage": null,
-      "images": [],
+      "imageFolder": "collections/SW-ST",
+      "heroImage": "01.jpg",
+      "images": [
+        "01.jpg"
+      ],
       "featured": false,
       "status": "Active",
       "displayOrder": 0,
