@@ -73,6 +73,9 @@ export interface Product {
   /** Flagged for spotlight placement on the homepage. */
   homepageFeatured: boolean;
 
+  /** Controls whether the product appears in the gallery page. Defaults to true. */
+  galleryFeatured: boolean;
+
   displayOrder: number;
 
   /** Future inquiry form reference. */

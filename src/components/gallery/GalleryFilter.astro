@@ -1,0 +1,56 @@
+---
+interface Props {
+  activeFilter: string;
+}
+
+const { activeFilter = 'all' } = Astro.props;
+
+const filters = [
+  { value: 'all', label: 'All' },
+  { value: 'bakery', label: 'Bakery' },
+  { value: 'sewing', label: 'Sewing' },
+];
+---
+
+<div class="gallery-filters" role="tablist" aria-label="Filter gallery by business area">
+  {filters.map((f) => (
+    <button
+      class:list={['gallery-filters__btn', { 'gallery-filters__btn--active': activeFilter === f.value }]}
+      role="tab"
+      aria-selected={activeFilter === f.value}
+      data-filter={f.value}
+      type="button"
+    >{f.label}</button>
+  ))}
+</div>
+
+<style>
+  .gallery-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-bottom: 2rem;
+  }
+
+  .gallery-filters__btn {
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.78rem;
+    padding: 0.5rem 0.85rem;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .gallery-filters__btn:hover {
+    border-color: var(--cocoa);
+    color: var(--cocoa);
+  }
+
+  .gallery-filters__btn--active {
+    background: var(--cocoa);
+    border-color: var(--cocoa);
+    color: #fff;
+  }
+</style>

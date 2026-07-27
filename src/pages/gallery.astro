@@ -1,5 +1,33 @@
 ---
-import MainLayout from '../layouts/MainLayout.astro';import GalleryGrid from '../components/GalleryGrid.astro';
+import MainLayout from '../layouts/MainLayout.astro';
+import GalleryGrid from '../components/gallery/GalleryGrid.astro';
+import GalleryFilter from '../components/gallery/GalleryFilter.astro';
+import Lightbox from '../components/gallery/Lightbox.astro';
+import { getGalleryItems } from '../utils/gallery';
+
+const galleryItems = getGalleryItems();
 ---
-<MainLayout title="Gallery | RIPPLE Bakes & Makes" description="A gallery of artisan baking, sewing, seasonal work, and custom orders."><section class="page-hero"><div class="container"><span class="eyebrow">The gallery</span><h1 class="display">Little moments, <em>beautifully made.</em></h1><p>A growing collection of work from the kitchen and the studio. Photography slots are ready for the real thing.</p></div></section><section class="section"><div class="container"><div class="filters" aria-label="Gallery categories"><button class="active">All work</button><button>Baking</button><button>Sewing</button><button>Seasonal</button><button>Custom orders</button></div><GalleryGrid/></div></section></MainLayout>
-<style>.filters{display:flex;flex-wrap:wrap;gap:.55rem;margin-bottom:2rem}.filters button{background:transparent;border:1px solid var(--line);border-radius:99px;color:var(--muted);cursor:pointer;font-size:.78rem;padding:.5rem .85rem}.filters button.active,.filters button:hover{background:var(--cocoa);border-color:var(--cocoa);color:#fff}</style>
+
+<MainLayout
+  title="Gallery | RIPPLE Bakes & Makes"
+  description="A curated gallery of artisan baking, handmade sewing, and creative pieces from the RIPPLE kitchen and studio."
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">The gallery</span>
+      <h1 class="display">Little moments, <em>beautifully made.</em></h1>
+      <p>A curated look at what comes from the kitchen and the studio — handpicked bakes, handmade pieces, and the details that make them special.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div data-gallery-filter-bar aria-label="Filter gallery by business area">
+        <GalleryFilter activeFilter="all" />
+      </div>
+      <GalleryGrid items={galleryItems} />
+    </div>
+  </section>
+
+  <Lightbox />
+</MainLayout>

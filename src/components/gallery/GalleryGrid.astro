@@ -1,0 +1,64 @@
+---
+import type { GalleryItem } from '../../utils/gallery';
+import GalleryCard from './GalleryCard.astro';
+
+interface Props {
+  items: GalleryItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="gallery-grid" data-gallery-grid>
+  {items.map((item) => <GalleryCard item={item} />)}
+</div>
+
+<script>
+  const grid = document.querySelector('[data-gallery-grid]');
+  if (grid) {
+    const filterBar = document.querySelector('[data-gallery-filter-bar]');
+    if (filterBar) {
+      filterBar.addEventListener('click', (e) => {
+        const btn = (e.target as HTMLElement).closest('[data-filter]');
+        if (!btn) return;
+
+        filterBar.querySelectorAll('[data-filter]').forEach((b) => {
+          (b as HTMLElement).classList.remove('gallery-filters__btn--active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('gallery-filters__btn--active');
+        btn.setAttribute('aria-selected', 'true');
+
+        const filter = btn.getAttribute('data-filter') || 'all';
+
+        grid.querySelectorAll('[data-business-area]').forEach((card) => {
+          const area = card.getAttribute('data-business-area');
+          if (filter === 'all' || filter === area) {
+            (card as HTMLElement).style.display = '';
+          } else {
+            (card as HTMLElement).style.display = 'none';
+          }
+        });
+      });
+    }
+  }
+</script>
+
+<style>
+  .gallery-grid {
+    column-count: 3;
+    column-gap: 1rem;
+  }
+
+  @media (max-width: 900px) {
+    .gallery-grid {
+      column-count: 2;
+    }
+  }
+
+  @media (max-width: 550px) {
+    .gallery-grid {
+      column-count: 1;
+    }
+  }
+</style>

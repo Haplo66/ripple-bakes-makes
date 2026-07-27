@@ -109,6 +109,7 @@ Columns:
 | `active` | Optional | `true` | `active` | Controls public listing. |
 | `featured` | Optional | `true` | `featured` | Controls highlighting in featured sections. Does not affect homepage. |
 | `homepageFeatured` / `Homepage Featured` | Optional | `true` | `homepageFeatured` | Controls spotlight placement on the homepage. Independent of `featured`. |
+| `galleryFeatured` / `Gallery Featured` | Optional | `true` | `galleryFeatured` | Controls whether the product appears in the gallery page. Defaults to `true`. Set `FALSE` to exclude from gallery. |
 | `formId` / `Form ID` | Optional | `birthday-cake-form` | `formId` | Must match a form ID. Products without a form can still be ordered (no customization form is rendered). |
 | `imageFolder` | Optional | `bakery/cakes/birthday-cake` | `imageFolder` | Image organization hint (overridden by image resolver). |
 | `imageTone` | Optional | `cream` | `imageTone` | Placeholder tone. |
@@ -117,8 +118,8 @@ Columns:
 Example row:
 
 ```csv
-id,businessArea,collection,category,slug,name,subtitle,shortDescription,description,price,priceLabel,status,active,featured,homepageFeatured,formId,imageTone,displayOrder
-bakery-cakes-birthday-cake,bakery,bakery-cakes,cake,birthday-cake,Birthday Cake,Classic layers made to celebrate.,Customizable layer cake.,Our signature birthday cake.,45,From $45,Active,true,true,true,birthday-cake-form,cream,1
+id,businessArea,collection,category,slug,name,subtitle,shortDescription,description,price,priceLabel,status,active,featured,homepageFeatured,galleryFeatured,formId,imageTone,displayOrder
+bakery-cakes-birthday-cake,bakery,bakery-cakes,cake,birthday-cake,Birthday Cake,Classic layers made to celebrate.,Customizable layer cake.,Our signature birthday cake.,45,From $45,Active,true,true,true,true,birthday-cake-form,cream,1
 ```
 
 ## Forms Worksheet

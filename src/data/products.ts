@@ -15,6 +15,7 @@ interface ProductRecord {
   status: string;
   featured: boolean;
   homepageFeatured: boolean;
+  galleryFeatured: boolean;
   formId: string;
   image: string | null;
   primaryImage: string;
@@ -68,6 +69,7 @@ const toProduct = (record: ProductRecord): Product => {
     active: record.active ?? true,
     featured: record.featured ?? false,
     homepageFeatured: record.homepageFeatured ?? false,
+    galleryFeatured: record.galleryFeatured ?? true,
     displayOrder: record.displayOrder ?? 0,
     formId: record.formId,
     price: record.price,

@@ -1,0 +1,129 @@
+---
+const { id = 'gallery-lightbox' } = Astro.props;
+---
+
+<div id={id} class="lightbox" aria-hidden="true" role="dialog" aria-label="Image viewer">
+  <div class="lightbox__backdrop"></div>
+  <div class="lightbox__content">
+    <button class="lightbox__close" type="button" aria-label="Close">&times;</button>
+    <img class="lightbox__img" src="" alt="" />
+  </div>
+</div>
+
+<script>
+  interface LightboxState {
+    image: string;
+    title: string;
+  }
+
+  class GalleryLightbox {
+    private el: HTMLElement;
+    private img: HTMLImageElement;
+    private closeBtn: HTMLButtonElement;
+    private backdrop: HTMLElement;
+    private state: LightboxState | null = null;
+
+    constructor(id: string) {
+      this.el = document.getElementById(id) as HTMLElement;
+      this.img = this.el.querySelector('.lightbox__img') as HTMLImageElement;
+      this.closeBtn = this.el.querySelector('.lightbox__close') as HTMLButtonElement;
+      this.backdrop = this.el.querySelector('.lightbox__backdrop') as HTMLElement;
+
+      this.closeBtn.addEventListener('click', () => this.close());
+      this.backdrop.addEventListener('click', () => this.close());
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && this.state) this.close();
+      });
+    }
+
+    open(image: string, title: string) {
+      this.state = { image, title };
+      this.img.src = image;
+      this.img.alt = title;
+      this.el.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    close() {
+      this.state = null;
+      this.img.src = '';
+      this.img.alt = '';
+      this.el.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+  }
+
+  const lightbox = new GalleryLightbox('gallery-lightbox');
+
+  document.querySelectorAll('[data-gallery-trigger]').forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      const image = trigger.getAttribute('data-gallery-image') || '';
+      const title = trigger.getAttribute('data-gallery-title') || '';
+      lightbox.open(image, title);
+    });
+  });
+</script>
+
+<style>
+  .lightbox {
+    align-items: center;
+    display: flex;
+    height: 100vh;
+    inset: 0;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    position: fixed;
+    transition: opacity 0.3s ease;
+    width: 100vw;
+    z-index: 1000;
+  }
+
+  .lightbox[aria-hidden="false"] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .lightbox__backdrop {
+    background: rgba(74, 51, 38, 0.9);
+    inset: 0;
+    position: absolute;
+  }
+
+  .lightbox__content {
+    max-height: 90vh;
+    max-width: 90vw;
+    position: relative;
+    z-index: 1;
+  }
+
+  .lightbox__img {
+    border-radius: 0.5rem;
+    display: block;
+    max-height: 90vh;
+    max-width: 90vw;
+    object-fit: contain;
+  }
+
+  .lightbox__close {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    color: var(--cocoa);
+    cursor: pointer;
+    font-size: 1.5rem;
+    height: 40px;
+    line-height: 1;
+    padding: 0;
+    position: absolute;
+    right: -0.5rem;
+    top: -0.5rem;
+    transition: background 0.2s ease;
+    width: 40px;
+    z-index: 2;
+  }
+
+  .lightbox__close:hover {
+    background: #fff;
+  }
+</style>

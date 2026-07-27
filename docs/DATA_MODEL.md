@@ -102,6 +102,7 @@ Properties:
 | `active` | boolean | Optional | `true` | Controls public listing. Inactive products are hidden from all listings. |
 | `featured` | boolean | Optional | `true` | Controls highlighting in featured sections. Does not affect product existence or homepage display. |
 | `homepageFeatured` | boolean | Optional | `true` | Controls spotlight placement on the homepage. Independent of `featured`. |
+| `galleryFeatured` | boolean | Optional | `true` | Controls whether the product appears in the gallery page. Defaults to `true`. Set `false` to exclude from gallery. |
 | `displayOrder` | number | Recommended | `1` | Sort order within a group. |
 | `formId` | string | Optional | `birthday-cake-form` | References a form definition. Products without a form can still be ordered via cart (no customization form is rendered). |
 | `customization` | object | Optional | `{}` | Reserved for richer product customization metadata. |

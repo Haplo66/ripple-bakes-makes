@@ -95,11 +95,12 @@ Required columns:
 Supported columns:
 
 ```text
-id,businessArea,collection,category,slug,name,subtitle,shortDescription,description,status,featured,homepageFeatured,imageFolder,formId,image,imageTone,active,displayOrder,price,priceLabel
+id,businessArea,collection,category,slug,name,subtitle,shortDescription,description,status,featured,homepageFeatured,galleryFeatured,imageFolder,formId,image,imageTone,active,displayOrder,price,priceLabel
 ```
 
 Additional notes:
 - `homepageFeatured` controls homepage spotlight placement, independent of `featured`.
+- `galleryFeatured` controls gallery page visibility. Defaults to `true`. Set `false` to exclude a product from the gallery without affecting its product page.
 - `price` is a numeric value. When empty, the product displays as Coming Soon.
 - `imageFolder` and `image` fields are overridden at build time by the image resolver.
 

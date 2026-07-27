@@ -1,0 +1,89 @@
+---
+import type { GalleryItem } from '../../utils/gallery';
+
+interface Props {
+  item: GalleryItem;
+}
+
+const { item } = Astro.props;
+---
+
+<article class="gallery-card" data-business-area={item.businessArea}>
+  <button class="gallery-card__trigger" type="button" aria-label={`View larger: ${item.title}`} data-gallery-trigger data-gallery-image={item.image} data-gallery-title={item.title}>
+    <img class="gallery-card__img" src={item.image} alt={item.title} loading="lazy" />
+    <div class="gallery-card__overlay">
+      <span class="gallery-card__badge">{item.businessArea === 'bakery' ? 'Bakery' : 'Sewing'}</span>
+      <h3 class="gallery-card__title">{item.title}</h3>
+    </div>
+  </button>
+</article>
+
+<style>
+  .gallery-card {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+
+  .gallery-card__trigger {
+    background: none;
+    border: none;
+    border-radius: 1rem;
+    cursor: pointer;
+    display: block;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+    width: 100%;
+  }
+
+  .gallery-card__trigger:hover {
+    box-shadow: var(--shadow);
+    transform: translateY(-3px);
+  }
+
+  .gallery-card__trigger:focus-visible {
+    box-shadow: 0 0 0 4px rgba(214, 165, 75, 0.45);
+    outline: none;
+  }
+
+  .gallery-card__img {
+    display: block;
+    height: auto;
+    width: 100%;
+  }
+
+  .gallery-card__overlay {
+    background: linear-gradient(180deg, transparent 50%, rgba(74, 51, 38, 0.5));
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    left: 0;
+    padding: 1.15rem;
+    position: absolute;
+    right: 0;
+  }
+
+  .gallery-card__badge {
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 99px;
+    color: var(--cocoa);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 0.3rem 0.55rem;
+    text-transform: uppercase;
+  }
+
+  .gallery-card__title {
+    color: #fff;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.15rem;
+    font-weight: 500;
+    line-height: 1.25;
+    margin: 0;
+    text-align: left;
+  }
+</style>

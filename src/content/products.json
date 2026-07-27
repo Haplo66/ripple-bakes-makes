@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-27T21:49:12.500Z",
+    "generatedAt": "2026-07-27T23:09:29.881Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -16,6 +16,7 @@
       "status": "Active",
       "featured": true,
       "homepageFeatured": true,
+      "galleryFeatured": true,
       "formId": "BK-CHALLAH",
       "image": "main-challah-bread.jpg",
       "images": [
@@ -38,6 +39,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
+      "galleryFeatured": true,
       "formId": "BK-CHALLAH",
       "image": "main-mini-challah-bread.jpg",
       "images": [
@@ -60,6 +62,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
+      "galleryFeatured": true,
       "formId": "BK-POCKETS",
       "image": "main-cheese-filled-pocket.jpg",
       "images": [
@@ -82,6 +85,7 @@
       "status": "Active",
       "featured": true,
       "homepageFeatured": true,
+      "galleryFeatured": true,
       "formId": "BK-POCKETS",
       "image": "main-tuna-filled-pocket.jpg",
       "images": [
@@ -104,6 +108,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
+      "galleryFeatured": true,
       "formId": "BK-POCKETS",
       "image": "main-filled-pockets.jpg",
       "images": [
@@ -126,6 +131,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
+      "galleryFeatured": true,
       "formId": "BK-GARLICBUNS",
       "image": "main-garlic-buns.jpg",
       "images": [
@@ -149,6 +155,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
+      "galleryFeatured": true,
       "formId": "BK-ROLLS",
       "image": "main-rolls.jpg",
       "images": [
@@ -171,6 +178,7 @@
       "status": "Active",
       "featured": true,
       "homepageFeatured": true,
+      "galleryFeatured": true,
       "formId": "BK-SOURBEAD",
       "image": "main-classic-sourdough-loaf.jpg",
       "images": [
@@ -193,6 +201,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
+      "galleryFeatured": true,
       "formId": "BK-SOURBEAD",
       "image": "main-sourdough-bread.jpg",
       "images": [
@@ -215,6 +224,7 @@
       "status": "Active",
       "featured": true,
       "homepageFeatured": true,
+      "galleryFeatured": true,
       "formId": "SW-BLANKETS",
       "image": "main-custom-baby-blanket.jpg",
       "images": [
@@ -240,6 +250,7 @@
       "status": "Active",
       "featured": true,
       "homepageFeatured": true,
+      "galleryFeatured": true,
       "formId": "SW-BOWLCOZY",
       "image": "main-bowl-cozy.jpg",
       "images": [
@@ -264,6 +275,7 @@
       "status": "Active",
       "featured": true,
       "homepageFeatured": true,
+      "galleryFeatured": true,
       "formId": "SW-SHIRT",
       "image": "main-custom-design-shirt.jpg",
       "images": [
@@ -301,6 +313,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
+      "galleryFeatured": true,
       "formId": "SW-BUCKET",
       "image": "main-sewing.jpg",
       "images": [
@@ -326,6 +339,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
+      "galleryFeatured": true,
       "formId": "SW-BEANIE",
       "image": "main-sewing.jpg",
       "images": [
@@ -351,6 +365,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
+      "galleryFeatured": true,
       "formId": "SW-RICEPACKS",
       "image": "main-rice-pack.jpg",
       "images": [
@@ -376,6 +391,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
+      "galleryFeatured": true,
       "formId": "SW-RICEPACKS",
       "image": "main-shoulder-rice-pack.jpg",
       "images": [
@@ -400,6 +416,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
+      "galleryFeatured": true,
       "formId": "SW-TOYS",
       "image": "main-soft-toy.jpg",
       "images": [
@@ -424,6 +441,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
+      "galleryFeatured": true,
       "formId": "SW-TOWEL",
       "image": "main-towel-hanger.jpg",
       "images": [
