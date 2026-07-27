@@ -266,10 +266,10 @@ Customer Browser
 | Products | Google Sheets | Generated JSON |
 | Collections | Google Sheets | Generated JSON |
 | Forms | Google Sheets | Generated JSON |
-| Product Images | Google Drive | `public/images/products/` |
-| Collection Images | Google Drive | `public/images/collections/` |
+| Product Images | Google Drive | `public/images/products/{BA}/{name}/` |
+| Collection Images | Google Drive | `public/images/collections/{BA}/{name}/` |
 | Homepage Images | Google Drive | `public/images/home/` |
-| Business Area Images | Google Drive | `public/images/business-areas/` |
+| Business Area Images | Google Drive | `public/images/business-areas/{name}/` |
 | Logo | Google Drive | `public/images/logo/` |
 | Favicon | Google Drive | `public/` |
 
@@ -393,11 +393,32 @@ Includes:
 - Products without a Form ID display comments and quantity only
 - Existing cart and checkout workflow unchanged
 
+### v1.16 — Asset Hierarchy Consolidation ✅
+
+**Goal:** Normalise Drive asset hierarchy so local file paths match Drive folder structure using display names.
+
+**Drive Migration:**
+- Collection Images restructured: `{BA Name}/{Collection Name}/` (Bakery/Sewing subfolders)
+- Business Area Images restructured: flat files in `{BA Name}/` folders
+- Logo and Symbol images moved from Collection Images to appropriate BA asset folders
+- BA duplicate folders (BK → Bakery, SW → Sewing) merged
+
+**Pipeline Updates:**
+- `importBusinessAreaImages()`: saves to `business-areas/{displayName}/` (post-migration) or `business-areas/{code}/` (legacy fallback)
+- `importCollectionImages()`: saves to `collections/{BA}/{Collection Name}/` preserving Drive hierarchy
+- `importProductImages()`: detects BA parent folders and saves to `products/{BA}/{Product Name}/` when nested
+- `image-resolver.ts`: resolves BA-subfolder paths for all asset types with flat/code fallbacks
+- Backward compatible — pre-migration flat folder structure still supported
+
+**Asset Tools:**
+- `cleanup-assets.ts`: BA duplicate folder merge, Collection Images hierarchy restructure, missing folder creation
+- `asset-validator.ts`: Sheets-driven validation with JSON report
+
 ---
 
 ## Current Status
 
-**Version: v1.15**
+**Version: v1.16**
 
 ### What Works Today
 
@@ -417,10 +438,13 @@ Includes:
 - Pricing captured at add-to-cart time: unit price, line total, and order total stored in sheets
 
 **Image System**
-- Product-level images imported from Drive and linked by Product ID
-- Collection-level images imported from Drive, stored under `public/images/collections/`, connected to collection metadata, and displayed on collection pages
-- Business-area-level fallback images for products without collection images
-- Graceful fallback hierarchy: product → collection → business area → default placeholder
+- Drive hierarchy uses Business Area display names as folder layers (`Bakery/`, `Sewing/`)
+- Local `public/images/` mirrors Drive hierarchy with BA display name subfolders
+- Product-level images: `public/images/products/{BA}/{Product Name}/`
+- Collection-level images: `public/images/collections/{BA}/{Collection Name}/`
+- Business-area-level images: `public/images/business-areas/{BA Name}/`
+- Fallback hierarchy: product → collection → business area → default placeholder
+- Backward compatible — flat/code-based legacy paths still resolved as fallbacks
 - MD5 checksums prevent redundant downloads — unchanged files are skipped
 
 **Featured Logic**
@@ -473,33 +497,6 @@ Includes:
 ### Known Small Improvements
 
 - Validation reports during `npm run update` could be more actionable for non-technical users.
-
----
-
-## Next Milestones
-
-### v1.13 — Owner Publishing Workflow (In Progress)
-
-**Goal:** Allow the business owner to publish website updates without running npm commands locally.
-
-### What has been implemented
-
-- GitHub Actions `workflow_dispatch` trigger — owner can click **Run workflow** from the GitHub UI
-- The workflow executes the existing `npm run update` pipeline (no duplicate logic)
-- Environment variables provided via GitHub Secrets, written to `.env` before the update step
-- `push` to `master` also uses `npm run update` (not just `astro build`)
-- Validation safety: failed update or build stops the workflow before deployment
-- Documentation in `docs/ORDER_WORKFLOW.md`
-
-**v1.13.1 — Added daily scheduled GitHub Actions publishing**
-- Automatic daily trigger (08:00 UTC / midnight Pacific)
-- Preserved manual `workflow_dispatch` trigger
-- Preserved local `npm run update` workflow
-- Preserved `push` to `master` trigger
-
-### Remaining
-
-- Notification on failure (email or GitHub notification)
 
 ---
 
@@ -565,45 +562,6 @@ GitHub Pages
 - GitHub repository secret and all docs references updated
 
 **Why it mattered:** Customers can now reach out with custom requests, questions, and feedback directly through the website. The owner receives organized inquiries in Google Sheets and email notifications — matching the same professional workflow as orders. The shared endpoint keeps maintenance simple.
-
-**Test date:** July 26, 2026
-
-**Goal:** Allow the owner to publish website updates directly from Google Sheets.
-
-**Implemented:**
-- Custom menu "RIPPLE Website → Publish Website" in the content spreadsheet
-- Google Apps Script bound to the content sheet calls the GitHub Actions API
-- GitHub Personal Access Token stored securely via Apps Script Script Properties
-- Triggers the existing `workflow_dispatch` on `deploy.yml`
-- Emergency fallback: GitHub Actions manual trigger remains available
-- Documentation and setup instructions in `docs/ORDER_WORKFLOW.md`
-
-**End-to-end verification:**
-- Google Sheets Publish Website button tested successfully
-- Google Apps Script successfully called GitHub Actions `workflow_dispatch` API
-- GitHub Actions build job completed successfully
-- Existing `npm run update` pipeline executed successfully:
-  - Environment validation
-  - Google Drive asset repair
-  - Google Drive asset import
-  - Google Sheets data import
-  - Astro static build
-- GitHub Pages deploy job completed successfully
-- Website deployment verified
-
-**Architecture:**
-
-```
-Google Sheets
-  ↓
-Apps Script (bound to sheet)
-  ↓
-GitHub Actions API (workflow_dispatch)
-  ↓
-Existing deploy workflow (npm run update)
-  ↓
-GitHub Pages
-```
 
 ---
 

@@ -247,6 +247,7 @@ async function importProductImages(
 
   const allFolders: DriveItem[] = [];
   const queue = [sectionId];
+  const parentOf = new Map<string, string>();
 
   while (queue.length > 0) {
     const currentId = queue.shift()!;
@@ -254,6 +255,7 @@ async function importProductImages(
     for (const child of children) {
       if (child.mimeType === DRIVE_FOLDER_MIME) {
         allFolders.push(child);
+        parentOf.set(child.id, currentId);
         queue.push(child.id);
       }
     }
@@ -266,18 +268,54 @@ async function importProductImages(
     manifestEntry?: ManifestEntry;
   };
 
+  const folderNameMap = new Map<string, string>();
+  for (const f of allFolders) {
+    folderNameMap.set(f.id, f.name);
+  }
+
+  function hasBAParent(folderId: string): boolean {
+    return findBAPrefix(folderId) !== '';
+  }
+
+  allFolders.sort((a, b) => {
+    const aIsBA = hasBAParent(a.id);
+    const bIsBA = hasBAParent(b.id);
+    if (aIsBA && !bIsBA) return -1;
+    if (!aIsBA && bIsBA) return 1;
+    return 0;
+  });
+
+  function findBAPrefix(folderId: string): string {
+    let currentId: string | undefined = folderId;
+    let depth = 0;
+    while (currentId && depth < 10) {
+      const parentId = parentOf.get(currentId);
+      if (!parentId) break;
+      const parentName = folderNameMap.get(parentId);
+      if (parentName && BUSINESS_AREA_CODE[parentName] !== undefined) {
+        return `${parentName}/`;
+      }
+      currentId = parentId;
+      depth++;
+    }
+    return '';
+  }
+
   const classified: ClassifiedFolder[] = [];
   const seen = new Set<string>();
 
   for (const f of allFolders) {
+    const baPrefix = findBAPrefix(f.id);
+
     const manifestCode = nameToCode.get(f.name);
     if (manifestCode) {
       if (seen.has(f.name)) continue;
       seen.add(f.name);
+      const prefixed = `${baPrefix}${f.name}`;
       classified.push({
         id: f.id,
-        name: f.name,
-        targetDir: f.name,
+        name: prefixed,
+        targetDir: prefixed,
         manifestEntry: codeToManifest.get(manifestCode),
       });
       continue;
@@ -286,10 +324,11 @@ async function importProductImages(
     if (isProductId(f.name)) {
       if (seen.has(f.name)) continue;
       seen.add(f.name);
+      const prefixed = `${baPrefix}${f.name}`;
       classified.push({
         id: f.id,
-        name: f.name,
-        targetDir: f.name,
+        name: prefixed,
+        targetDir: prefixed,
         manifestEntry: codeToManifest.get(f.name),
       });
     }

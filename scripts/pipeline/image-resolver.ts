@@ -70,7 +70,18 @@ export function resolveProductImages(
 ): ResolvedImages {
   const candidates: { path: string; folderKey: string }[] = [];
 
+  const resolvedAreaName = areaName || toBusinessAreaName(businessAreaId);
+  const areaCode = toBusinessAreaCode(businessAreaId);
+
   if (productName) {
+    candidates.push({
+      path: join(IMAGE_DIR, 'products', resolvedAreaName, productName),
+      folderKey: `products/${resolvedAreaName}/${productName}`,
+    });
+    candidates.push({
+      path: join(IMAGE_DIR, 'products', areaCode, productName),
+      folderKey: `products/${areaCode}/${productName}`,
+    });
     candidates.push({
       path: join(IMAGE_DIR, 'products', productName),
       folderKey: `products/${productName}`,
@@ -106,9 +117,6 @@ export function resolveProductImages(
     path: join(IMAGE_DIR, 'collections', collectionId),
     folderKey: `collections/${collectionId}`,
   });
-
-  const resolvedAreaName = areaName || toBusinessAreaName(businessAreaId);
-  const areaCode = toBusinessAreaCode(businessAreaId);
 
   candidates.push({
     path: join(IMAGE_DIR, 'business-areas', resolvedAreaName),

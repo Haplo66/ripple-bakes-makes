@@ -10,7 +10,9 @@
     "drive:fix-extensions": "node --env-file=.env --experimental-strip-types scripts/pipeline/drive-fix-image-extensions.ts",
     "migrate:drive-names": "node --env-file=.env --experimental-strip-types scripts/migrate/migrate-drive-names.ts",
     "cleanup:assets": "node --env-file=.env --experimental-strip-types scripts/migrate/cleanup-assets.ts",
+    "cleanup:local-assets": "node --experimental-strip-types scripts/migrate/cleanup-local-assets.ts",
     "validate:assets": "node --env-file=.env --experimental-strip-types scripts/migrate/asset-validator.ts",
+    "validate:local-assets": "node --experimental-strip-types scripts/migrate/cleanup-local-assets.ts",
     "update": "node --env-file=.env --experimental-strip-types scripts/pipeline/update-site.ts"
   },
   "dependencies": {

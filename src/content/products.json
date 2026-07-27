@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-27T20:00:13.162Z",
+    "generatedAt": "2026-07-27T21:04:12.707Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -47,7 +47,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "products/Mini Challah Bread",
+      "imageFolder": "products/Bakery/Mini Challah Bread",
       "primaryImage": "main-mini-challah-bread.jpg"
     },
     {
@@ -69,7 +69,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "products/Cheese Filled Pocket",
+      "imageFolder": "products/Bakery/Cheese Filled Pocket",
       "primaryImage": "main-cheese-filled-pocket.jpg"
     },
     {
@@ -91,7 +91,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "products/Tuna Filled Pocket",
+      "imageFolder": "products/Bakery/Tuna Filled Pocket",
       "primaryImage": "main-tuna-filled-pocket.jpg"
     },
     {
@@ -179,7 +179,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "products/Classic Sourdough Loaf",
+      "imageFolder": "products/Bakery/Classic Sourdough Loaf",
       "primaryImage": "main-classic-sourdough-loaf.jpg"
     },
     {
@@ -226,7 +226,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "imageFolder": "products/Custom Baby Blanket",
+      "imageFolder": "products/Sewing/Custom Baby Blanket",
       "primaryImage": "main-custom-baby-blanket.jpg"
     },
     {
@@ -285,7 +285,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 50,
-      "imageFolder": "products/Custom Design Shirt",
+      "imageFolder": "products/Sewing/Custom Design Shirt",
       "primaryImage": "main-custom-design-shirt.jpg"
     },
     {
@@ -360,7 +360,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "products/Rice Pack",
+      "imageFolder": "products/Sewing/Rice Pack",
       "primaryImage": "main-rice-pack.jpg"
     },
     {
@@ -384,7 +384,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "products/Shoulder Rice Pack",
+      "imageFolder": "products/Sewing/Shoulder Rice Pack",
       "primaryImage": "main-shoulder-rice-pack.jpg"
     },
     {
@@ -408,7 +408,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "products/Soft Toy",
+      "imageFolder": "products/Sewing/Soft Toy",
       "primaryImage": "main-soft-toy.jpg"
     },
     {
@@ -434,7 +434,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "products/Towel Hanger",
+      "imageFolder": "products/Sewing/Towel Hanger",
       "primaryImage": "main-towel-hanger.jpg"
     }
   ]

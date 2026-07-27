@@ -5,7 +5,7 @@ import { authenticateSheets } from '../pipeline/sheets-auth.ts';
 import { readSheet } from '../pipeline/sheets-reader.ts';
 import { findChildFolder, listDriveItems, DRIVE_FOLDER_MIME } from './drive-renamer.ts';
 import { readCsvFile } from '../pipeline/csv-reader.ts';
-import { MANIFEST_DIR, MANIFEST_FILE } from '../pipeline/constants.ts';
+import { MANIFEST_DIR, MANIFEST_FILE, PROJECT_ROOT } from '../pipeline/constants.ts';
 import type { PipelineWarning, CsvRecord } from '../pipeline/types.ts';
 
 const HEADER = 'RIPPLE Asset Cleanup';
@@ -375,6 +375,215 @@ async function getItemParents(drive: DriveClient, fileId: string): Promise<Set<s
   }
 }
 
+interface ProductFolderMove {
+  name: string;
+  baName: string;
+  status: 'moved' | 'conflict' | 'already-there' | 'not-found';
+  details?: string;
+}
+
+interface ProductMigrationResult {
+  moves: ProductFolderMove[];
+  conflicts: ProductFolderMove[];
+  alreadyThere: ProductFolderMove[];
+  notFound: ProductFolderMove[];
+  errors: string[];
+}
+
+function readProductMapping(): Map<string, string> {
+  const mapping = new Map<string, string>();
+
+  const productsFile = join(PROJECT_ROOT, 'src', 'content', 'products.json');
+  if (!existsSync(productsFile)) return mapping;
+
+  try {
+    const data = JSON.parse(readFileSync(productsFile, 'utf-8'));
+    if (!data.data || !Array.isArray(data.data)) return mapping;
+
+    for (const product of data.data) {
+      if (product.name && product.businessArea) {
+        const baName = BA_SLUG_TO_NAME[product.businessArea] || product.businessArea;
+        mapping.set(product.name, baName);
+      }
+    }
+  } catch {
+    return mapping;
+  }
+
+  return mapping;
+}
+
+async function migrateFlatProductFolders(
+  drive: DriveClient,
+  sectionId: string,
+  dryRun: boolean,
+): Promise<ProductMigrationResult> {
+  const result: ProductMigrationResult = {
+    moves: [],
+    conflicts: [],
+    alreadyThere: [],
+    notFound: [],
+    errors: [],
+  };
+
+  const productBAMap = readProductMapping();
+  if (productBAMap.size === 0) {
+    result.errors.push('Could not read product mapping from products.json');
+    return result;
+  }
+
+  const rootFolders = await listDriveItems(drive, sectionId);
+  const baFolderIds = new Map<string, string>();
+  const baFolderNames = new Set<string>();
+
+  let flatCount = 0;
+  for (const f of rootFolders) {
+    if (f.mimeType !== DRIVE_FOLDER_MIME) continue;
+    if (f.name === 'Bakery' || f.name === 'Sewing') {
+      baFolderIds.set(f.name, f.id);
+      baFolderNames.add(f.name);
+    } else {
+      flatCount++;
+    }
+  }
+  const allFolderNames = rootFolders.filter(f => f.mimeType === DRIVE_FOLDER_MIME).map(f => f.name).join(', ');
+  console.log(`  Found ${rootFolders.filter(f => f.mimeType === DRIVE_FOLDER_MIME).length} folder(s) (${baFolderIds.size} BA, ${flatCount} flat): ${allFolderNames}`);
+
+  if (baFolderIds.size === 0) {
+    result.errors.push('BA subfolders (Bakery/Sewing) not found under Product Images');
+    return result;
+  }
+
+  // Pre-fetch BA folder contents to check for existing subfolders
+  const baContentsCache = new Map<string, Set<string>>();
+  for (const [baName, baId] of baFolderIds) {
+    const contents = await listDriveItems(drive, baId);
+    const names = new Set(
+      contents.filter(c => c.mimeType === DRIVE_FOLDER_MIME).map(c => c.name),
+    );
+    baContentsCache.set(baName, names);
+  }
+
+  for (const f of rootFolders) {
+    if (f.mimeType !== DRIVE_FOLDER_MIME) continue;
+    if (baFolderNames.has(f.name)) continue;
+
+    const baName = productBAMap.get(f.name);
+    if (!baName) {
+      result.notFound.push({
+        name: f.name,
+        baName: '',
+        status: 'not-found',
+        details: 'no product mapping',
+      });
+      continue;
+    }
+
+    const baFolderId = baFolderIds.get(baName);
+    if (!baFolderId) {
+      result.errors.push(`BA folder "${baName}" not found for product "${f.name}"`);
+      continue;
+    }
+
+    const existingNames = baContentsCache.get(baName)!;
+
+    if (existingNames.has(f.name)) {
+      // Check if already parented to this BA folder
+      try {
+        const meta = await drive.files.get({ fileId: f.id, fields: 'parents' });
+        if (meta.data.parents?.includes(baFolderId)) {
+          result.alreadyThere.push({
+            name: f.name,
+            baName,
+            status: 'already-there',
+            details: 'already parented to BA folder',
+          });
+          continue;
+        }
+      } catch {
+        // continue with conflict
+      }
+
+      result.conflicts.push({
+        name: f.name,
+        baName,
+        status: 'conflict',
+        details: `folder already exists inside ${baName}`,
+      });
+      continue;
+    }
+
+    result.moves.push({ name: f.name, baName, status: 'moved' });
+
+    if (!dryRun) {
+      try {
+        await drive.files.update({
+          fileId: f.id,
+          addParents: baFolderId,
+          removeParents: sectionId,
+          fields: 'id, parents',
+        });
+      } catch (error) {
+        result.errors.push(
+          `Failed to move ${f.name}: ${error instanceof Error ? error.message : String(error)}`,
+        );
+      }
+    }
+  }
+
+  return result;
+}
+
+async function validateProductStructure(
+  drive: DriveClient,
+  sectionId: string,
+): Promise<void> {
+  console.log('');
+  console.log('  Post-migration validation:');
+
+  const rootFolders = await listDriveItems(drive, sectionId);
+  const flatProductFolders: string[] = [];
+  const baFolderIds = new Map<string, string>();
+
+  for (const f of rootFolders) {
+    if (f.mimeType !== DRIVE_FOLDER_MIME) continue;
+    if (f.name === 'Bakery' || f.name === 'Sewing') {
+      baFolderIds.set(f.name, f.id);
+    } else {
+      flatProductFolders.push(f.name);
+    }
+  }
+
+  if (flatProductFolders.length === 0) {
+    console.log('  ✓ No flat product folders remaining.');
+  } else {
+    console.log(`  ⚠ ${flatProductFolders.length} flat folder(s) remain: ${flatProductFolders.join(', ')}`);
+  }
+
+  for (const [baName, baId] of baFolderIds) {
+    const contents = await listDriveItems(drive, baId);
+    const productFolders = contents.filter(c => c.mimeType === DRIVE_FOLDER_MIME);
+    console.log(`  ✓ ${baName}: ${productFolders.length} product folder(s)`);
+  }
+
+  // Check for duplicate folder names across BA subfolders
+  const allProductNames = new Map<string, string[]>();
+  for (const [baName, baId] of baFolderIds) {
+    const contents = await listDriveItems(drive, baId);
+    for (const c of contents) {
+      if (c.mimeType !== DRIVE_FOLDER_MIME) continue;
+      const existing = allProductNames.get(c.name) || [];
+      existing.push(baName);
+      allProductNames.set(c.name, existing);
+    }
+  }
+  for (const [name, bas] of allProductNames) {
+    if (bas.length > 1) {
+      console.log(`  ⚠ Duplicate product folder "${name}" across: ${bas.join(', ')}`);
+    }
+  }
+}
+
 async function run(): Promise<void> {
   const { dryRun } = parseArgs();
 
@@ -414,6 +623,7 @@ async function run(): Promise<void> {
 
   const baSectionId = await findChildFolder(drive, assetsId, 'Business Area Images');
   const collSectionId = await findChildFolder(drive, assetsId, 'Collection Images');
+  const prodSectionId = await findChildFolder(drive, assetsId, 'Product Images');
 
   const stepResults: {
     baFilesMoved: number;
@@ -425,6 +635,11 @@ async function run(): Promise<void> {
     collCreated: number;
     collWarnings: number;
     collErrors: number;
+    prodMoved: number;
+    prodConflicts: number;
+    prodNotFound: number;
+    prodAlreadyThere: number;
+    prodErrors: number;
     errors: string[];
   } = {
     baFilesMoved: 0,
@@ -436,6 +651,11 @@ async function run(): Promise<void> {
     collCreated: 0,
     collWarnings: 0,
     collErrors: 0,
+    prodMoved: 0,
+    prodConflicts: 0,
+    prodNotFound: 0,
+    prodAlreadyThere: 0,
+    prodErrors: 0,
     errors: [],
   };
 
@@ -528,15 +748,78 @@ async function run(): Promise<void> {
     console.log('');
   }
 
+  // ── Product Images: migrate flat folders into BA subfolders ──
+  console.log('── Product Images: migrate flat folders ──');
+  console.log('');
+
+  if (!prodSectionId) {
+    console.log('  Section not found, skipping');
+    console.log('');
+  } else {
+    console.log('  Reading product mapping...');
+    const prodResult = await migrateFlatProductFolders(drive, prodSectionId, dryRun);
+    console.log('');
+
+    if (prodResult.moves.length > 0) {
+      console.log('  Move:');
+      for (const m of prodResult.moves) {
+        console.log(`    Product Images/${m.name} → Product Images/${m.baName}/${m.name}`);
+        stepResults.prodMoved++;
+      }
+      console.log('');
+    }
+
+    if (prodResult.conflicts.length > 0) {
+      console.log('  ⚠ Conflicts:');
+      for (const c of prodResult.conflicts) {
+        console.log(`    ${c.name}: ${c.details}`);
+        stepResults.prodConflicts++;
+      }
+      console.log('');
+    }
+
+    if (prodResult.alreadyThere.length > 0) {
+      console.log('  Already in correct BA folder:');
+      for (const a of prodResult.alreadyThere) {
+        console.log(`    ${a.name} → ${a.baName}`);
+        stepResults.prodAlreadyThere++;
+      }
+      console.log('');
+    }
+
+    if (prodResult.notFound.length > 0) {
+      console.log('  ⚠ No product mapping (skipped):');
+      for (const n of prodResult.notFound) {
+        console.log(`    ${n.name}: ${n.details}`);
+        stepResults.prodNotFound++;
+      }
+      console.log('');
+    }
+
+    for (const e of prodResult.errors) {
+      console.log(`  ✗ ${e}`);
+      stepResults.prodErrors++;
+    }
+
+    if (!dryRun) {
+      await validateProductStructure(drive, prodSectionId);
+    }
+    console.log('');
+  }
+
   console.log('── Summary ──');
   console.log('');
-  console.log(`  BA files moved:          ${stepResults.baFilesMoved}`);
-  console.log(`  BA folders removed:      ${stepResults.baFoldersDeleted}`);
-  console.log(`  BA subfolders created:   ${stepResults.collBaFoldersCreated}`);
-  console.log(`  Collections moved:       ${stepResults.collMoved}`);
-  console.log(`  Collections created:     ${stepResults.collCreated}`);
-  console.log(`  Conflicts/Warnings:      ${stepResults.baConflicts + stepResults.baWarnings + stepResults.collWarnings}`);
-  console.log(`  Errors:                  ${stepResults.collErrors + stepResults.errors.length}`);
+  console.log(`  BA files moved:            ${stepResults.baFilesMoved}`);
+  console.log(`  BA folders removed:        ${stepResults.baFoldersDeleted}`);
+  console.log(`  BA subfolders created:     ${stepResults.collBaFoldersCreated}`);
+  console.log(`  Collections moved:         ${stepResults.collMoved}`);
+  console.log(`  Collections created:       ${stepResults.collCreated}`);
+  console.log(`  Products moved to BA:      ${stepResults.prodMoved}`);
+  console.log(`  Products already there:    ${stepResults.prodAlreadyThere}`);
+  console.log(`  Product conflicts:         ${stepResults.prodConflicts}`);
+  console.log(`  Product no mapping:        ${stepResults.prodNotFound}`);
+  console.log(`  Conflicts/Warnings:        ${stepResults.baConflicts + stepResults.baWarnings + stepResults.collWarnings}`);
+  console.log(`  Errors:                    ${stepResults.collErrors + stepResults.prodErrors + stepResults.errors.length}`);
 
   if (dryRun) {
     console.log('');
