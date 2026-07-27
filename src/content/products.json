@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-27T01:17:21.892Z",
+    "generatedAt": "2026-07-27T01:37:51.174Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -271,7 +271,18 @@
         "02.jpg",
         "03.jpg",
         "04.jpg",
-        "05.jpg"
+        "05.jpg",
+        "06.jpg",
+        "07.jpg",
+        "08.jpg",
+        "09.jpg",
+        "10.jpg",
+        "11.jpg",
+        "12.jpg",
+        "13.jpg",
+        "14.jpg",
+        "15.jpg",
+        "16.jpg"
       ],
       "imageTone": "cream",
       "active": true,
