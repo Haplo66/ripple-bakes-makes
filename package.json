@@ -9,6 +9,8 @@
     "import:assets": "node --env-file=.env --experimental-strip-types scripts/pipeline/drive-product-image-importer.ts",
     "drive:fix-extensions": "node --env-file=.env --experimental-strip-types scripts/pipeline/drive-fix-image-extensions.ts",
     "migrate:drive-names": "node --env-file=.env --experimental-strip-types scripts/migrate/migrate-drive-names.ts",
+    "cleanup:assets": "node --env-file=.env --experimental-strip-types scripts/migrate/cleanup-assets.ts",
+    "validate:assets": "node --env-file=.env --experimental-strip-types scripts/migrate/asset-validator.ts",
     "update": "node --env-file=.env --experimental-strip-types scripts/pipeline/update-site.ts"
   },
   "dependencies": {

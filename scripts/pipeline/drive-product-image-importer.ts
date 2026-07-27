@@ -404,18 +404,37 @@ async function importCollectionImages(
   sectionId: string,
   dryRun: boolean,
 ): Promise<{ items: number; downloaded: number; replaced: number; skipped: number; failed: number }> {
-  const subfolders = await listAll(drive, sectionId);
+  const topLevel = await listAll(drive, sectionId);
   let total = { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0 };
 
-  for (const sub of subfolders) {
-    if (sub.mimeType !== DRIVE_FOLDER_MIME) continue;
-    const targetDir = `collections/${sub.name}`;
-    const result = await importFlatSection(drive, sub.id, targetDir, `Collections/${sub.name}`, dryRun);
-    total.items += result.items;
-    total.downloaded += result.downloaded;
-    total.replaced += result.replaced;
-    total.skipped += result.skipped;
-    total.failed += result.failed;
+  for (const entry of topLevel) {
+    if (entry.mimeType !== DRIVE_FOLDER_MIME) continue;
+
+    // Check if this is a BA subfolder (Bakery/Sewing) or a flat collection folder
+    const children = await listAll(drive, entry.id);
+    const subfolders = children.filter(c => c.mimeType === DRIVE_FOLDER_MIME);
+
+    if (subfolders.length > 0) {
+      // BA subfolder with nested collection folders — recurse
+      for (const collFolder of subfolders) {
+        const targetDir = `collections/${collFolder.name}`;
+        const result = await importFlatSection(drive, collFolder.id, targetDir, `Collections/${entry.name}/${collFolder.name}`, dryRun);
+        total.items += result.items;
+        total.downloaded += result.downloaded;
+        total.replaced += result.replaced;
+        total.skipped += result.skipped;
+        total.failed += result.failed;
+      }
+    } else {
+      // Flat collection folder (pre-restructure fallback)
+      const targetDir = `collections/${entry.name}`;
+      const result = await importFlatSection(drive, entry.id, targetDir, `Collections/${entry.name}`, dryRun);
+      total.items += result.items;
+      total.downloaded += result.downloaded;
+      total.replaced += result.replaced;
+      total.skipped += result.skipped;
+      total.failed += result.failed;
+    }
   }
 
   return total;
