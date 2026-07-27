@@ -418,7 +418,7 @@ Includes:
 
 ## Current Status
 
-**Version: v1.16**
+**Version: v1.17**
 
 ### What Works Today
 
@@ -562,6 +562,61 @@ GitHub Pages
 - GitHub repository secret and all docs references updated
 
 **Why it mattered:** Customers can now reach out with custom requests, questions, and feedback directly through the website. The owner receives organized inquiries in Google Sheets and email notifications — matching the same professional workflow as orders. The shared endpoint keeps maintenance simple.
+
+---
+
+### v1.17 — Gallery Experience
+
+**Goal:** Create a curated visual showcase for RIPPLE that highlights craftsmanship, products, and behind-the-scenes work without turning the gallery into a duplicate product catalog.
+
+**Architecture decision:** Use a hybrid gallery model — automatically reuse selected existing product and collection images, avoid displaying every product image, and allow future owner-added gallery-only images that do not require product or collection mapping.
+
+#### v1.17.1 — Gallery Foundation
+
+**Status:** Planned
+
+**Scope:**
+- Create Gallery page
+- Build gallery from existing assets using the current image hierarchy (`products/{BA}/{Collection}/{Product}/`, `collections/{BA}/{Collection}/`)
+- Curated product and collection image selection — not every image appears in the gallery
+- Limit product image duplication across gallery views
+- Category filtering: All, Bakery, Sewing
+- Responsive gallery layout
+- Image lightbox/viewer
+
+**Constraints:**
+- No new Drive gallery importer
+- No changes to the existing asset pipeline
+- Reuse existing image resolver logic
+
+#### v1.17.2 — Personal Gallery
+
+**Status:** Future
+
+**Purpose:** Allow owner-managed storytelling images independent of products — behind-the-scenes baking, sewing process, workspace photos, events, seasonal creations, customer stories (future).
+
+**Proposed structure:**
+```
+Assets/
+└── Gallery/
+    ├── Personal/
+    ├── Bakery/
+    └── Sewing/
+```
+
+**Design goals:**
+- Simple folder management — no product ID mapping
+- Owner can add images without changing product data
+
+#### v1.17.3 — Gallery Enhancements
+
+**Status:** Future
+
+**Potential improvements:**
+- Homepage gallery preview
+- Featured gallery images
+- Seasonal collections
+- Captions and stories
 
 ---
 
