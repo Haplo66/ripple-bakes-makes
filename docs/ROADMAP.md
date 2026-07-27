@@ -648,6 +648,5 @@ RIPPLE Website → Customers
   - home page first sentence - wording and font
   - instead of pressing "discover more" for baking or sewing, also press on the picture
 - potential bugs
-  - bowl cozy cant be reached from collection card
 
 - move script files 

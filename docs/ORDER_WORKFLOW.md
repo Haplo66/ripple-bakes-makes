@@ -30,14 +30,14 @@ Only the website needs setup (env vars + Apps Script deployment). Orders flow **
 Add to `.env`:
 
 ```bash
-# Required: Google Apps Script Web App URL
-PUBLIC_ORDER_ENDPOINT=https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec
+# Required: Google Apps Script Web App URL (orders + inquiries)
+PUBLIC_SUBMISSION_ENDPOINT=https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec
 
 # Optional: Shared secret for Apps Script token validation
 PUBLIC_ORDER_TOKEN=your-shared-secret
 ```
 
-- Without `PUBLIC_ORDER_ENDPOINT`, the mock provider is used (no data written to Sheets).
+- Without `PUBLIC_SUBMISSION_ENDPOINT`, the mock provider is used (no data written to Sheets).
 - `PUBLIC_ORDER_TOKEN` must match the `TOKEN` constant in the Apps Script project.
 - These are `PUBLIC_` prefixed because they are accessed client-side via `import.meta.env`.
 
@@ -121,7 +121,7 @@ Deploy a standalone Apps Script project that receives orders and writes them to 
 6. Deploy: **Deploy > New deployment > Web app**
    - **Execute as:** Me
    - **Who has access:** Anyone
-7. Copy the Web App URL — this is your `PUBLIC_ORDER_ENDPOINT`
+7. Copy the Web App URL — this is your `PUBLIC_SUBMISSION_ENDPOINT`
 8. When you update the script, deploy as **New version** (not "Head")
 
 ### Configuration
@@ -445,7 +445,7 @@ These must be configured in the repository: **Settings → Secrets and variables
 | `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` | Private key (`\n` escaped, single line — same format as `.env`) |
 | `GOOGLE_DRIVE_ROOT_FOLDER_ID` | Root folder ID for Drive asset import |
 | `INVENTORY_GOOGLE_SHEETS_ID` | Google Sheets spreadsheet ID |
-| `PUBLIC_ORDER_ENDPOINT` | Apps Script Web App URL for order submission |
+| `PUBLIC_SUBMISSION_ENDPOINT` | Apps Script Web App URL for all submissions |
 | `PUBLIC_ORDER_TOKEN` | Shared secret for Apps Script validation |
 
 All values must match what is currently in your local `.env` file.
@@ -688,7 +688,7 @@ All four publishing methods use the same pipeline:
 
 ### Prerequisites
 
-- Apps Script deployed and `PUBLIC_ORDER_ENDPOINT` set in `.env`
+- Apps Script deployed and `PUBLIC_SUBMISSION_ENDPOINT` set in `.env`
 - `PUBLIC_ORDER_TOKEN` set and matches the Apps Script `TOKEN`
 - Run `npm run dev` to start the development server
 
@@ -789,7 +789,7 @@ Verify:
 | No error, but no row in sheet | Wrong `SPREADSHEET_ID` in Apps Script | Verify the ID in the script |
 | "Invalid token" error | `PUBLIC_ORDER_TOKEN` doesn't match `TOKEN` in script | Make them identical |
 | "Server returned status 0" or opaque response | CORS issue with Apps Script | The provider now handles this — should fall through to success message |
-| "Could not reach the order service" | Wrong endpoint URL | Verify `PUBLIC_ORDER_ENDPOINT` is the full Web App URL |
+| "Could not reach the order service" | Wrong endpoint URL | Verify `PUBLIC_SUBMISSION_ENDPOINT` is the full Web App URL |
 | Sheet names don't match | Sheet tab names differ from `ORDERS_SHEET_NAME` / `ORDER_ITEMS_SHEET_NAME` | Make them match |
 
 ### Email Not Received

@@ -1,2 +1,228 @@
-<form class="contact-form" action="#" method="post"><div class="form-grid"><label>Full name<input required name="name" autocomplete="name" placeholder="Your name" /></label><label>Email address<input required type="email" name="email" autocomplete="email" placeholder="you@example.com" /></label><label>Phone <span>(optional)</span><input type="tel" name="phone" autocomplete="tel" placeholder="(000) 000-0000" /></label><label>I'm interested in<select name="service"><option>Bakery order</option><option>Sewing project</option><option>Custom request</option></select></label><label class="full">Preferred date <span>(optional)</span><input type="date" name="date" /></label><label class="full">Tell us a little about your idea<textarea required name="message" rows="5" placeholder="What can we help create?"></textarea></label></div><p class="form-note">This form is ready to connect to your preferred form service or GitHub-backed handler.</p><button class="button button--honey" type="submit">Send inquiry <span class="arrow">→</span></button></form>
-<style>.form-grid{display:grid;gap:1rem;grid-template-columns:1fr 1fr}.contact-form label{color:var(--cocoa);display:flex;flex-direction:column;font-size:.78rem;font-weight:600;gap:.4rem}.contact-form label span{color:var(--muted);font-weight:400}.contact-form input,.contact-form select,.contact-form textarea{background:#fffdfa;border:1px solid var(--line);border-radius:.55rem;color:var(--cocoa);font-size:.92rem;outline-color:var(--honey);padding:.72rem .8rem}.contact-form .full{grid-column:span 2}.form-note{color:var(--muted);font-size:.78rem;margin:1rem 0}@media(max-width:550px){.form-grid{grid-template-columns:1fr}.contact-form .full{grid-column:auto}}</style>
+<form class="contact-form" action="#" method="post" data-contact-form>
+  <div class="form-grid">
+    <label>
+      <span class="label-text">Full name</span>
+      <input required name="name" autocomplete="name" placeholder="Your name" />
+    </label>
+    <label>
+      <span class="label-text">Email address</span>
+      <input required type="email" name="email" autocomplete="email" placeholder="you@example.com" />
+    </label>
+    <label>
+      <span class="label-text">Phone <span>(optional)</span></span>
+      <input type="tel" name="phone" autocomplete="tel" placeholder="(000) 000-0000" />
+    </label>
+    <label>
+      <span class="label-text">Preferred contact</span>
+      <select name="preferredContact">
+        <option value="email">Email</option>
+        <option value="phone">Phone</option>
+        <option value="text">Text</option>
+      </select>
+    </label>
+    <label>
+      <span class="label-text">Topic</span>
+      <select name="topic" required>
+        <option value="" disabled selected>How can we help?</option>
+        <option value="general">General Question</option>
+        <option value="bakery">Bakery Order</option>
+        <option value="sewing">Sewing Project</option>
+        <option value="custom">Custom Request</option>
+        <option value="product">Product Question</option>
+        <option value="feedback">Website Feedback</option>
+        <option value="other">Other</option>
+      </select>
+    </label>
+    <label class="full">
+      <span class="label-text">Preferred date <span>(optional)</span></span>
+      <input type="date" name="date" />
+    </label>
+    <label class="full">
+      <span class="label-text">Tell us a little about your idea</span>
+      <textarea required name="message" rows="5" placeholder="What can we help create?"></textarea>
+    </label>
+  </div>
+
+  <p class="form-feedback" data-form-feedback hidden></p>
+
+  <button class="button button--honey" type="submit">
+    <span data-submit-text>Send inquiry <span class="arrow">→</span></span>
+    <span data-submit-loading hidden>Sending...</span>
+  </button>
+
+  <p class="confirmation-message" data-form-confirmation hidden>
+    Thanks for reaching out! We'll get back to you soon.
+  </p>
+</form>
+
+<script>
+  const FORM_ENDPOINT = import.meta.env?.PUBLIC_SUBMISSION_ENDPOINT || '';
+  const FORM_TOKEN = import.meta.env?.PUBLIC_ORDER_TOKEN || '';
+
+  const form = document.querySelector('[data-contact-form]');
+  const feedback = document.querySelector('[data-form-feedback]');
+  const submitText = document.querySelector('[data-submit-text]');
+  const submitLoading = document.querySelector('[data-submit-loading]');
+  const confirmation = document.querySelector('[data-form-confirmation]');
+
+  if (!form) throw new Error('Contact form not found');
+
+  const showFeedback = (message) => {
+    if (!feedback) return;
+    feedback.textContent = message;
+    feedback.hidden = false;
+  };
+
+  const hideFeedback = () => {
+    if (!feedback) return;
+    feedback.textContent = '';
+    feedback.hidden = true;
+  };
+
+  const setSubmitting = (submitting) => {
+    if (!submitText || !submitLoading) return;
+    submitText.hidden = submitting;
+    submitLoading.hidden = !submitting;
+  };
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    hideFeedback();
+
+    if (confirmation) confirmation.hidden = true;
+
+    if (!form.reportValidity()) return;
+
+    const formData = new FormData(form);
+    const topic = formData.get('topic');
+
+    if (!topic) {
+      showFeedback('Please select a topic.');
+      return;
+    }
+
+    setSubmitting(true);
+
+    if (!FORM_ENDPOINT) {
+      // Simulate successful submission when no endpoint is configured
+      await new Promise((r) => setTimeout(r, 800));
+      setSubmitting(false);
+      form.reset();
+      if (confirmation) confirmation.hidden = false;
+      return;
+    }
+
+    try {
+      const payload = {
+        token: FORM_TOKEN,
+        inquiry: {
+          name: String(formData.get('name') || '').trim(),
+          email: String(formData.get('email') || '').trim(),
+          phone: String(formData.get('phone') || '').trim(),
+          topic,
+          preferredContact: String(formData.get('preferredContact') || 'email').trim(),
+          message: String(formData.get('message') || '').trim(),
+        },
+      };
+
+      const response = await fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok || response.type === 'opaque') {
+        form.reset();
+        setSubmitting(false);
+        if (confirmation) confirmation.hidden = false;
+        return;
+      }
+
+      showFeedback('Could not send your message. Please try again.');
+    } catch {
+      showFeedback('Could not reach the service. Please check your connection and try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  });
+</script>
+
+<style>
+  .form-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .contact-form label {
+    color: var(--cocoa);
+    display: flex;
+    flex-direction: column;
+    font-size: .78rem;
+    font-weight: 600;
+    gap: .4rem;
+  }
+
+  .contact-form .label-text {
+    display: block;
+  }
+
+  .contact-form .label-text span {
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .contact-form input,
+  .contact-form select,
+  .contact-form textarea {
+    appearance: none;
+    background: #fffdfa;
+    border: 1px solid var(--line);
+    border-radius: .55rem;
+    color: var(--cocoa);
+    font-family: inherit;
+    font-size: .92rem;
+    outline-color: var(--honey);
+    padding: .72rem .8rem;
+    width: 100%;
+  }
+
+  .contact-form select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='%2392826d'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-position: right .8rem center;
+    background-repeat: no-repeat;
+    background-size: .7rem;
+    padding-right: 2rem;
+    cursor: pointer;
+  }
+
+  .contact-form select:invalid {
+    color: #92826d;
+  }
+
+  .contact-form .full {
+    grid-column: span 2;
+  }
+
+  .form-feedback {
+    color: #b66d5a;
+    font-size: .82rem;
+    margin: .75rem 0;
+  }
+
+  .confirmation-message {
+    color: var(--sage);
+    font-size: .9rem;
+    font-weight: 600;
+    margin: .85rem 0 0;
+  }
+
+  @media (max-width: 550px) {
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .contact-form .full {
+      grid-column: auto;
+    }
+  }
+</style>

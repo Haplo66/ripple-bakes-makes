@@ -12,8 +12,8 @@ interface AppsScriptResponse {
 const providerName = 'apps-script';
 
 const getEndpoint = (): string | null => {
-  if (typeof import.meta !== 'undefined' && import.meta.env?.PUBLIC_ORDER_ENDPOINT) {
-    return import.meta.env.PUBLIC_ORDER_ENDPOINT;
+  if (typeof import.meta !== 'undefined' && import.meta.env?.PUBLIC_SUBMISSION_ENDPOINT) {
+    return import.meta.env.PUBLIC_SUBMISSION_ENDPOINT;
   }
   return null;
 };
@@ -82,7 +82,7 @@ export const appsScriptSubmissionProvider: SubmissionProvider = {
         success: false,
         providerName,
         error:
-          'Order endpoint is not configured. Set PUBLIC_ORDER_ENDPOINT in your environment.',
+          'Submission endpoint is not configured. Set PUBLIC_SUBMISSION_ENDPOINT in your environment.',
       };
     }
 

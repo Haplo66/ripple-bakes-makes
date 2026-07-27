@@ -24,7 +24,7 @@ cp .env.example .env
 | `GOOGLE_SERVICE_ACCOUNT_EMAIL` | Sheets API + Drive import | Service account email for Google Cloud API authentication. |
 | `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` | Sheets API + Drive import | Service account private key. Must have `\n` escaped on a single line. |
 | `GOOGLE_DRIVE_ROOT_FOLDER_ID` | Drive asset import | Root folder ID for the RIPPLE Business Data folder in Google Drive. The importer navigates from this root into `Assets/` and its subfolders. |
-| `PUBLIC_ORDER_ENDPOINT` | Order submission | Google Apps Script Web App URL for receiving orders. Without this, the mock submission provider is used (no data written to Sheets). |
+| `PUBLIC_SUBMISSION_ENDPOINT` | Order and inquiry submission | Google Apps Script Web App URL for receiving all submissions. Without this, the mock provider is used (no data written to Sheets). |
 | `PUBLIC_ORDER_TOKEN` | Order submission | Shared secret that must match the `TOKEN` constant in the Apps Script project. Optional but recommended. |
 
 Environment variables prefixed with `PUBLIC_` are exposed to client-side code via `import.meta.env`. The rest are server-side only.
@@ -184,7 +184,7 @@ Checkout page
        └── Email notification to owner
 ```
 
-The submission provider is auto-selected: if `PUBLIC_ORDER_ENDPOINT` is set, the Apps Script provider is used; otherwise the mock provider handles submissions locally.
+The submission provider is auto-selected: if `PUBLIC_SUBMISSION_ENDPOINT` is set, the Apps Script provider is used; otherwise the mock provider handles submissions locally.
 
 ## GitHub Actions
 
@@ -216,7 +216,7 @@ The workflow file is `.github/workflows/deploy.yml`.
 | `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` | Google Cloud service account |
 | `GOOGLE_DRIVE_ROOT_FOLDER_ID` | Drive folder URL |
 | `INVENTORY_GOOGLE_SHEETS_ID` | Sheet URL |
-| `PUBLIC_ORDER_ENDPOINT` | Apps Script deployment URL |
+| `PUBLIC_SUBMISSION_ENDPOINT` | Apps Script deployment URL |
 | `PUBLIC_ORDER_TOKEN` | Shared secret |
 
 ## Troubleshooting

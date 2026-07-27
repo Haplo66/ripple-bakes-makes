@@ -144,7 +144,7 @@ Astro generates:
 
 Cart and checkout behavior is client-side (localStorage). Order submission uses a provider abstraction under `src/utils/submission/`:
 
-- **`appsScriptSubmissionProvider`** — active when `PUBLIC_ORDER_ENDPOINT` is set; sends orders to a Google Apps Script Web App
+- **`appsScriptSubmissionProvider`** — active when `PUBLIC_SUBMISSION_ENDPOINT` is set; sends orders to a Google Apps Script Web App
 - **`mockSubmissionProvider`** — fallback for local development without an endpoint
 
 Products without a numeric price display as **Coming Soon** and cannot be added to the cart. Products with `price: 0` are purchasable. Inactive products are hidden from listings.

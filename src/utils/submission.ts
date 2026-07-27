@@ -7,7 +7,7 @@ import { appsScriptSubmissionProvider } from './submission/providers/appsScriptS
 const selectProvider = (): SubmissionProvider => {
   if (
     typeof import.meta !== 'undefined' &&
-    import.meta.env?.PUBLIC_ORDER_ENDPOINT
+    import.meta.env?.PUBLIC_SUBMISSION_ENDPOINT
   ) {
     return appsScriptSubmissionProvider;
   }
