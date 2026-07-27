@@ -1,0 +1,732 @@
+{
+  "generatedAt": "2026-07-27T18:31:12.923Z",
+  "dryRun": false,
+  "sections": [
+    {
+      "section": "Product Images",
+      "foldersRenamed": 14,
+      "filesRenamed": 47,
+      "conflicts": 0,
+      "errors": 0,
+      "skipped": 0,
+      "ops": [
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "01.jpg",
+          "newName": "main-classic-sourdough-loaf.jpg",
+          "driveId": "1eeGkQDNxihRKW9god3l-SPha2kuYKPkC",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Product Images",
+          "oldName": "BK-SB-001",
+          "newName": "Classic Sourdough Loaf",
+          "driveId": "1RujSgg3rjimydtDIsAmn4JPcosfgSOLc",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "01.jpg",
+          "newName": "main-rolls.jpg",
+          "driveId": "1tEpOJfA9Ne3BYkalmUh1G1aCVK3unDK3",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Product Images",
+          "oldName": "BK-RL-001",
+          "newName": "Rolls",
+          "driveId": "172JIW4m1LbEkK7djzg1Mf1yCY0wRMIdA",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "01.jpg",
+          "newName": "main-garlic-buns.jpg",
+          "driveId": "1zJBu_RdNb_1Oa_g22eQpi-XeoxOVK3cb",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "02.jpg",
+          "newName": "gallery-01.jpg",
+          "driveId": "1miqWSOkD0eD3YGozXZd_thLu3DrERa49",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Product Images",
+          "oldName": "BK-GB-001",
+          "newName": "Garlic Buns",
+          "driveId": "1y-tWz8gW26p0nST7yKnYNDX-MEa_fciq",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "01.jpg",
+          "newName": "main-challah-bread.jpg",
+          "driveId": "1jnksG3KIZsHAUOYaq3pNPQmywOA3XKhd",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Product Images",
+          "oldName": "BK-CH-001",
+          "newName": "Challah Bread",
+          "driveId": "1NWToOE1zTtiTfqOJW9n5nCB2UoHreId3",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "01.jpg",
+          "newName": "main-mini-challah-bread.jpg",
+          "driveId": "17Snl3--0kAijtQUIfeAVurJRmB99D7-b",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Product Images",
+          "oldName": "BK-CH-002",
+          "newName": "Mini Challah Bread",
+          "driveId": "1HcRtNY1SPdWTW6GYyvxd-YzbICuIqBQ9",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "01.jpg",
+          "newName": "main-tuna-filled-pocket.jpg",
+          "driveId": "1X6XPHx1Yw8fxgni02qwXYvufVc3sZk5B",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Product Images",
+          "oldName": "BK-FP-002",
+          "newName": "Tuna Filled Pocket",
+          "driveId": "13hN8YH2ndeqBG9ZarFGVmWEaxh_gsdjT",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "01.jpg",
+          "newName": "main-cheese-filled-pocket.jpg",
+          "driveId": "1iCXesfCiWyn5qcT1qw0BUDGf889Lu2Ot",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Product Images",
+          "oldName": "BK-FP-001",
+          "newName": "Cheese Filled Pocket",
+          "driveId": "1JVQW7wxKzlJs8c6Zxq8KluPMO7jOBJnY",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "01.jpg",
+          "newName": "main-bowl-cozy.jpg",
+          "driveId": "1EDujWcLMwA2rOyjqqJ1S_kGtwDeKGVWc",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "02.jpg",
+          "newName": "gallery-01.jpg",
+          "driveId": "1Q6YnrtnOueiPIzZi0TtVeXbJjJR8IkWv",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "03.jpg",
+          "newName": "gallery-02.jpg",
+          "driveId": "116FnrKzbwHhMBij23R99vfz9-WuzYPxh",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Product Images",
+          "oldName": "SW-BC-001",
+          "newName": "Bowl Cozy",
+          "driveId": "1Fz5i9hsoRzP4V-q4iJbySQ5xySDiQu2h",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "01.jpg",
+          "newName": "main-towel-hanger.jpg",
+          "driveId": "1RGoa5XOgnBEb4SIlPUGQFQaZxlZFGSao",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "02.jpg",
+          "newName": "gallery-01.jpg",
+          "driveId": "1gZocvxYAw5Si_k1U2HrUeQlgU_4ysmEx",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "03.jpg",
+          "newName": "gallery-02.jpg",
+          "driveId": "1dRiykyRjT5IFiLJYtbf1FZiShW3FeNKQ",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "04.jpg",
+          "newName": "gallery-03.jpg",
+          "driveId": "1ImVp3w-DV-MON2T4-oegJbagXH16-OHe",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "05.jpg",
+          "newName": "gallery-04.jpg",
+          "driveId": "17C3ZfKRhBwIQyWWhSRNsfC1rCbXLJ7FB",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Product Images",
+          "oldName": "SW-TW-001",
+          "newName": "Towel Hanger",
+          "driveId": "16P6n8domR-U8iWBdBkn-68cj7mbBC6Cz",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "01.jpg",
+          "newName": "main-custom-design-shirt.jpg",
+          "driveId": "1HsXk67SvH6vgowujffh7GexqNZBEs_Wn",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "02.jpg",
+          "newName": "gallery-01.jpg",
+          "driveId": "1gSWaKK3nDnHtoGM0VOl-WuUZsDalPqmv",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "03.jpg",
+          "newName": "gallery-02.jpg",
+          "driveId": "1IhfyrBpK_Ojhe6LKaUlcCzhPPJJcV1bR",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "03.jpg",
+          "newName": "gallery-03.jpg",
+          "driveId": "1QrX5Ee_bb6q3cEyY_4owCnrdM8cz4f-c",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "05.jpg",
+          "newName": "gallery-04.jpg",
+          "driveId": "17cDLOGoKaAOSLqtB4AZq8ikdSsDm9VGg",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "06.jpg",
+          "newName": "gallery-05.jpg",
+          "driveId": "1U5dImElyzM3c9qSrC7HX9iNJXibZ5L-M",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "07.jpg",
+          "newName": "gallery-06.jpg",
+          "driveId": "1JN-KqP609GaBCeYY_zzWzdz51vXPCXF3",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "08.jpg",
+          "newName": "gallery-07.jpg",
+          "driveId": "1MRuVjKb0pL0021I44F5Uvyw0Y7K7SrtK",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "09.jpg",
+          "newName": "gallery-08.jpg",
+          "driveId": "1qZg6nifWGw9tsCiDhw2aLl5xb6yWyFvW",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "10.jpg",
+          "newName": "gallery-09.jpg",
+          "driveId": "14Z43c8ZATm9AIj9lVDaJSN8qQikUbZ8N",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "11.jpg",
+          "newName": "gallery-10.jpg",
+          "driveId": "1zUuqgO4OJr9uRnJ3zqOzfKOiuEbOdUqE",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "12.jpg",
+          "newName": "gallery-11.jpg",
+          "driveId": "12_LtBf4liznHxtnCiPaxG4fH0DLmUwFu",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "13.jpg",
+          "newName": "gallery-12.jpg",
+          "driveId": "11aD1pV6WTrm2aRqAYsV4K9Rbm4sGab8H",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "14.jpg",
+          "newName": "gallery-13.jpg",
+          "driveId": "1wm-PiNQSDqajbfxOY3eLHfAWxI3P3u-B",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "15.jpg",
+          "newName": "gallery-14.jpg",
+          "driveId": "1BqFrpEk5uBN2_erBGhNpsy0stEIpCm8d",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "16.jpg",
+          "newName": "gallery-15.jpg",
+          "driveId": "1X53lMlVIUO27b8bER5afo5zBWSSx5cgk",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Product Images",
+          "oldName": "SW-CS-001",
+          "newName": "Custom Design Shirt",
+          "driveId": "1yfK1XviaEaX6EhLZwXSWpdAhTfpgXZzw",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "01.jpg",
+          "newName": "main-custom-baby-blanket.jpg",
+          "driveId": "1nxn0X7bsqzSMlalI46xNk-0a6vsANYKE",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "02.jpg",
+          "newName": "gallery-01.jpg",
+          "driveId": "1al8rRLdtUhvanEmAI-4kM0dKBkbrmrYP",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "03.jpg",
+          "newName": "gallery-02.jpg",
+          "driveId": "1AmxiJ4mxLSqCI7a6dCjuBIDCxwxZ3oUh",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "04.jpg",
+          "newName": "gallery-03.jpg",
+          "driveId": "1jXTalNjsVNWsSxpUOyTHeHbQtK06BKZv",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "05.jpg",
+          "newName": "gallery-04.jpg",
+          "driveId": "1lMRIH1eKmstd-TVv6kIzFx28Sh3OENz4",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Product Images",
+          "oldName": "SW-BB-001",
+          "newName": "Custom Baby Blanket",
+          "driveId": "1jPJETOmZpnsXPnDFePgorD9-TiOZ7P_3",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "01.jpg",
+          "newName": "main-soft-toy.jpg",
+          "driveId": "1dRm821xDMqVyfZ7wzRTSQl_rRuD9qedJ",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "02.jpg",
+          "newName": "gallery-01.jpg",
+          "driveId": "19z1ZGuDFfxSgbYiouHbeWyc6KSH7WQKx",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "03.jpg",
+          "newName": "gallery-02.jpg",
+          "driveId": "1_MX6bd7K1Fwo0SR_56QWNsK6efj3MYei",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Product Images",
+          "oldName": "SW-ST-001",
+          "newName": "Soft Toy",
+          "driveId": "1dGWpzJMPDVdLApWlvGqvbJ1bFXkuPhFJ",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "01.jpg",
+          "newName": "main-rice-pack.jpg",
+          "driveId": "14G9PfbTgio0iSv_RPf0DYz60LqWVmpnB",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "02.jpg",
+          "newName": "gallery-01.jpg",
+          "driveId": "13IcHPVJB69RVGFuV-65IPqHDECkWa72h",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "03.jpg",
+          "newName": "gallery-02.jpg",
+          "driveId": "1TiQtnkN6tSvTI36ImCZDZqCz0ikBduu6",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "04.jpg",
+          "newName": "gallery-03.jpg",
+          "driveId": "1J94tkSB7r_E-H9_TgN4MUMHQQsOxVLkW",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Product Images",
+          "oldName": "SW-RP-001",
+          "newName": "Rice Pack",
+          "driveId": "1xHY_s0hk_UMpXdoOsRmESyEdzlGiQ8f_",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "01.jpg",
+          "newName": "main-shoulder-rice-pack.jpg",
+          "driveId": "1ZsMdvPHBiJdL-P5yQ61U_dA1z_Zt-4Fc",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "02.jpg",
+          "newName": "gallery-01.jpg",
+          "driveId": "1kXLv2XlxAfwa8YgGssJfLd927JUK-AL3",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Product Images",
+          "oldName": "03.jpg",
+          "newName": "gallery-02.jpg",
+          "driveId": "1XgRh5AsiKGLPYfMitSMMV9V3IzSY2gu7",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Product Images",
+          "oldName": "SW-RP-002",
+          "newName": "Shoulder Rice Pack",
+          "driveId": "11HzWsOa4khDfh4Yed5NhRSj6M3dS3Wyj",
+          "status": "renamed"
+        }
+      ]
+    },
+    {
+      "section": "Collection Images",
+      "foldersRenamed": 9,
+      "filesRenamed": 9,
+      "conflicts": 0,
+      "errors": 0,
+      "skipped": 0,
+      "ops": [
+        {
+          "type": "file",
+          "section": "Collection Images",
+          "oldName": "01.jpg",
+          "newName": "main-baby-blankets.jpg",
+          "driveId": "1f9XGbZ1ZNYpgBqFkgm7pjGFNGYPuquf3",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Collection Images",
+          "oldName": "SW-BB",
+          "newName": "Baby Blankets",
+          "driveId": "1hN3UFm98aMwNIQuCtazy3mRvqO8RYBNq",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Collection Images",
+          "oldName": "01.jpg",
+          "newName": "main-soft-toys.jpg",
+          "driveId": "1Rba4hvr_hWnM6HY0NmgpzA7Vy2rxjjX_",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Collection Images",
+          "oldName": "SW-ST",
+          "newName": "Soft Toys",
+          "driveId": "1kV3AKEsGcwxQ8OxOp6zowKofXO5re0hU",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Collection Images",
+          "oldName": "01.jpg",
+          "newName": "main-bowl-cozy.jpg",
+          "driveId": "1vwfwL4mqmybTrALshLIYTlktsyByOkgo",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Collection Images",
+          "oldName": "SW-BC",
+          "newName": "Bowl Cozy",
+          "driveId": "1GctK7tU1Iv3f1K7WuTXYcV7m_Un6StUh",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Collection Images",
+          "oldName": "01.jpg",
+          "newName": "main-rolls.jpg",
+          "driveId": "1D2SDALIt4YJlU_SgJMu01i1G61_2aEnA",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Collection Images",
+          "oldName": "BK-RL",
+          "newName": "Rolls",
+          "driveId": "1Lbee6mbCBNIRG9J1RR9M4pfbjXkmJxW6",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Collection Images",
+          "oldName": "01.jpg",
+          "newName": "main-garlic-buns.jpg",
+          "driveId": "1H9UVtjvC3fFrsdKH5id_8Qk_FfiyxE1k",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Collection Images",
+          "oldName": "BK-GB",
+          "newName": "Garlic Buns",
+          "driveId": "1CL9Loh5OaLD7ET7VtY7XOeMYIN8r_emt",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Collection Images",
+          "oldName": "01.jpg",
+          "newName": "main-challah-bread.jpg",
+          "driveId": "16gfpilFkrLFeqmlcxdYiPKydOnHSVziI",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Collection Images",
+          "oldName": "BK-CH",
+          "newName": "Challah Bread",
+          "driveId": "1kRUWDQ9NxHtyk_0QFz3fdsZzCWjL4O1S",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Collection Images",
+          "oldName": "01.jpg",
+          "newName": "main-filled-pockets.jpg",
+          "driveId": "12yYjEwwBgx1NOmR3m9ZUK3-Dk_YrOJNZ",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Collection Images",
+          "oldName": "BK-FP",
+          "newName": "Filled Pockets",
+          "driveId": "1dF_VEYqF0mX0z1xik0svwJFPWSDmnHF8",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Collection Images",
+          "oldName": "01.jpg",
+          "newName": "main-sourdough-bread.jpg",
+          "driveId": "1Mi0gxfzpv5POJIN3DIn9kCwH3Swg8_DH",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Collection Images",
+          "oldName": "BK-SB",
+          "newName": "Sourdough Bread",
+          "driveId": "13l4diLb_aEJdXhk7PDJO1gn23fX61aUN",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Collection Images",
+          "oldName": "01.jpg",
+          "newName": "main-custom-shirts.jpg",
+          "driveId": "1Gs64Sh852cgnMqPXVF6B29jymTeg0sRE",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Collection Images",
+          "oldName": "SW-CS",
+          "newName": "Custom Shirts",
+          "driveId": "1mgmbLArsipyGtLEazYL2ZpnfTUSvH2jm",
+          "status": "renamed"
+        }
+      ]
+    },
+    {
+      "section": "Business Area Images",
+      "foldersRenamed": 2,
+      "filesRenamed": 5,
+      "conflicts": 0,
+      "errors": 0,
+      "skipped": 0,
+      "ops": [
+        {
+          "type": "file",
+          "section": "Business Area Images",
+          "oldName": "01.jpg",
+          "newName": "main-bakery.jpg",
+          "driveId": "1mNvcnqJHnGU8a1UPd0u0lbvHTXNkgosk",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Business Area Images",
+          "oldName": "BK",
+          "newName": "Bakery",
+          "driveId": "1UU4gRIchldXWC445BgkCJyQntrGb3vKL",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Business Area Images",
+          "oldName": "01.jpg",
+          "newName": "main-sewing.jpg",
+          "driveId": "1pHcueK-cOWvgUAaSB0qu_u0tx6YIcoYI",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Business Area Images",
+          "oldName": "02.jpg",
+          "newName": "gallery-01.jpg",
+          "driveId": "1U2UwyUEoYy3c5chYu2Y2z4vgGDRw-Vxb",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Business Area Images",
+          "oldName": "03.jpg",
+          "newName": "gallery-02.jpg",
+          "driveId": "1XXQk38pKEvJpNIaY801u7ylS4uDvdlD3",
+          "status": "renamed"
+        },
+        {
+          "type": "file",
+          "section": "Business Area Images",
+          "oldName": "04.jpg",
+          "newName": "gallery-03.jpg",
+          "driveId": "1oQDNFOFPCYaK-bRH873E9VCkKimdRnke",
+          "status": "renamed"
+        },
+        {
+          "type": "folder",
+          "section": "Business Area Images",
+          "oldName": "SW",
+          "newName": "Sewing",
+          "driveId": "1PjYT7imxxN-YMCXLM3M3JCiGQIHxHBpi",
+          "status": "renamed"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalFolders": 25,
+    "totalFiles": 61,
+    "renamed": 86,
+    "conflicts": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

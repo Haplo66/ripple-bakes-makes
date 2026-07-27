@@ -1,0 +1,498 @@
+{
+  "_metadata": {
+    "version": 1,
+    "generatedAt": "2026-07-27T18:31:12.954Z",
+    "tool": "RIPPLE Drive Name Migration"
+  },
+  "products": [
+    {
+      "code": "BK-SB-002",
+      "folder": "Seeded Sourdough Loaf",
+      "files": []
+    },
+    {
+      "code": "BK-SB-001",
+      "folder": "Classic Sourdough Loaf",
+      "files": [
+        {
+          "name": "main-classic-sourdough-loaf.jpg",
+          "md5": "0d56dea513fda24513b406b71687a7fe",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "code": "BK-RL-001",
+      "folder": "Rolls",
+      "files": [
+        {
+          "name": "main-rolls.jpg",
+          "md5": "45713ef0def8d49149839daa43f0ac66",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "code": "BK-GB-001",
+      "folder": "Garlic Buns",
+      "files": [
+        {
+          "name": "main-garlic-buns.jpg",
+          "md5": "1cf90d719f0ba4e9630c951d2adf7d0c",
+          "primary": true
+        },
+        {
+          "name": "gallery-01.jpg",
+          "md5": "679ac7653eb88e302e4ee7681513d61b",
+          "primary": false
+        }
+      ]
+    },
+    {
+      "code": "BK-CH-001",
+      "folder": "Challah Bread",
+      "files": [
+        {
+          "name": "main-challah-bread.jpg",
+          "md5": "4274ccb26708d88eaeb1862c1bef2912",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "code": "BK-CH-002",
+      "folder": "Mini Challah Bread",
+      "files": [
+        {
+          "name": "main-mini-challah-bread.jpg",
+          "md5": "024e0e103f20a350b707674a18aa7add",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "code": "BK-FP-002",
+      "folder": "Tuna Filled Pocket",
+      "files": [
+        {
+          "name": "main-tuna-filled-pocket.jpg",
+          "md5": "c06bd0d6b321e1b86de8898af3d8a9db",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "code": "BK-FP-003",
+      "folder": "Beef Filled Pocket",
+      "files": []
+    },
+    {
+      "code": "BK-FP-001",
+      "folder": "Cheese Filled Pocket",
+      "files": [
+        {
+          "name": "main-cheese-filled-pocket.jpg",
+          "md5": "c50f1035ffda16f83e1b29b43d25a084",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "code": "SW-BC-001",
+      "folder": "Bowl Cozy",
+      "files": [
+        {
+          "name": "main-bowl-cozy.jpg",
+          "md5": "12177cbc1991c969fb36d2517b1fb0c2",
+          "primary": true
+        },
+        {
+          "name": "gallery-01.jpg",
+          "md5": "c6e595dfe1c20e6ad8d21120684f4cb3",
+          "primary": false
+        },
+        {
+          "name": "gallery-02.jpg",
+          "md5": "3b2851daf7e6b046526f32dd99e418ce",
+          "primary": false
+        }
+      ]
+    },
+    {
+      "code": "SW-TW-001",
+      "folder": "Towel Hanger",
+      "files": [
+        {
+          "name": "main-towel-hanger.jpg",
+          "md5": "d4b186733e16cb83a7a939cc59317320",
+          "primary": true
+        },
+        {
+          "name": "gallery-01.jpg",
+          "md5": "ec580080914514916a316bce23c45ab1",
+          "primary": false
+        },
+        {
+          "name": "gallery-02.jpg",
+          "md5": "3c885adac41a33e2c261545c9e1e845d",
+          "primary": false
+        },
+        {
+          "name": "gallery-03.jpg",
+          "md5": "8fdcfe74af167d794454ba0130a44b89",
+          "primary": false
+        },
+        {
+          "name": "gallery-04.jpg",
+          "md5": "a55eec362f1ce7f33a9346aaa5c2face",
+          "primary": false
+        }
+      ]
+    },
+    {
+      "code": "SW-CS-001",
+      "folder": "Custom Design Shirt",
+      "files": [
+        {
+          "name": "main-custom-design-shirt.jpg",
+          "md5": "5b120d499049608c6344fde68373667b",
+          "primary": true
+        },
+        {
+          "name": "gallery-01.jpg",
+          "md5": "44cc137a984cbfb140ad507b1a3900ac",
+          "primary": false
+        },
+        {
+          "name": "gallery-02.jpg",
+          "md5": "234d629b39384fcbffc0254da2fbea34",
+          "primary": false
+        },
+        {
+          "name": "gallery-03.jpg",
+          "md5": "623efb7e1fe0b11091d6f8cc70f5e6a5",
+          "primary": false
+        },
+        {
+          "name": "gallery-04.jpg",
+          "md5": "f07e259dd6776277c9d6ab1596993ff4",
+          "primary": false
+        },
+        {
+          "name": "gallery-05.jpg",
+          "md5": "a702b8a109fd34ca6d255d2b3df8af56",
+          "primary": false
+        },
+        {
+          "name": "gallery-06.jpg",
+          "md5": "091f5e9f28ee0760d49d3db818b23b38",
+          "primary": false
+        },
+        {
+          "name": "gallery-07.jpg",
+          "md5": "c4082438de96cb98cf1acf5ea7229bad",
+          "primary": false
+        },
+        {
+          "name": "gallery-08.jpg",
+          "md5": "d086a68b49cafebc621aeecad2f7d35f",
+          "primary": false
+        },
+        {
+          "name": "gallery-09.jpg",
+          "md5": "6b0d9a677a6faf9f9a7f43b056fbd42b",
+          "primary": false
+        },
+        {
+          "name": "gallery-10.jpg",
+          "md5": "fb5314de7988ccb812b321d467c2883c",
+          "primary": false
+        },
+        {
+          "name": "gallery-11.jpg",
+          "md5": "85589f4c84e653e4036653673c7c254b",
+          "primary": false
+        },
+        {
+          "name": "gallery-12.jpg",
+          "md5": "9b1de84afcc005f9b7f8207a4563b9d6",
+          "primary": false
+        },
+        {
+          "name": "gallery-13.jpg",
+          "md5": "da4ea488827452f6c47546744a267354",
+          "primary": false
+        },
+        {
+          "name": "gallery-14.jpg",
+          "md5": "c1d2388f59f70ceb26bcbcc83c732ff8",
+          "primary": false
+        },
+        {
+          "name": "gallery-15.jpg",
+          "md5": "24d6822e040eb5f99606f5e7c221329c",
+          "primary": false
+        }
+      ]
+    },
+    {
+      "code": "SW-BB-001",
+      "folder": "Custom Baby Blanket",
+      "files": [
+        {
+          "name": "main-custom-baby-blanket.jpg",
+          "md5": "c594af25d1d342724fd50cfbf70d7b7e",
+          "primary": true
+        },
+        {
+          "name": "gallery-01.jpg",
+          "md5": "e91fcc2922c071f4243d249f30a55f0a",
+          "primary": false
+        },
+        {
+          "name": "gallery-02.jpg",
+          "md5": "8685fabdb67b5d41d127fa64a6d19a92",
+          "primary": false
+        },
+        {
+          "name": "gallery-03.jpg",
+          "md5": "009a0959c63cbb1846b30e802db4847f",
+          "primary": false
+        },
+        {
+          "name": "gallery-04.jpg",
+          "md5": "d75d995be15715de820ffd88fbefde84",
+          "primary": false
+        }
+      ]
+    },
+    {
+      "code": "SW-ST-001",
+      "folder": "Soft Toy",
+      "files": [
+        {
+          "name": "main-soft-toy.jpg",
+          "md5": "193fc75635d0344da61e84bb79efd99e",
+          "primary": true
+        },
+        {
+          "name": "gallery-01.jpg",
+          "md5": "042e930cd2411a56be8ab2d25dfb7cb5",
+          "primary": false
+        },
+        {
+          "name": "gallery-02.jpg",
+          "md5": "ad838bbf62d15bfd7b41312b2b1742ae",
+          "primary": false
+        }
+      ]
+    },
+    {
+      "code": "SW-RP-001",
+      "folder": "Rice Pack",
+      "files": [
+        {
+          "name": "main-rice-pack.jpg",
+          "md5": "ca00fe25c5d1aaab02d04afa30210a28",
+          "primary": true
+        },
+        {
+          "name": "gallery-01.jpg",
+          "md5": "3bba609c696bdef4ccfdffe498b4de28",
+          "primary": false
+        },
+        {
+          "name": "gallery-02.jpg",
+          "md5": "02401c601fa6d2bf53c529671c8f35d3",
+          "primary": false
+        },
+        {
+          "name": "gallery-03.jpg",
+          "md5": "6a8c8244761231664e5c860b54f5ad83",
+          "primary": false
+        }
+      ]
+    },
+    {
+      "code": "SW-RP-002",
+      "folder": "Shoulder Rice Pack",
+      "files": [
+        {
+          "name": "main-shoulder-rice-pack.jpg",
+          "md5": "7215b4b713d959de4daeecb11f784a3e",
+          "primary": true
+        },
+        {
+          "name": "gallery-01.jpg",
+          "md5": "17a0d0b6a6d15fb6c25b9b177472708c",
+          "primary": false
+        },
+        {
+          "name": "gallery-02.jpg",
+          "md5": "1361238e04bbf8d8531e2f69dcc2fd1a",
+          "primary": false
+        }
+      ]
+    }
+  ],
+  "collections": [
+    {
+      "code": "SW-BB",
+      "folder": "Baby Blankets",
+      "files": [
+        {
+          "name": "main-baby-blankets.jpg",
+          "md5": "9556e320388fa401d9d63974c9eca40e",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "code": "SW-TW",
+      "folder": "Towel Hangers",
+      "files": []
+    },
+    {
+      "code": "SW-HW",
+      "folder": "Beanie Hats",
+      "files": []
+    },
+    {
+      "code": "SW-HS",
+      "folder": "Bucket Hats",
+      "files": []
+    },
+    {
+      "code": "SW-ST",
+      "folder": "Soft Toys",
+      "files": [
+        {
+          "name": "main-soft-toys.jpg",
+          "md5": "b893ff8c473041c0ea7367512b77732e",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "code": "SW-RP",
+      "folder": "Rice Packs",
+      "files": []
+    },
+    {
+      "code": "SW-BC",
+      "folder": "Bowl Cozy",
+      "files": [
+        {
+          "name": "main-bowl-cozy.jpg",
+          "md5": "c6e595dfe1c20e6ad8d21120684f4cb3",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "code": "BK-RL",
+      "folder": "Rolls",
+      "files": [
+        {
+          "name": "main-rolls.jpg",
+          "md5": "de48f007ad6bcd4891bd424fa288577b",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "code": "BK-GB",
+      "folder": "Garlic Buns",
+      "files": [
+        {
+          "name": "main-garlic-buns.jpg",
+          "md5": "1cf90d719f0ba4e9630c951d2adf7d0c",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "code": "BK-CH",
+      "folder": "Challah Bread",
+      "files": [
+        {
+          "name": "main-challah-bread.jpg",
+          "md5": "daa64a634c25edb2e54d4dbb31f55967",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "code": "BK-FP",
+      "folder": "Filled Pockets",
+      "files": [
+        {
+          "name": "main-filled-pockets.jpg",
+          "md5": "c06bd0d6b321e1b86de8898af3d8a9db",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "code": "BK-SB",
+      "folder": "Sourdough Bread",
+      "files": [
+        {
+          "name": "main-sourdough-bread.jpg",
+          "md5": "19f867bebbcb504ca1345635c2cba044",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "code": "SW-CS",
+      "folder": "Custom Shirts",
+      "files": [
+        {
+          "name": "main-custom-shirts.jpg",
+          "md5": "4413129aedc76a843b17c5273658e912",
+          "primary": true
+        }
+      ]
+    }
+  ],
+  "businessAreas": [
+    {
+      "code": "BK",
+      "folder": "Bakery",
+      "files": [
+        {
+          "name": "main-bakery.jpg",
+          "md5": "0d56dea513fda24513b406b71687a7fe",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "code": "SW",
+      "folder": "Sewing",
+      "files": [
+        {
+          "name": "main-sewing.jpg",
+          "md5": "2d647da066db11c2a71453cb076f65f0",
+          "primary": true
+        },
+        {
+          "name": "gallery-01.jpg",
+          "md5": "06713c882913c4141446999287f5e103",
+          "primary": false
+        },
+        {
+          "name": "gallery-02.jpg",
+          "md5": "ba3de548c312d39e76eb0554824eea53",
+          "primary": false
+        },
+        {
+          "name": "gallery-03.jpg",
+          "md5": "623efb7e1fe0b11091d6f8cc70f5e6a5",
+          "primary": false
+        }
+      ]
+    }
+  ]
+}

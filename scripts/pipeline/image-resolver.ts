@@ -1,4 +1,5 @@
 import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 import { IMAGE_DIR } from './constants.ts';
 import { scanImageFolder } from './image-scanner.ts';
 import type { PipelineWarning } from './types.ts';
@@ -16,8 +17,46 @@ const BUSINESS_AREA_CODES: Record<string, string> = {
   SW: 'SW',
 };
 
+const BUSINESS_AREA_NAMES: Record<string, string> = {
+  bakery: 'Bakery',
+  sewing: 'Sewing',
+  BK: 'Bakery',
+  SW: 'Sewing',
+};
+
 const toBusinessAreaCode = (area: string): string =>
   BUSINESS_AREA_CODES[area] ?? area;
+
+const toBusinessAreaName = (area: string): string =>
+  BUSINESS_AREA_NAMES[area] ?? area;
+
+function resolveFolderByPriority(
+  candidates: { path: string; folderKey: string }[],
+  warnings: PipelineWarning[],
+  context: { file: string; productId?: string },
+): ResolvedImages {
+  for (const { path, folderKey } of candidates) {
+    if (existsSync(path)) {
+      const result = scanImageFolder(path);
+      if (result.found) {
+        return {
+          images: result.files,
+          primaryImage: result.files[0],
+          imageFolder: folderKey,
+        };
+      }
+    }
+  }
+
+  if (context.productId) {
+    warnings.push({
+      file: context.file,
+      reason: `Product ${context.productId} is using default image.`,
+    });
+  }
+
+  return { images: [], primaryImage: '', imageFolder: '' };
+}
 
 export function resolveProductImages(
   productId: string,
@@ -25,70 +64,85 @@ export function resolveProductImages(
   businessAreaId: string,
   warnings: PipelineWarning[],
   context: { file: string },
+  productName?: string,
+  collectionName?: string,
+  areaName?: string,
 ): ResolvedImages {
-  const productFolder = join(IMAGE_DIR, 'products', productId);
-  const productResult = scanImageFolder(productFolder);
+  const candidates: { path: string; folderKey: string }[] = [];
 
-  if (productResult.found) {
-    return {
-      images: productResult.files,
-      primaryImage: productResult.files[0],
-      imageFolder: `products/${productId}`,
-    };
+  if (productName) {
+    candidates.push({
+      path: join(IMAGE_DIR, 'products', productName),
+      folderKey: `products/${productName}`,
+    });
   }
 
-  const collectionFolder = join(IMAGE_DIR, 'collections', collectionId);
-  const collectionResult = scanImageFolder(collectionFolder);
-
-  if (collectionResult.found) {
-    return {
-      images: collectionResult.files,
-      primaryImage: collectionResult.files[0],
-      imageFolder: `collections/${collectionId}`,
-    };
-  }
-
-  const code = toBusinessAreaCode(businessAreaId);
-  const businessAreaFolder = join(IMAGE_DIR, 'business-areas', code);
-  const businessResult = scanImageFolder(businessAreaFolder);
-
-  if (businessResult.found) {
-    return {
-      images: businessResult.files,
-      primaryImage: businessResult.files[0],
-      imageFolder: `business-areas/${code}`,
-    };
-  }
-
-  warnings.push({
-    file: context.file,
-    reason: `Product ${productId} is using default image.`,
+  candidates.push({
+    path: join(IMAGE_DIR, 'products', productId),
+    folderKey: `products/${productId}`,
   });
 
-  return {
-    images: [],
-    primaryImage: '',
-    imageFolder: '',
-  };
+  if (collectionName) {
+    candidates.push({
+      path: join(IMAGE_DIR, 'collections', collectionName),
+      folderKey: `collections/${collectionName}`,
+    });
+  }
+
+  candidates.push({
+    path: join(IMAGE_DIR, 'collections', collectionId),
+    folderKey: `collections/${collectionId}`,
+  });
+
+  const resolvedAreaName = areaName || toBusinessAreaName(businessAreaId);
+  const areaCode = toBusinessAreaCode(businessAreaId);
+
+  candidates.push({
+    path: join(IMAGE_DIR, 'business-areas', resolvedAreaName),
+    folderKey: `business-areas/${resolvedAreaName}`,
+  });
+
+  candidates.push({
+    path: join(IMAGE_DIR, 'business-areas', areaCode),
+    folderKey: `business-areas/${areaCode}`,
+  });
+
+  return resolveFolderByPriority(candidates, warnings, {
+    file: context.file,
+    productId,
+  });
 }
 
 export function resolveCollectionImages(
   collectionCode: string,
+  collectionName?: string,
 ): { images: string[]; primaryImage: string; imageFolder: string } {
-  const collectionFolder = join(IMAGE_DIR, 'collections', collectionCode);
-  const result = scanImageFolder(collectionFolder);
+  const candidates: { path: string; folderKey: string }[] = [];
 
-  if (result.found) {
-    return {
-      images: result.files,
-      primaryImage: result.files[0],
-      imageFolder: `collections/${collectionCode}`,
-    };
+  if (collectionName) {
+    candidates.push({
+      path: join(IMAGE_DIR, 'collections', collectionName),
+      folderKey: `collections/${collectionName}`,
+    });
   }
 
-  return {
-    images: [],
-    primaryImage: '',
-    imageFolder: '',
-  };
+  candidates.push({
+    path: join(IMAGE_DIR, 'collections', collectionCode),
+    folderKey: `collections/${collectionCode}`,
+  });
+
+  for (const { path, folderKey } of candidates) {
+    if (existsSync(path)) {
+      const result = scanImageFolder(path);
+      if (result.found) {
+        return {
+          images: result.files,
+          primaryImage: result.files[0],
+          imageFolder: folderKey,
+        };
+      }
+    }
+  }
+
+  return { images: [], primaryImage: '', imageFolder: '' };
 }

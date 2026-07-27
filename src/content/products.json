@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-27T15:35:03.225Z",
+    "generatedAt": "2026-07-27T18:42:56.019Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -39,16 +39,16 @@
       "featured": false,
       "homepageFeatured": false,
       "formId": "BK-CHALLAH",
-      "image": "01.jpg",
+      "image": "main-mini-challah-bread.jpg",
       "images": [
-        "01.jpg"
+        "main-mini-challah-bread.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "products/BK-CH-002",
-      "primaryImage": "01.jpg"
+      "imageFolder": "products/Mini Challah Bread",
+      "primaryImage": "main-mini-challah-bread.jpg"
     },
     {
       "id": "BK-FP-001",
@@ -61,16 +61,16 @@
       "featured": false,
       "homepageFeatured": false,
       "formId": "BK-POCKETS",
-      "image": "01.jpg",
+      "image": "main-cheese-filled-pocket.jpg",
       "images": [
-        "01.jpg"
+        "main-cheese-filled-pocket.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "products/BK-FP-001",
-      "primaryImage": "01.jpg"
+      "imageFolder": "products/Cheese Filled Pocket",
+      "primaryImage": "main-cheese-filled-pocket.jpg"
     },
     {
       "id": "BK-FP-002",
@@ -83,16 +83,16 @@
       "featured": true,
       "homepageFeatured": true,
       "formId": "BK-POCKETS",
-      "image": "01.jpg",
+      "image": "main-tuna-filled-pocket.jpg",
       "images": [
-        "01.jpg"
+        "main-tuna-filled-pocket.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "products/BK-FP-002",
-      "primaryImage": "01.jpg"
+      "imageFolder": "products/Tuna Filled Pocket",
+      "primaryImage": "main-tuna-filled-pocket.jpg"
     },
     {
       "id": "BK-FP-003",
@@ -105,16 +105,16 @@
       "featured": false,
       "homepageFeatured": false,
       "formId": "BK-POCKETS",
-      "image": "01.jpg",
+      "image": "main-filled-pockets.jpg",
       "images": [
-        "01.jpg"
+        "main-filled-pockets.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "collections/BK-FP",
-      "primaryImage": "01.jpg"
+      "imageFolder": "collections/Filled Pockets",
+      "primaryImage": "main-filled-pockets.jpg"
     },
     {
       "id": "BK-GB-001",
@@ -172,16 +172,16 @@
       "featured": true,
       "homepageFeatured": true,
       "formId": "BK-SOURBEAD",
-      "image": "01.jpg",
+      "image": "main-classic-sourdough-loaf.jpg",
       "images": [
-        "01.jpg"
+        "main-classic-sourdough-loaf.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "products/BK-SB-001",
-      "primaryImage": "01.jpg"
+      "imageFolder": "products/Classic Sourdough Loaf",
+      "primaryImage": "main-classic-sourdough-loaf.jpg"
     },
     {
       "id": "BK-SB-002",
@@ -194,16 +194,16 @@
       "featured": false,
       "homepageFeatured": false,
       "formId": "BK-SOURBEAD",
-      "image": "01.jpg",
+      "image": "main-sourdough-bread.jpg",
       "images": [
-        "01.jpg"
+        "main-sourdough-bread.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "collections/BK-SB",
-      "primaryImage": "01.jpg"
+      "imageFolder": "collections/Sourdough Bread",
+      "primaryImage": "main-sourdough-bread.jpg"
     },
     {
       "id": "SW-BB-001",
@@ -216,19 +216,19 @@
       "featured": true,
       "homepageFeatured": true,
       "formId": "SW-BLANKETS",
-      "image": "01.jpg",
+      "image": "main-custom-baby-blanket.jpg",
       "images": [
-        "01.jpg",
-        "02.jpg",
-        "03.jpg",
-        "04.jpg",
-        "05.jpg"
+        "main-custom-baby-blanket.jpg",
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg",
+        "gallery-04.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "imageFolder": "products/SW-BB-001",
-      "primaryImage": "01.jpg"
+      "imageFolder": "products/Custom Baby Blanket",
+      "primaryImage": "main-custom-baby-blanket.jpg"
     },
     {
       "id": "SW-BC-001",
@@ -265,31 +265,31 @@
       "featured": true,
       "homepageFeatured": true,
       "formId": "SW-SHIRT",
-      "image": "01.jpg",
+      "image": "main-custom-design-shirt.jpg",
       "images": [
-        "01.jpg",
-        "02.jpg",
-        "03.jpg",
-        "04.jpg",
-        "05.jpg",
-        "06.jpg",
-        "07.jpg",
-        "08.jpg",
-        "09.jpg",
-        "10.jpg",
-        "11.jpg",
-        "12.jpg",
-        "13.jpg",
-        "14.jpg",
-        "15.jpg",
-        "16.jpg"
+        "main-custom-design-shirt.jpg",
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg",
+        "gallery-04.jpg",
+        "gallery-05.jpg",
+        "gallery-06.jpg",
+        "gallery-07.jpg",
+        "gallery-08.jpg",
+        "gallery-09.jpg",
+        "gallery-10.jpg",
+        "gallery-11.jpg",
+        "gallery-12.jpg",
+        "gallery-13.jpg",
+        "gallery-14.jpg",
+        "gallery-15.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 50,
-      "imageFolder": "products/SW-CS-001",
-      "primaryImage": "01.jpg"
+      "imageFolder": "products/Custom Design Shirt",
+      "primaryImage": "main-custom-design-shirt.jpg"
     },
     {
       "id": "SW-HS-001",
@@ -352,19 +352,19 @@
       "featured": false,
       "homepageFeatured": false,
       "formId": "SW-RICEPACKS",
-      "image": "01.jpg",
+      "image": "main-rice-pack.jpg",
       "images": [
-        "01.jpg",
-        "02.jpg",
-        "03.jpg",
-        "04.jpg"
+        "main-rice-pack.jpg",
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "products/SW-RP-001",
-      "primaryImage": "01.jpg"
+      "imageFolder": "products/Rice Pack",
+      "primaryImage": "main-rice-pack.jpg"
     },
     {
       "id": "SW-RP-002",
@@ -377,18 +377,18 @@
       "featured": false,
       "homepageFeatured": false,
       "formId": "SW-RICEPACKS",
-      "image": "01.jpg",
+      "image": "main-shoulder-rice-pack.jpg",
       "images": [
-        "01.jpg",
-        "02.jpg",
-        "03.jpg"
+        "main-shoulder-rice-pack.jpg",
+        "gallery-01.jpg",
+        "gallery-02.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "products/SW-RP-002",
-      "primaryImage": "01.jpg"
+      "imageFolder": "products/Shoulder Rice Pack",
+      "primaryImage": "main-shoulder-rice-pack.jpg"
     },
     {
       "id": "SW-ST-001",
@@ -401,18 +401,18 @@
       "featured": false,
       "homepageFeatured": false,
       "formId": "SW-TOYS",
-      "image": "01.jpg",
+      "image": "main-soft-toy.jpg",
       "images": [
-        "01.jpg",
-        "02.jpg",
-        "03.jpg"
+        "main-soft-toy.jpg",
+        "gallery-01.jpg",
+        "gallery-02.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "products/SW-ST-001",
-      "primaryImage": "01.jpg"
+      "imageFolder": "products/Soft Toy",
+      "primaryImage": "main-soft-toy.jpg"
     },
     {
       "id": "SW-TW-001",
@@ -425,20 +425,20 @@
       "featured": false,
       "homepageFeatured": false,
       "formId": "SW-TOWEL",
-      "image": "01.jpg",
+      "image": "main-towel-hanger.jpg",
       "images": [
-        "01.jpg",
-        "02.jpg",
-        "03.jpg",
-        "04.jpg",
-        "05.jpg"
+        "main-towel-hanger.jpg",
+        "gallery-01.jpg",
+        "gallery-02.jpg",
+        "gallery-03.jpg",
+        "gallery-04.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "products/SW-TW-001",
-      "primaryImage": "01.jpg"
+      "imageFolder": "products/Towel Hanger",
+      "primaryImage": "main-towel-hanger.jpg"
     }
   ]
 }

@@ -8,6 +8,7 @@
     "import:data": "node --env-file=.env --experimental-strip-types scripts/pipeline/import-data.ts",
     "import:assets": "node --env-file=.env --experimental-strip-types scripts/pipeline/drive-product-image-importer.ts",
     "drive:fix-extensions": "node --env-file=.env --experimental-strip-types scripts/pipeline/drive-fix-image-extensions.ts",
+    "migrate:drive-names": "node --env-file=.env --experimental-strip-types scripts/migrate/migrate-drive-names.ts",
     "update": "node --env-file=.env --experimental-strip-types scripts/pipeline/update-site.ts"
   },
   "dependencies": {

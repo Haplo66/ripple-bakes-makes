@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import { authenticateDrive } from './drive-auth.ts';
-import { IMAGE_DIR } from './constants.ts';
+import { IMAGE_DIR, MANIFEST_FILE } from './constants.ts';
 import type { drive_v3 } from 'googleapis';
 
 const PRODUCT_ID_PATTERN = /^[A-Z]{2}-[A-Z]{2}-\d{3}$/;
@@ -209,11 +209,42 @@ async function downloadWithCheck(
   }
 }
 
+interface ManifestEntry {
+  code: string;
+  folder: string;
+  files: { name: string; md5: string; primary: boolean }[];
+}
+
+interface Manifest {
+  products: ManifestEntry[];
+  collections: ManifestEntry[];
+  businessAreas: ManifestEntry[];
+}
+
+function readManifest(): Manifest | null {
+  try {
+    return JSON.parse(readFileSync(MANIFEST_FILE, 'utf-8'));
+  } catch {
+    return null;
+  }
+}
+
 async function importProductImages(
   drive: drive_v3.Drive,
   sectionId: string,
   dryRun: boolean,
 ): Promise<{ items: number; downloaded: number; replaced: number; skipped: number; failed: number }> {
+  const manifest = readManifest();
+
+  const codeToManifest = new Map<string, ManifestEntry>();
+  const nameToCode = new Map<string, string>();
+  if (manifest) {
+    for (const entry of manifest.products) {
+      codeToManifest.set(entry.code, entry);
+      nameToCode.set(entry.folder, entry.code);
+    }
+  }
+
   const allFolders: DriveItem[] = [];
   const queue = [sectionId];
 
@@ -228,42 +259,89 @@ async function importProductImages(
     }
   }
 
-  const productFolders = allFolders.filter((f) => isProductId(f.name));
+  type ClassifiedFolder = {
+    id: string;
+    name: string;
+    targetDir: string;
+    manifestEntry?: ManifestEntry;
+  };
 
-  if (productFolders.length === 0) {
+  const classified: ClassifiedFolder[] = [];
+  const seen = new Set<string>();
+
+  for (const f of allFolders) {
+    const manifestCode = nameToCode.get(f.name);
+    if (manifestCode) {
+      if (seen.has(f.name)) continue;
+      seen.add(f.name);
+      classified.push({
+        id: f.id,
+        name: f.name,
+        targetDir: f.name,
+        manifestEntry: codeToManifest.get(manifestCode),
+      });
+      continue;
+    }
+
+    if (isProductId(f.name)) {
+      if (seen.has(f.name)) continue;
+      seen.add(f.name);
+      classified.push({
+        id: f.id,
+        name: f.name,
+        targetDir: f.name,
+        manifestEntry: codeToManifest.get(f.name),
+      });
+    }
+  }
+
+  const sorted = classified.sort((a, b) => a.name.localeCompare(b.name));
+
+  if (sorted.length === 0) {
     console.log('  No product folders found.');
     return { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0 };
   }
 
-  const productImageFolders: ProductImageFolder[] = [];
-  for (const pf of productFolders) {
-    const files = await listAll(drive, pf.id);
-    const images = files.filter(isImageFile);
-    productImageFolders.push({ id: pf.id, name: pf.name, images });
-  }
-
-  const sorted = productImageFolders.sort((a, b) =>
-    a.name.localeCompare(b.name),
-  );
-
   console.log(`  ${sorted.length} product folder(s)`);
+  if (manifest) {
+    console.log('  (using asset manifest for checksum verification)');
+  }
 
   let downloaded = 0;
   let replaced = 0;
   let skipped = 0;
   let failed = 0;
 
-  for (const p of sorted) {
-    const targetDir = join(IMAGE_DIR, 'products', p.name);
-    console.log(`  ${p.name}`);
-    console.log(`    Images: ${p.images.length}   Target: public/images/products/${p.name}/`);
+  for (const cf of sorted) {
+    const targetDir = join(IMAGE_DIR, 'products', cf.targetDir);
+    const driveFiles = await listAll(drive, cf.id);
+    const imageFiles = driveFiles.filter(isImageFile);
+
+    console.log(`  ${cf.name}`);
+    console.log(`    Images: ${imageFiles.length}   Target: public/images/products/${cf.targetDir}/`);
 
     if (dryRun) continue;
 
     mkdirSync(targetDir, { recursive: true });
 
-    for (const img of p.images) {
+    const manifestFileMap = new Map<string, { md5: string }>();
+    if (cf.manifestEntry) {
+      for (const mf of cf.manifestEntry.files) {
+        manifestFileMap.set(mf.name, { md5: mf.md5 });
+      }
+    }
+
+    for (const img of imageFiles) {
       const targetFile = join(targetDir, img.name);
+      const manifestFile = manifestFileMap.get(img.name);
+      if (manifestFile && existsSync(targetFile)) {
+        const localMd5 = computeFileMd5(targetFile);
+        if (localMd5 === manifestFile.md5) {
+          skipped += 1;
+          continue;
+        }
+      }
+
       const result = await downloadWithCheck(drive, img, targetFile);
       switch (result) {
         case 'downloaded': downloaded += 1; break;

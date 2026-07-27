@@ -739,4 +739,3 @@ RIPPLE Website → Customers
   - hero picture area
   - images getting cut (sizing issue?)
   - home page first sentence - wording and font
-  - instead of pressing "discover more" for baking or sewing, also press on the picture

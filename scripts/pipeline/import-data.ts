@@ -44,15 +44,42 @@ const run = async (): Promise<void> => {
   logDatasetResult('collections', collections.length);
 
   const productInput = await readValidRecords('products');
+  const normalizedProducts = normalizeProducts(productInput.records);
+
+  const slugToCode: Record<string, string> = {};
+  const codeToCollectionName: Record<string, string> = {};
+  for (const record of normalizedProducts) {
+    const code = record.id.replace(/-\d+$/, '');
+    slugToCode[record.collection] = code;
+  }
+  for (const collection of collections) {
+    const code = slugToCode[collection.id];
+    if (code) {
+      codeToCollectionName[code] = collection.name;
+    }
+  }
+
+  const BUSINESS_AREA_NAMES: Record<string, string> = {
+    bakery: 'Bakery',
+    sewing: 'Sewing',
+  };
+
   const products = sortById(
-    normalizeProducts(productInput.records).map((record) => {
+    normalizedProducts.map((record) => {
       const collectionId = record.id.replace(/-\d+$/, '');
+      const productName = record.name;
+      const collectionName = codeToCollectionName[collectionId];
+      const areaName = BUSINESS_AREA_NAMES[record.businessArea] || record.businessArea;
+
       const resolved = resolveProductImages(
         record.id,
         collectionId,
         record.businessArea,
         warnings,
         { file: IMPORT_FILES.products },
+        productName,
+        collectionName,
+        areaName,
       );
 
       return {
@@ -66,15 +93,10 @@ const run = async (): Promise<void> => {
   );
   logDatasetResult('products', products.length);
 
-  const slugToCode: Record<string, string> = {};
-  for (const record of normalizeProducts(productInput.records)) {
-    slugToCode[record.collection] = record.id.replace(/-\d+$/, '');
-  }
-
   for (const collection of collections) {
     const code = slugToCode[collection.id];
     if (code) {
-      const resolved = resolveCollectionImages(code);
+      const resolved = resolveCollectionImages(code, collection.name);
       if (resolved.imageFolder) {
         collection.imageFolder = resolved.imageFolder;
         collection.images = resolved.images;
