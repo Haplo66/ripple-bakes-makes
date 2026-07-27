@@ -266,10 +266,10 @@ Customer Browser
 | Products | Google Sheets | Generated JSON |
 | Collections | Google Sheets | Generated JSON |
 | Forms | Google Sheets | Generated JSON |
-| Product Images | Google Drive | `public/images/products/{BA}/{name}/` |
-| Collection Images | Google Drive | `public/images/collections/{BA}/{name}/` |
+| Product Images | Google Drive | `public/images/products/{BA}/{Collection}/{Product Name}/` |
+| Collection Images | Google Drive | `public/images/collections/{BA}/{Collection Name}/` |
 | Homepage Images | Google Drive | `public/images/home/` |
-| Business Area Images | Google Drive | `public/images/business-areas/{name}/` |
+| Business Area Images | Google Drive | `public/images/business-areas/{BA Name}/` |
 | Logo | Google Drive | `public/images/logo/` |
 | Favicon | Google Drive | `public/` |
 
@@ -286,7 +286,7 @@ Customer Browser
 
 ### Key Architecture Decisions
 
-- **Product IDs are the stable identifier.** Image discovery uses product ID patterns. Human-readable folder names exist for owner browsing but are ignored by the pipeline.
+- **Images are discovered by folder hierarchy.** The importer preserves the Drive folder structure (Business Area → Collection → Product) under `public/images/`. The image resolver scans the hierarchy dynamically and supports legacy flat/code-based paths as fallbacks for backward compatibility.
 - **Sheets and Drive are independent sources.** The data pipeline and asset pipeline run separately. This means an owner can update products without touching images, or add images without touching data.
 - **MD5 checksums prevent redundant downloads.** Only files whose content has changed are downloaded. The pipeline is safe to run repeatedly.
 - **Read-only by default.** The asset importer uses read-only Drive credentials. Write access is isolated to the extension-repair utility with its own credentials.
@@ -406,7 +406,7 @@ Includes:
 **Pipeline Updates:**
 - `importBusinessAreaImages()`: saves to `business-areas/{displayName}/` (post-migration) or `business-areas/{code}/` (legacy fallback)
 - `importCollectionImages()`: saves to `collections/{BA}/{Collection Name}/` preserving Drive hierarchy
-- `importProductImages()`: detects BA parent folders and saves to `products/{BA}/{Product Name}/` when nested
+- `importProductImages()`: detects BA parent folders and preserves the full hierarchy as `products/{BA}/{Collection}/{Product Name}/`
 - `image-resolver.ts`: resolves BA-subfolder paths for all asset types with flat/code fallbacks
 - Backward compatible — pre-migration flat folder structure still supported
 
@@ -440,7 +440,7 @@ Includes:
 **Image System**
 - Drive hierarchy uses Business Area display names as folder layers (`Bakery/`, `Sewing/`)
 - Local `public/images/` mirrors Drive hierarchy with BA display name subfolders
-- Product-level images: `public/images/products/{BA}/{Product Name}/`
+- Product-level images: `public/images/products/{BA}/{Collection}/{Product Name}/`
 - Collection-level images: `public/images/collections/{BA}/{Collection Name}/`
 - Business-area-level images: `public/images/business-areas/{BA Name}/`
 - Fallback hierarchy: product → collection → business area → default placeholder
@@ -688,8 +688,7 @@ RIPPLE Website → Customers
 
 ### **DEVELOPER NOTES - DO NOT REMOVE**
 - build automated test suite (both code review, and scraping)
-**- simplify images upload workflow (no product id, no picture numbering)**
-  - if replacing pictures - it won't update
+- test if replacing pictures - it will update in website
 - wording and pages improvements
   - our story page + images
   - consider removing collection feature items 
@@ -697,3 +696,4 @@ RIPPLE Website → Customers
   - hero picture area
   - images getting cut (sizing issue?)
   - home page first sentence - wording and font
+- gallery

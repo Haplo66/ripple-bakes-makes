@@ -136,10 +136,10 @@ The website reads these files through typed loader modules in `src/data/`.
 ```
 Google Drive
   Assets/
-    Product Images/     -- one subfolder per product ID (e.g. BK-CH-001)
-    Collection Images/  -- category banners
+    Product Images/     -- {BA}/{Collection}/{Product}/ (e.g. Bakery/Challah Bread/Challah Bread)
+    Collection Images/  -- {BA}/{Collection}/ banners
     Homepage Images/    -- hero banners
-    Business Area Images/  -- bakery / sewing imagery
+    Business Area Images/  -- {BA}/ bakery / sewing imagery
     Logo and Symbol/    -- brand logos
     Favicon/            -- browser icons
        |
@@ -148,19 +148,21 @@ Google Drive
        |
        v
   public/images/
-    products/<ProductID>/  -- 01.jpg, 02.jpg, ...
-    collections/
-    business-areas/
+    products/{BA}/{Collection}/{Product}/  -- main-*.jpg, main-*.png
+    collections/{BA}/{Collection}/
+    business-areas/{BA}/
     home/
     logo/
 ```
 
 The image scanner (`image-scanner.ts`) discovers images dynamically from the filesystem at import time. There is no hard-coded image list or limit. The resolver (`image-resolver.ts`) applies a fallback hierarchy:
 
-1. Product folder (`public/images/products/<ProductID>/`)
-2. Collection folder (`public/images/collections/<collectionId>/`)
-3. Business-area folder (`public/images/business-areas/<code>/`)
+1. Product folder (`public/images/products/{BA}/**/{ProductName}/`)
+2. Collection folder (`public/images/collections/{BA}/{CollectionName}/`)
+3. Business-area folder (`public/images/business-areas/{BA}/`)
 4. Default placeholder (warning logged)
+
+The resolver supports multi-level hierarchy (BA subfolder paths) with fallback to legacy flat/code-based paths for backward compatibility.
 
 ### Image Extension Repair
 
@@ -250,7 +252,7 @@ The workflow file is `.github/workflows/deploy.yml`.
 
 ### Missing Images
 
-- Verify a folder exists in Drive under `Assets/Product Images/` named with the exact Product ID.
+- Verify a folder exists in Drive under `Assets/Product Images/{BA}/{Collection}/{Product Name}/`.
 - Run `npm run import:assets` or `npm run update` to sync from Drive.
 - Check the image files are `.jpg` or `.png` and have file extensions.
 - Run the extension repair script: `npm run drive:fix-extensions` then re-import.

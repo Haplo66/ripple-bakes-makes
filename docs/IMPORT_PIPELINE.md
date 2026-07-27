@@ -179,4 +179,4 @@ If a row is skipped, check the warning for the missing required field.
 
 If the website build fails after import, check whether a required display column such as `slug`, `description`, or `fields` was accidentally removed.
 
-If images are not appearing, verify the product ID folder exists in `public/images/products/` and that `npm run import:assets` or `npm run update` has been run to sync from Drive.
+If images are not appearing, verify the product folder exists in `public/images/products/{BA}/{Collection}/{Product Name}/` and that `npm run import:assets` or `npm run update` has been run to sync from Drive.

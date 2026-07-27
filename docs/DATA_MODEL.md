@@ -92,9 +92,9 @@ Properties:
 | `shortDescription` | string | Recommended | `Customizable layer cake...` | Card summary. |
 | `description` | string | Recommended | `Our signature birthday cake...` | Product detail copy. |
 | `image` | string or null | Resolver-derived | `null` | Primary product image, resolved via fallback hierarchy. |
-| `primaryImage` | string | Resolver-derived | `/images/products/bakery-cakes-birthday-cake/01.jpg` | First image from the resolved image folder. |
-| `images` | string array | Resolver-derived | `["01.jpg", "02.jpg"]` | All images discovered in the product's image folder. |
-| `imageFolder` | string | Resolver-derived | `products/bakery-cakes-birthday-cake` | Resolved relative path under `public/images/`. |
+| `primaryImage` | string | Resolver-derived | `main-birthday-cake.jpg` | First image (filename only) from the resolved image folder. |
+| `images` | string array | Resolver-derived | `["main-birthday-cake.jpg"]` | All image filenames discovered in the product's image folder. |
+| `imageFolder` | string | Resolver-derived | `products/bakery/Challah Bread/Challah Bread` | Resolved relative path under `public/images/`. |
 | `imageTone` | tone string | Optional | `cream` | Placeholder visual treatment when no image is found. |
 | `price` | number | Optional | `45` | Numeric price. `null` or missing renders the product as Coming Soon. `0` is valid and purchasable. |
 | `priceLabel` | string | Optional | `From $45` | Display-only pricing copy. |
@@ -110,7 +110,7 @@ Products connect to:
 
 - collections through `collection` in source data and `collectionId` at runtime
 - forms through `formId`
-- images through the image resolver, which scans `public/images/products/<productId>/` and falls back to collection-level or business-area-level folders
+- images through the image resolver, which scans `public/images/products/{BA}/**/{ProductName}/` and falls back to collection-level or business-area-level folders
 
 ### Purchase State
 

@@ -15,11 +15,16 @@ Reference for QA testing gallery scenarios.
 
 ```
 public/images/products/
-  BK-FP-001/  01.jpg  02.jpg  03.jpg  04.jpg
-  BK-FP-002/  01.jpg
-  BK-CA-001/  01.jpg  02.jpg
-  SW-SH-001/  01.jpg  02.jpg  03.jpg  04.jpg  05.jpg
-  SW-HAT-001/ 01.jpg  02.jpg  03.jpg
+  Bakery/Filled Pockets/Classic Filled Pocket/
+    main-classic-filled-pocket.jpg
+  Bakery/Filled Pockets/Chocolate Filled Pocket/
+    main-chocolate-filled-pocket.jpg
+  Bakery/Other Bakery/Classic Celebration Cake/
+    main-classic-celebration-cake.jpg
+  Sewing/Custom Shirts/Premium Custom Shirt/
+    main-premium-custom-shirt.jpg
+  Sewing/Bucket Hats/Premium Bucket Hat/
+    main-premium-bucket-hat.jpg
 ```
 
 ## QA Checklist

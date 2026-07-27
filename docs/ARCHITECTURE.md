@@ -88,7 +88,7 @@ Product images are resolved separately via dynamic file-system scanning:
 ```mermaid
 flowchart LR
   drive["Google Drive"] --> importer["drive-product-image-importer.ts"]
-  importer --> productDirs["public/images/products/<ProductID>/"]
+  importer --> productDirs["public/images/products/{BA}/{Collection}/{Product}/"]
   productDirs --> scanner["image-scanner.ts"]
   scanner --> resolver["image-resolver.ts"]
   resolver --> primaryImage["primaryImage"]
@@ -96,7 +96,7 @@ flowchart LR
   resolver --> imageFolder["imageFolder"]
 ```
 
-The image resolver uses a fallback hierarchy: product folder → collection folder → business-area folder → default placeholder warning.
+The image resolver uses a fallback hierarchy: product folder (`products/{BA}/{Collection}/{Product}/`) → collection folder (`collections/{BA}/{Collection}/`) → business-area folder (`business-areas/{BA}/`) → default placeholder warning. The resolver supports both the current multi-level hierarchy and legacy flat/code-based paths as fallbacks.
 
 Pipeline output is deterministic except for `_metadata.generatedAt`, which records the import timestamp. See [IMPORT_PIPELINE.md](./IMPORT_PIPELINE.md) for operational details and [GOOGLE_SHEET_SCHEMA.md](./GOOGLE_SHEET_SCHEMA.md) for the sheet schema.
 

@@ -25,19 +25,29 @@ The website reads from these sheets when you publish. You never need to touch co
 
 Your website images are managed in **Google Drive**.
 
-The folder structure is:
+The folder structure mirrors the business areas:
 
 ```
 Assets/
-├── Product Images/      → One folder per product
-├── Collection Images/   → Category banners
+├── Product Images/      → {Business Area}/{Collection}/{Product}/
+│   ├── Bakery/
+│   │   ├── Challah Bread/
+│   │   │   ├── Challah Bread/     (product images)
+│   │   │   └── Mini Challah Bread/
+│   │   └── Filled Pockets/
+│   │       └── Cheese Filled Pocket/
+│   └── Sewing/
+│       ├── Baby Blankets/
+│       │   └── Custom Baby Blanket/
+│       └── ...
+├── Collection Images/   → {Business Area}/{Collection}/ banners
 ├── Homepage Images/     → Hero banners
 ├── Business Area Images/ → Bakery / Sewing imagery
 ├── Logo and Symbol/     → Brand logos
 └── Favicon/             → Browser icons
 ```
 
-Product images go inside a folder named with the Product ID (for example, `BK-CH-001`). The human-readable category names — like "Challah Bread" or "Filled Pockets" — are there to help you organise. The system finds products by their ID, not by the folder name.
+Product images go inside a three-level folder: Business Area → Collection → Product. The system discovers images by scanning the folder hierarchy automatically — there is no need to use codes or IDs in folder names.
 
 ---
 
@@ -102,7 +112,7 @@ Fill in a new row in the **Products** tab with the product details.
 
 ### 2. Add images in Google Drive
 
-Create a folder inside `Assets/Product Images/` using the correct Product ID.
+Create a folder inside `Assets/Product Images/` following the business area and collection hierarchy — the product name matching the product you added.
 
 For example:
 
@@ -111,14 +121,14 @@ Assets/
 └── Product Images/
     └── Sewing/
         └── Bucket Hats/
-            └── SW-HS-001/
-                ├── 01.jpg
-                └── 02.jpg
+            └── Premium Bucket Hat/
+                ├── main-premium-bucket-hat.jpg
+                └── premium-bucket-hat-side.jpg
 ```
 
-- Human-readable folder names are for your convenience — they help you stay organised
-- The Product ID folder name (like `SW-HS-001`) is what the system uses to connect the images to the product
-- Name your image files `01.jpg`, `02.jpg`, `03.jpg`, and so on
+- The folder hierarchy is Business Area → Collection → Product Name
+- The system discovers images by scanning the folder structure — no codes or IDs needed
+- Image files starting with `main-` are used as the primary product photo
 
 ### 3. Update the website
 
