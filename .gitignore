@@ -28,3 +28,6 @@ pnpm-debug.log*
 docs/*service-account*.json
 docs/*credentials*.json
 docs/ripple-makes-and-bakes-*.json
+
+# Generated asset validation reports
+data/manifest/asset-validation-report.json
