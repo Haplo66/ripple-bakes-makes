@@ -73,6 +73,13 @@ export function resolveProductImages(
   const resolvedAreaName = areaName || toBusinessAreaName(businessAreaId);
   const areaCode = toBusinessAreaCode(businessAreaId);
 
+  if (productName && collectionName) {
+    candidates.push({
+      path: join(IMAGE_DIR, 'products', resolvedAreaName, collectionName, productName),
+      folderKey: `products/${resolvedAreaName}/${collectionName}/${productName}`,
+    });
+  }
+
   if (productName) {
     candidates.push({
       path: join(IMAGE_DIR, 'products', resolvedAreaName, productName),

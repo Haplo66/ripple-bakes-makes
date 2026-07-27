@@ -246,19 +246,54 @@ async function importProductImages(
   }
 
   const allFolders: DriveItem[] = [];
-  const queue = [sectionId];
+  const queue: { id: string; depth: number }[] = [{ id: sectionId, depth: 0 }];
   const parentOf = new Map<string, string>();
+  const depthOf = new Map<string, number>();
 
   while (queue.length > 0) {
-    const currentId = queue.shift()!;
+    const { id: currentId, depth: currentDepth } = queue.shift()!;
     const children = await listAll(drive, currentId);
     for (const child of children) {
       if (child.mimeType === DRIVE_FOLDER_MIME) {
         allFolders.push(child);
         parentOf.set(child.id, currentId);
-        queue.push(child.id);
+        depthOf.set(child.id, currentDepth + 1);
+        queue.push({ id: child.id, depth: currentDepth + 1 });
       }
     }
+  }
+
+  const folderNameMap = new Map<string, string>();
+  for (const f of allFolders) {
+    folderNameMap.set(f.id, f.name);
+  }
+
+  const subfoldersOf = new Map<string, string[]>();
+  for (const [childId, parentId] of parentOf) {
+    if (!subfoldersOf.has(parentId)) subfoldersOf.set(parentId, []);
+    subfoldersOf.get(parentId)!.push(childId);
+  }
+
+  function buildTargetPath(folderId: string): { ba: string; relPath: string } | null {
+    const segments: string[] = [];
+    let currentId: string | undefined = folderId;
+    let iterations = 0;
+    while (currentId && iterations < 10) {
+      const parentId = parentOf.get(currentId);
+      if (!parentId) break;
+      const parentName = folderNameMap.get(parentId);
+      if (!parentName) break;
+      const childName = folderNameMap.get(currentId);
+      if (!childName) break;
+      if (BUSINESS_AREA_CODE[parentName] !== undefined) {
+        const relPath = childName + (segments.length > 0 ? '/' + segments.join('/') : '');
+        return { ba: parentName, relPath };
+      }
+      segments.unshift(childName);
+      currentId = parentId;
+      iterations++;
+    }
+    return null;
   }
 
   type ClassifiedFolder = {
@@ -268,70 +303,28 @@ async function importProductImages(
     manifestEntry?: ManifestEntry;
   };
 
-  const folderNameMap = new Map<string, string>();
-  for (const f of allFolders) {
-    folderNameMap.set(f.id, f.name);
-  }
-
-  function hasBAParent(folderId: string): boolean {
-    return findBAPrefix(folderId) !== '';
-  }
-
-  allFolders.sort((a, b) => {
-    const aIsBA = hasBAParent(a.id);
-    const bIsBA = hasBAParent(b.id);
-    if (aIsBA && !bIsBA) return -1;
-    if (!aIsBA && bIsBA) return 1;
-    return 0;
-  });
-
-  function findBAPrefix(folderId: string): string {
-    let currentId: string | undefined = folderId;
-    let depth = 0;
-    while (currentId && depth < 10) {
-      const parentId = parentOf.get(currentId);
-      if (!parentId) break;
-      const parentName = folderNameMap.get(parentId);
-      if (parentName && BUSINESS_AREA_CODE[parentName] !== undefined) {
-        return `${parentName}/`;
-      }
-      currentId = parentId;
-      depth++;
-    }
-    return '';
-  }
-
   const classified: ClassifiedFolder[] = [];
   const seen = new Set<string>();
 
   for (const f of allFolders) {
-    const baPrefix = findBAPrefix(f.id);
+    if (subfoldersOf.has(f.id)) continue;
 
     const manifestCode = nameToCode.get(f.name);
-    if (manifestCode) {
-      if (seen.has(f.name)) continue;
-      seen.add(f.name);
-      const prefixed = `${baPrefix}${f.name}`;
-      classified.push({
-        id: f.id,
-        name: prefixed,
-        targetDir: prefixed,
-        manifestEntry: codeToManifest.get(manifestCode),
-      });
-      continue;
-    }
+    if (!manifestCode && !isProductId(f.name)) continue;
 
-    if (isProductId(f.name)) {
-      if (seen.has(f.name)) continue;
-      seen.add(f.name);
-      const prefixed = `${baPrefix}${f.name}`;
-      classified.push({
-        id: f.id,
-        name: prefixed,
-        targetDir: prefixed,
-        manifestEntry: codeToManifest.get(f.name),
-      });
-    }
+    const targetInfo = buildTargetPath(f.id);
+    if (!targetInfo) continue;
+
+    const fullPath = `${targetInfo.ba}/${targetInfo.relPath}`;
+    if (seen.has(fullPath)) continue;
+    seen.add(fullPath);
+
+    classified.push({
+      id: f.id,
+      name: fullPath,
+      targetDir: fullPath,
+      manifestEntry: manifestCode ? codeToManifest.get(manifestCode) : undefined,
+    });
   }
 
   const sorted = classified.sort((a, b) => a.name.localeCompare(b.name));

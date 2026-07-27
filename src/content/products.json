@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-27T21:04:12.707Z",
+    "generatedAt": "2026-07-27T21:20:26.388Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -25,7 +25,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "collections/Bakery/Challah Bread",
+      "imageFolder": "products/Bakery/Challah Bread/Challah Bread",
       "primaryImage": "main-challah-bread.jpg"
     },
     {
@@ -47,7 +47,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "products/Bakery/Mini Challah Bread",
+      "imageFolder": "products/Bakery/Challah Bread/Mini Challah Bread",
       "primaryImage": "main-mini-challah-bread.jpg"
     },
     {
@@ -69,7 +69,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "products/Bakery/Cheese Filled Pocket",
+      "imageFolder": "products/Bakery/Filled Pockets/Cheese Filled Pocket",
       "primaryImage": "main-cheese-filled-pocket.jpg"
     },
     {
@@ -91,7 +91,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "products/Bakery/Tuna Filled Pocket",
+      "imageFolder": "products/Bakery/Filled Pockets/Tuna Filled Pocket",
       "primaryImage": "main-tuna-filled-pocket.jpg"
     },
     {
@@ -129,13 +129,14 @@
       "formId": "BK-GARLICBUNS",
       "image": "main-garlic-buns.jpg",
       "images": [
-        "main-garlic-buns.jpg"
+        "main-garlic-buns.jpg",
+        "gallery-01.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "collections/Bakery/Garlic Buns",
+      "imageFolder": "products/Bakery/Garlic Buns/Garlic Buns",
       "primaryImage": "main-garlic-buns.jpg"
     },
     {
@@ -157,7 +158,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "collections/Bakery/Rolls",
+      "imageFolder": "products/Bakery/Rolls/Rolls",
       "primaryImage": "main-rolls.jpg"
     },
     {
@@ -179,7 +180,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 10,
-      "imageFolder": "products/Bakery/Classic Sourdough Loaf",
+      "imageFolder": "products/Bakery/Sourdough Bread/Classic Sourdough Loaf",
       "primaryImage": "main-classic-sourdough-loaf.jpg"
     },
     {
@@ -226,7 +227,7 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "imageFolder": "products/Sewing/Custom Baby Blanket",
+      "imageFolder": "products/Sewing/Baby Blankets/Custom Baby Blanket",
       "primaryImage": "main-custom-baby-blanket.jpg"
     },
     {
@@ -242,13 +243,15 @@
       "formId": "SW-BOWLCOZY",
       "image": "main-bowl-cozy.jpg",
       "images": [
-        "main-bowl-cozy.jpg"
+        "main-bowl-cozy.jpg",
+        "gallery-01.jpg",
+        "gallery-02.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "collections/Sewing/Bowl Cozy",
+      "imageFolder": "products/Sewing/Bowl Cozy/Bowl Cozy",
       "primaryImage": "main-bowl-cozy.jpg"
     },
     {
@@ -285,7 +288,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 50,
-      "imageFolder": "products/Sewing/Custom Design Shirt",
+      "imageFolder": "products/Sewing/Custom Shirts/Custom Design Shirt",
       "primaryImage": "main-custom-design-shirt.jpg"
     },
     {
@@ -349,9 +352,9 @@
       "featured": false,
       "homepageFeatured": false,
       "formId": "SW-RICEPACKS",
-      "image": "main-rice-pack.jpg",
+      "image": "main-sewing.jpg",
       "images": [
-        "main-rice-pack.jpg",
+        "main-sewing.jpg",
         "gallery-01.jpg",
         "gallery-02.jpg",
         "gallery-03.jpg"
@@ -360,8 +363,8 @@
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "products/Sewing/Rice Pack",
-      "primaryImage": "main-rice-pack.jpg"
+      "imageFolder": "business-areas/Sewing",
+      "primaryImage": "main-sewing.jpg"
     },
     {
       "id": "SW-RP-002",
@@ -374,18 +377,19 @@
       "featured": false,
       "homepageFeatured": false,
       "formId": "SW-RICEPACKS",
-      "image": "main-shoulder-rice-pack.jpg",
+      "image": "main-sewing.jpg",
       "images": [
-        "main-shoulder-rice-pack.jpg",
+        "main-sewing.jpg",
         "gallery-01.jpg",
-        "gallery-02.jpg"
+        "gallery-02.jpg",
+        "gallery-03.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "products/Sewing/Shoulder Rice Pack",
-      "primaryImage": "main-shoulder-rice-pack.jpg"
+      "imageFolder": "business-areas/Sewing",
+      "primaryImage": "main-sewing.jpg"
     },
     {
       "id": "SW-ST-001",
@@ -408,7 +412,7 @@
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "products/Sewing/Soft Toy",
+      "imageFolder": "products/Sewing/Soft Toys/Soft Toy",
       "primaryImage": "main-soft-toy.jpg"
     },
     {
@@ -422,20 +426,19 @@
       "featured": false,
       "homepageFeatured": false,
       "formId": "SW-TOWEL",
-      "image": "main-towel-hanger.jpg",
+      "image": "main-sewing.jpg",
       "images": [
-        "main-towel-hanger.jpg",
+        "main-sewing.jpg",
         "gallery-01.jpg",
         "gallery-02.jpg",
-        "gallery-03.jpg",
-        "gallery-04.jpg"
+        "gallery-03.jpg"
       ],
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
       "price": 20,
-      "imageFolder": "products/Sewing/Towel Hanger",
-      "primaryImage": "main-towel-hanger.jpg"
+      "imageFolder": "business-areas/Sewing",
+      "primaryImage": "main-sewing.jpg"
     }
   ]
 }
