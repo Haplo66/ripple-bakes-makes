@@ -91,13 +91,13 @@ const orderedActive = (items: readonly Product[]): Product[] =>
 /** Returns all active products sorted by display order. */
 export const getAllProducts = (): Product[] => orderedActive(products);
 
-/** Returns active, featured products belonging to a specific collection ID. */
+/** Returns active products belonging to a specific collection ID. */
 export const getProductsByCollection = (
   collectionId: string,
 ): Product[] =>
   orderedActive(
     products.filter(
-      (product) => product.collectionId === collectionId && product.featured,
+      (product) => product.collectionId === collectionId,
     ),
   );
 
