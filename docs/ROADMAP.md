@@ -547,3 +547,86 @@ Update ROADMAP.md only when:
 - Major architecture decisions are made
 
 Do not add implementation history, debugging notes, terminal output, bug fixes, file lists, or code snippets. Those belong in commit messages or technical documentation.
+
+---
+
+## Future Phase — Business Growth & Platform Maturity
+
+**Goal:** Transform RIPPLE from a functional product website into a complete small business operating system.
+
+### 1. Website Experience Improvements
+
+**Gallery & Portfolio Experience:**
+- Category-based gallery browsing
+- Bakery and Sewing gallery sections
+- Image captions/storytelling
+- Lightbox viewing
+- Featured gallery items
+- Sheet-driven gallery management
+
+**Business Area Page Improvements:**
+- Stronger bakery and sewing landing pages
+- Better product discovery
+- Clear ordering expectations
+- Business storytelling
+
+**Product Experience Improvements:**
+- Better descriptions
+- Preparation/customization details
+- Lead times
+- Pickup information
+- Care instructions
+- Bakery ingredients/allergen information
+- Sewing material/care information
+
+**SEO & Discoverability:**
+- Metadata improvements
+- Social sharing/OpenGraph
+- Local business SEO
+- Product structured data
+- FAQ structured data
+
+### 2. Business Operations Foundation
+
+**Business Registration & Legal Setup:**
+- Business structure research
+- Business name registration
+- EIN requirements
+- Business banking
+- Required permits/licenses
+- Bakery-specific requirements
+- Sewing-specific requirements
+
+**Financial Operations:**
+- Revenue tracking
+- Expense tracking
+- Material/ingredient cost tracking
+- Equipment tracking
+- Profit calculation
+- Sustainable pricing model
+
+**Marketing Foundation:**
+- Google Business Profile
+- Social media presence
+- Behind-the-scenes content
+- Customer stories
+- Email list
+- Local community marketing
+
+### 3. Future Business Platform Expansion
+
+Long-term possibility of expanding Google Workspace into a lightweight business operating system:
+
+**Google Workspace:**
+- Products
+- Orders
+- Customers
+- Inventory
+- Expenses
+- Marketing
+- Analytics
+
+**Connected to:**
+RIPPLE Website → Customers
+
+**Principle:** Add complexity only when it directly supports business growth.
