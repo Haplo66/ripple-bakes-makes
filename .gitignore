@@ -31,3 +31,6 @@ docs/ripple-makes-and-bakes-*.json
 
 # Generated asset validation reports
 data/manifest/asset-validation-report.json
+
+# Doctor generated reports
+scripts/doctor/reports/

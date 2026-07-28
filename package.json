@@ -14,7 +14,8 @@
     "cleanup:local-assets": "node --experimental-strip-types scripts/migrate/cleanup-local-assets.ts",
     "validate:assets": "node --env-file=.env --experimental-strip-types scripts/migrate/asset-validator.ts",
     "validate:local-assets": "node --experimental-strip-types scripts/migrate/cleanup-local-assets.ts",
-    "update": "node --env-file=.env --experimental-strip-types scripts/pipeline/update-site.ts"
+    "update": "node --env-file=.env --experimental-strip-types scripts/pipeline/update-site.ts",
+    "doctor": "node --experimental-strip-types scripts/doctor/doctor.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.9",
