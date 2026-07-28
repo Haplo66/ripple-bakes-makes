@@ -1,4 +1,4 @@
-import type { DoctorCheck, DoctorResult } from "../types";
+import type { DoctorCheck, DoctorResult } from "../types.ts";
 
 const exampleCheck: DoctorCheck = {
   id: "SYSTEM-001",

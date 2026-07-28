@@ -23,12 +23,20 @@ type DoctorSummary = {
   info: number;
 };
 
+type DoctorHealthScore = {
+  score: number;
+  maxScore: number;
+  status: "GOOD" | "ATTENTION" | "CRITICAL";
+  recommendations: { id: string; text: string }[];
+};
+
 type DoctorReport = {
   timestamp: string;
   version: string;
   commit: string;
+  healthScore: DoctorHealthScore;
   summary: DoctorSummary;
   results: DoctorResult[];
 };
 
-export type { DoctorStatus, DoctorResult, DoctorCheck, DoctorSummary, DoctorReport };
+export type { DoctorStatus, DoctorResult, DoctorCheck, DoctorSummary, DoctorHealthScore, DoctorReport };

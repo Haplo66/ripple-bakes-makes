@@ -1,12 +1,17 @@
 import { execSync } from "node:child_process";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import type { DoctorCheck, DoctorResult, DoctorSummary, DoctorReport } from "./types";
-import { getRegisteredChecks, registerChecks } from "./registry";
-import { consoleReport } from "./reporters/console.reporter";
-import { markdownReport } from "./reporters/markdown.reporter";
-import { jsonReport } from "./reporters/json.reporter";
-import exampleCheck from "./checks/example.check";
+import type { DoctorCheck, DoctorResult, DoctorReport } from "./types.ts";
+import { getRegisteredChecks, registerChecks } from "./registry.ts";
+import { buildHealthScore } from "./scoring.ts";
+import { consoleReport } from "./reporters/console.reporter.ts";
+import { markdownReport } from "./reporters/markdown.reporter.ts";
+import { jsonReport } from "./reporters/json.reporter.ts";
+import exampleCheck from "./checks/example.check.ts";
+import configChecks from "./checks/config.check.ts";
+import dataChecks from "./checks/data.check.ts";
+import assetChecks from "./checks/asset.check.ts";
+import pipelineChecks from "./checks/pipeline.check.ts";
 
 function getVersion(): string {
   try {
@@ -57,16 +62,18 @@ function buildSummary(results: DoctorResult[]): DoctorSummary {
 }
 
 async function main(): Promise<void> {
-  registerChecks([exampleCheck]);
+  registerChecks([exampleCheck, ...configChecks, ...dataChecks, ...assetChecks, ...pipelineChecks]);
 
   const checks = getRegisteredChecks();
   const results = await runChecks(checks);
   const summary = buildSummary(results);
+  const healthScore = buildHealthScore(results);
 
   const report: DoctorReport = {
     timestamp: new Date().toISOString(),
     version: getVersion(),
     commit: getCommit(),
+    healthScore,
     summary,
     results,
   };

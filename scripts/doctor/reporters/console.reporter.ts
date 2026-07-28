@@ -1,4 +1,4 @@
-﻿import type { DoctorResult, DoctorReport } from "../types";
+﻿import type { DoctorResult, DoctorReport } from "../types.ts";
 
 function consoleReport(report: DoctorReport): void {
   console.log("\nRIPPLE Doctor\n");
@@ -18,11 +18,24 @@ function consoleReport(report: DoctorReport): void {
     }
   }
 
+  const hs = report.healthScore;
+  console.log("\nHealth Score:");
+  console.log("  " + hs.score + "/" + hs.maxScore);
+  console.log("\nStatus:");
+  console.log("  " + hs.status);
+
   console.log("\nSummary:");
   console.log("  PASS: " + report.summary.pass);
   console.log("  WARN: " + report.summary.warn);
   console.log("  FAIL: " + report.summary.fail);
   console.log("  INFO: " + report.summary.info);
+
+  if (hs.recommendations.length > 0) {
+    console.log("\nRecommendations:");
+    for (const rec of hs.recommendations) {
+      console.log("  - " + rec.text);
+    }
+  }
 }
 
 export { consoleReport };

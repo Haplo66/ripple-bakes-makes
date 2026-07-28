@@ -1,4 +1,4 @@
-import type { DoctorCheck } from "./types";
+import type { DoctorCheck } from "./types.ts";
 
 let checks: DoctorCheck[] = [];
 
