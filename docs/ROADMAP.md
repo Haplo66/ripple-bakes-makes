@@ -418,7 +418,7 @@ Includes:
 
 ## Current Status
 
-**Version: v1.17.2**
+**Version: v1.18**
 
 ### What Works Today
 
@@ -621,29 +621,78 @@ Assets/
 - Owner can add images without changing product data
 
 
-### v1.18 — Doctor Validation Framework (In Progress)
+### v1.18 — Doctor System Foundation ✅
 
-**Goal:** Add a business health validation layer that checks RIPPLE content, assets, and configuration before publishing.
+**Goal:** Add a comprehensive health monitoring system that evaluates website technical health, business catalog completeness, and delivers owner-facing reports.
 
-**Implemented:**
-- Initial Doctor framework introduced
-- Validation architecture added
-- Doctor command can analyze project health
-- Detects content/configuration issues before deployment
+**Completed capabilities:**
+- Doctor framework created
+- Website health validation checks (19 checks, 100/100 score)
+- Business health scoring (catalog completeness, 32/100)
+- Owner report generation (JSON, Markdown, owner format)
+- Doctor dashboard page at /doctor
+- Email delivery workflow via Apps Script
+- Separate Orders spreadsheet configuration support
+- Doctor Config sheet integration
+- GitHub Actions environment support
+- End-to-end report delivery verified
+
+**Current result:**
+The Doctor system can automatically evaluate website health and deliver reports to the owner. The infrastructure is working end-to-end.
+
+**Why it matters:** The owner now has automated visibility into website and catalog health without manual inspection. Issues are caught before they affect customers.
+
+
+### v1.18.1 — Owner Health Report & Dashboard Polish
+
+**Status:** Planned
 
 **Purpose:**
-Prevent silent business website failures by validating the relationship between:
-- Google Sheets business data
-- Generated content
-- Product configuration
-- Assets
-- Website structure
+Transform the initial Doctor report from a technical health output into an owner-friendly RIPPLE Control Center experience.
 
-**Next steps:**
-- Complete validation rules
-- Add actionable error reporting
-- Integrate Doctor into update workflow
-- Document checks and expected fixes
+**Current State:**
+- Doctor system works end-to-end
+- Reports are generated and emailed successfully
+- Dashboard exists
+- Email report is functional but needs better owner-focused presentation
+
+**Goals:**
+
+**Owner Email Report:**
+- Clear health summary
+- Website status
+- Business readiness status
+- Priority recommendations
+- Action-oriented guidance
+- Dashboard link
+
+The report should answer: "Is my business website healthy?"
+
+**Dashboard Alignment:**
+Ensure email and dashboard share:
+- Same health scores
+- Same terminology
+- Same severity levels
+- Same recommendations
+
+**Future Enhancements:**
+- Health history tracking
+- Score trends over time
+- Previous report comparison
+- Improvement tracking
+- Deployment status
+- Asset sync status
+- Pipeline status
+
+**Implementation Notes:**
+- Keep Orders spreadsheet and Doctor Config separation
+- No Apps Script architecture changes required
+- Future changes should remain inside RIPPLE report generation and dashboard layers
+
+**Acceptance Criteria:**
+- Business owner can understand report without technical knowledge
+- Report clearly explains problems and next actions
+- Email and dashboard feel like one integrated product
 
 
 #### v1.19 — Gallery Enhancements
