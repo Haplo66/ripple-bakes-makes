@@ -1,16 +1,28 @@
 formId,formName,fieldName,fieldType,values,required
-bakery-bread,Bread Order,Size,Dropdown,Small|Medium|Large,Yes
-bakery-bread,Bread Order,Slicing,Dropdown,Unsliced|Sliced,Yes
-bakery-filled-pocket,Filled Pocket Order,Filling,Dropdown,Cheese|Tuna|Beef|Spinach|Mushroom,Yes
-bakery-filled-pocket,Filled Pocket Order,Pack Size,Dropdown,Single|Half Dozen|Dozen,Yes
-blanket-order,Baby Blanket Order,Color,Dropdown,Cream|Sage|Rose|Navy|Charcoal,Yes
-blanket-order,Baby Blanket Order,Size,Dropdown,Baby|Crib|Toddler,Yes
-blanket-order,Baby Blanket Order,Personalization,Textbox,,No
-hat-order,Hat Order,Size,Dropdown,S|M|L|XL,Yes
-hat-order,Hat Order,Color,Dropdown,Black|White|Navy|Olive|Burgundy,Yes
-hat-order,Hat Order,Fabric,Dropdown,Cotton|Wool|Blend|Other,Yes
-rice-pack-order,Rice Pack Order,Size,Dropdown,Standard|Large|Shoulder,Yes
-rice-pack-order,Rice Pack Order,Fabric Color,Dropdown,Cream|Sage|Navy|Blush|Other,Yes
-shirt-order,Custom Shirt Order,Shirt Size,Dropdown,XS|S|M|L|XL|XXL,Yes
-shirt-order,Custom Shirt Order,Shirt Color,Dropdown,Black|White|Navy|Sage|Dusty Rose|Other,Yes
-shirt-order,Custom Shirt Order,Theme,Dropdown,Floral|Birthday|Seasonal|Geometric|Other,No
+BK-CHALLAH,Challah Bread Order,Size,Dropdown,Regular|Large,Yes
+BK-CHALLAH,Challah Bread Order,Slicing,Dropdown,Unsliced|Sliced|Half,Yes
+BK-POCKETS,Filled Pocket Order,Filling,Dropdown,Cheese|Tuna|Beef|Spinach|Mushroom,Yes
+BK-POCKETS,Filled Pocket Order,Pack Size,Dropdown,Single|Half Dozen|Dozen,Yes
+BK-GARLICBUNS,Garlic Buns Order,Pack Size,Dropdown,6-pack|12-pack,Yes
+BK-ROLLS,Rolls Order,Pack Size,Dropdown,6-pack|12-pack|24-pack,Yes
+BK-SOURBEAD,Sourdough Bread Order,Size,Dropdown,Regular|Large,Yes
+BK-SOURBEAD,Sourdough Bread Order,Slicing,Dropdown,Unsliced|Sliced|Half,Yes
+SW-BEANIE,Beanie Hats Order,Color A,Dropdown,Black|White|Navy|Olive|Burgundy,Yes
+SW-BEANIE,Beanie Hats Order,Color B,Dropdown,Black|White|Navy|Olive|Burgundy,No
+SW-BLANKETS,Baby Blanket Order,Color,Dropdown,Cream|Sage|Rose|Navy|Charcoal,Yes
+SW-BLANKETS,Baby Blanket Order,Size,Dropdown,Baby|Crib|Toddler,Yes
+SW-BLANKETS,Baby Blanket Order,Personalization,Textbox,,No
+SW-BOWLCOZY,Bowl Cozy Order,Size,Dropdown,Standard|Large,Yes
+SW-BOWLCOZY,Bowl Cozy Order,Color,Dropdown,Cream|Sage|Rose|Navy|Charcoal,Yes
+SW-BUCKET,Bucket Hat Order,Side A Color,Dropdown,Black|White|Navy|Olive|Burgundy,Yes
+SW-BUCKET,Bucket Hat Order,Side B Color,Dropdown,Black|White|Navy|Olive|Burgundy,No
+SW-RICEPACKS,Rice Pack Order,Size,Dropdown,Standard|Large|Shoulder,Yes
+SW-RICEPACKS,Rice Pack Order,Fabric Color,Dropdown,Cream|Sage|Navy|Blush|Other,Yes
+SW-SHIRT,Custom Shirt Order,Shirt Size,Dropdown,XS|S|M|L|XL|XXL,Yes
+SW-SHIRT,Custom Shirt Order,Shirt Color,Dropdown,Black|White|Navy|Sage|Dusty Rose|Other,Yes
+SW-SHIRT,Custom Shirt Order,Theme,Dropdown,Floral|Birthday|Seasonal|Geometric|Other,No
+SW-SHIRT,Custom Shirt Order,Personalization,Textbox,,No
+SW-TOYS,Soft Toy Order,Color,Dropdown,Cream|Sage|Rose|Navy|Charcoal,Yes
+SW-TOYS,Soft Toy Order,Personalization,Textbox,,No
+SW-TOWEL,Towel Hanger Order,Color,Dropdown,Cream|Sage|Rose|Navy|Charcoal,Yes
+SW-TOWEL,Towel Hanger Order,Personalization,Textbox,,No

@@ -620,6 +620,32 @@ Assets/
 - Simple folder management — no product ID mapping
 - Owner can add images without changing product data
 
+
+### v1.18 — Doctor Validation Framework (In Progress)
+
+**Goal:** Add a business health validation layer that checks RIPPLE content, assets, and configuration before publishing.
+
+**Implemented:**
+- Initial Doctor framework introduced
+- Validation architecture added
+- Doctor command can analyze project health
+- Detects content/configuration issues before deployment
+
+**Purpose:**
+Prevent silent business website failures by validating the relationship between:
+- Google Sheets business data
+- Generated content
+- Product configuration
+- Assets
+- Website structure
+
+**Next steps:**
+- Complete validation rules
+- Add actionable error reporting
+- Integrate Doctor into update workflow
+- Document checks and expected fixes
+
+
 #### v1.17.3 — Gallery Enhancements
 
 **Status:** Future
