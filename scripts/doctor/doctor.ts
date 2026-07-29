@@ -9,6 +9,8 @@ import { consoleReport } from "./reporters/console.reporter.ts";
 import { markdownReport } from "./reporters/markdown.reporter.ts";
 import { jsonReport } from "./reporters/json.reporter.ts";
 import { ownerReport } from "./reporters/owner.reporter.ts";
+import { emailReport } from "./reporters/email.reporter.ts";
+import { readDoctorConfig } from "./doctor-config.reader.ts";
 import exampleCheck from "./checks/example.check.ts";
 import configChecks from "./checks/config.check.ts";
 import dataChecks from "./checks/data.check.ts";
@@ -85,7 +87,12 @@ async function main(): Promise<void> {
   consoleReport(report);
   markdownReport(report);
   jsonReport(report);
+
+  console.log("\n\u2713 Owner report generated");
   ownerReport(report);
+
+  const doctorConfig = await readDoctorConfig();
+  await emailReport(doctorConfig);
 
   if (summary.fail > 0) {
     process.exitCode = 1;

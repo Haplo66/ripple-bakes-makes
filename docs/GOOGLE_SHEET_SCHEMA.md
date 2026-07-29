@@ -8,6 +8,7 @@
 - [Products Worksheet](#products-worksheet)
 - [Forms Worksheet](#forms-worksheet)
 - [Inquiries Worksheet](#inquiries-worksheet)
+- [Orders Config Worksheet](#orders-config-worksheet)
 - [Mapping To JSON](#mapping-to-json)
 - [Related Documentation](#related-documentation)
 
@@ -32,6 +33,9 @@ flowchart TD
     orders["Orders"]
     orderItems["Order Items"]
     inquiries["Inquiries"]
+  end
+  subgraph config["Configuration (owner-managed)"]
+    ordersConfig["Orders Config"]
   end
 
   content --> pipeline["Import pipeline"]
@@ -181,6 +185,33 @@ Example row:
 | inquiryId | createdAt | status | name | email | phone | topic | preferredContact | message | source |
 |---|---|---|---|---|---|---|---|---|---|
 | INQ-20260727-001 | 2026-07-27T10:15:00Z | New | Eyal Tal | eyal@example.com | 555-0100 | custom | email | I'd like a custom quilted table runner. | ripple-website |
+
+## Orders Config Worksheet
+
+**Sheet tab name:** `Orders Config`
+
+This sheet is the owner-facing configuration source for order workflows and business automation.
+
+### Purpose
+
+The Orders Config sheet stores key-value configuration pairs that control order processing and business automation behavior. It replaces hard-coded environment variables for settings that the owner needs to change without developer involvement.
+
+### Format
+
+| Key | Value | Description |
+| --- | --- | --- |
+| `notificationEmail` | `owner@ripplebakesandmakes.com` | Email address for order and inquiry notifications |
+| `doctorEmailTo` | `owner@ripplebakesandmakes.com` | Recipient for automated health reports |
+| `doctorEmailFrom` | `doctor@ripplebakesandmakes.com` | Sender address for health reports |
+| `doctorEmailEnabled` | `true` | Enables or disables automated email delivery |
+
+Additional rows can be added as the business grows.
+
+### Related References
+
+- The name `Orders Config` is defined in `scripts/pipeline/constants.ts` as the canonical sheet tab name.
+- The Doctor reads these values when sending health report emails (see `AGENTS.md` → Doctor → Email Automation).
+- The Apps Script backend (`processOrder()`) reads `notificationEmail` for order notifications.
 
 ## Mapping To JSON
 

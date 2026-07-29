@@ -21,9 +21,11 @@
     "@astrojs/check": "^0.9.9",
     "astro": "^6.4.8",
     "googleapis": "^173.0.0",
+    "nodemailer": "^9.0.3",
     "typescript": "^6.0.3"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1"
+    "@types/node": "^26.1.1",
+    "@types/nodemailer": "^8.0.1"
   }
 }

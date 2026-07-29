@@ -30,3 +30,6 @@ export const SHEET_TABS = {
   products: 'Products',
   forms: 'Forms',
 } as const;
+
+/** Canonical sheet tab name for owner-facing configuration (order workflows, business automation). */
+export const ORDERS_CONFIG_TAB = 'Orders Config';
