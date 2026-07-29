@@ -14,7 +14,7 @@ function hasSheetsCredentials(): boolean {
   return !!(
     process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL &&
     process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY &&
-    process.env.INVENTORY_GOOGLE_SHEETS_ID
+    process.env.ORDERS_GOOGLE_SHEETS_ID
   );
 }
 
@@ -44,8 +44,8 @@ async function readDoctorConfig(): Promise<DoctorConfig | null> {
     });
 
     const sheets = google.sheets({ version: "v4", auth });
-    const spreadsheetId = process.env.INVENTORY_GOOGLE_SHEETS_ID;
-    const range = DOCTOR_CONFIG_TAB + "!A:B";
+    const spreadsheetId = process.env.ORDERS_GOOGLE_SHEETS_ID;
+    const range = `'${DOCTOR_CONFIG_TAB}'!A:B`;
 
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId,
@@ -69,7 +69,9 @@ async function readDoctorConfig(): Promise<DoctorConfig | null> {
       dashboardUrl: raw["Dashboard URL"] || "",
       businessName: raw["Business Name"] || "",
     };
-  } catch {
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.log("  \u26A0 Doctor Config sheet not found or unreadable: " + message);
     return null;
   }
 }

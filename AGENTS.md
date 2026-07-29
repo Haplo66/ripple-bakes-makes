@@ -70,5 +70,5 @@ If email is not configured, Doctor skips delivery and reports:
 - Set secrets in GitHub repository: `PUBLIC_SUBMISSION_ENDPOINT`, `PUBLIC_ORDER_TOKEN`
 
 **Doctor Config Sheet:**
-- Enable/disable and recipient settings are managed in the `Doctor Config` sheet tab of the Google Spreadsheet.
-- Requires `GOOGLE_SERVICE_ACCOUNT_EMAIL`, `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`, and `INVENTORY_GOOGLE_SHEETS_ID` env vars for Sheets access.
+- Enable/disable and recipient settings are managed in the `Doctor Config` sheet tab of the **Orders Spreadsheet**.
+- Requires `GOOGLE_SERVICE_ACCOUNT_EMAIL`, `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`, and `ORDERS_GOOGLE_SHEETS_ID` env vars for Sheets access.
