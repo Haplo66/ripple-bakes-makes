@@ -1,6 +1,5 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import nodemailer from "nodemailer";
 import type { DoctorConfig } from "../doctor-config.reader.ts";
 
 type OwnerReportData = {
@@ -84,46 +83,52 @@ function buildBody(data: OwnerReportData, businessName: string, dashboardUrl: st
   return lines.join("\n");
 }
 
+async function postToAppsScript(payload: unknown): Promise<Response> {
+  const endpoint = getEnv("PUBLIC_SUBMISSION_ENDPOINT");
+  if (!endpoint) {
+    throw new Error("PUBLIC_SUBMISSION_ENDPOINT is not set");
+  }
+  return fetch(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
 async function sendEmail(
   data: OwnerReportData,
   config: DoctorConfig,
 ): Promise<void> {
-  const to = config.reportEmails.length > 0
-    ? config.reportEmails.join(", ")
-    : getEnv("DOCTOR_EMAIL_TO") || "";
-  const from = getEnv("DOCTOR_EMAIL_FROM") || "";
-  const host = getEnv("DOCTOR_SMTP_HOST") || "smtp.gmail.com";
-  const port = parseInt(getEnv("DOCTOR_SMTP_PORT") || "587", 10);
-  const user = getEnv("DOCTOR_SMTP_USER") || "";
-  const pass = getEnv("DOCTOR_SMTP_SECRET") || "";
+  const token = getEnv("PUBLIC_ORDER_TOKEN");
+  if (!token) {
+    console.log("  \u2139 Email delivery skipped - PUBLIC_ORDER_TOKEN not set");
+    return;
+  }
 
-  if (!to || !from || !user || !pass) {
-    console.log("  \u2139 Email delivery skipped - incomplete SMTP configuration");
+  const recipients = config.reportEmails.join(", ");
+  if (!recipients) {
+    console.log("  \u2139 Email delivery skipped - no recipients configured");
     return;
   }
 
   const businessName = config.businessName || "RIPPLE";
   const dashboardUrl = config.dashboardUrl || "";
   const subject = buildSubject(businessName, data.website.status, data.business.status);
-  const text = buildBody(data, businessName, dashboardUrl);
+  const body = buildBody(data, businessName, dashboardUrl);
 
-  const transporter = nodemailer.createTransport({
-    host: host,
-    port: port,
-    secure: port === 465,
-    auth: { user: user, pass: pass },
+  const response = await postToAppsScript({
+    doctor: { recipients, subject, body },
+    token,
   });
 
-  await transporter.sendMail({
-    from: from,
-    to: to,
-    subject: subject,
-    text: text,
-  });
+  if (!response.ok) {
+    const text = await response.text().catch(() => "no body");
+    throw new Error("Apps Script returned " + response.status + ": " + text);
+  }
 }
 
 async function emailReport(config: DoctorConfig | null): Promise<void> {
-  const doctorEnabled = config ? config.doctorEnabled : getEnv("DOCTOR_EMAIL_ENABLED") === "true";
+  const doctorEnabled = config ? config.doctorEnabled : false;
 
   if (!doctorEnabled) {
     console.log("  \u2139 Email delivery skipped - not configured (set Doctor Enabled = Yes in Doctor Config sheet)");
@@ -131,10 +136,8 @@ async function emailReport(config: DoctorConfig | null): Promise<void> {
   }
 
   const reportEmails = config ? config.reportEmails : [];
-  const hasReportEmails = reportEmails.length > 0 || !!getEnv("DOCTOR_EMAIL_TO");
-
-  if (!hasReportEmails) {
-    console.log("  \u2139 Email delivery skipped - no recipient emails configured (set Report Emails in Doctor Config sheet or DOCTOR_EMAIL_TO env)");
+  if (reportEmails.length === 0) {
+    console.log("  \u2139 Email delivery skipped - no recipient emails configured (set Report Emails in Doctor Config sheet)");
     return;
   }
 
@@ -151,11 +154,8 @@ async function emailReport(config: DoctorConfig | null): Promise<void> {
   ) as OwnerReportData;
 
   try {
-    await sendEmail(data, config || { doctorEnabled: true, reportEmails: [], reportFrequency: "", dashboardUrl: "", businessName: "" });
-    const recipient = config && config.reportEmails.length > 0
-      ? config.reportEmails.join(", ")
-      : getEnv("DOCTOR_EMAIL_TO");
-    console.log("  \u2713 Email sent to " + recipient);
+    await sendEmail(data, config);
+    console.log("  \u2713 Email sent to " + config.reportEmails.join(", "));
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     console.log("  \u2717 Email delivery failed: " + msg);

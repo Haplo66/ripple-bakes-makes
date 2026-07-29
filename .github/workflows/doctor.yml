@@ -25,10 +25,5 @@ jobs:
       - name: Run Doctor
         run: npm run doctor
         env:
-          DOCTOR_EMAIL_ENABLED: ${{ secrets.DOCTOR_EMAIL_ENABLED }}
-          DOCTOR_EMAIL_TO: ${{ secrets.DOCTOR_EMAIL_TO }}
-          DOCTOR_EMAIL_FROM: ${{ secrets.DOCTOR_EMAIL_FROM }}
-          DOCTOR_SMTP_HOST: ${{ secrets.DOCTOR_SMTP_HOST }}
-          DOCTOR_SMTP_PORT: ${{ secrets.DOCTOR_SMTP_PORT }}
-          DOCTOR_SMTP_USER: ${{ secrets.DOCTOR_SMTP_USER }}
-          DOCTOR_SMTP_SECRET: ${{ secrets.DOCTOR_SMTP_SECRET }}
+          PUBLIC_SUBMISSION_ENDPOINT: ${{ secrets.PUBLIC_SUBMISSION_ENDPOINT }}
+          PUBLIC_ORDER_TOKEN: ${{ secrets.PUBLIC_ORDER_TOKEN }}

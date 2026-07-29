@@ -49,31 +49,26 @@ Generates:
 
 ### Email Automation
 
-The Doctor can send health reports by email via SMTP.
+The Doctor can send health reports by email via the Apps Script Web App (same endpoint used for orders and inquiries).
 
 **Local setup:**
 ```bash
 # Set environment variables before running Doctor
-$env:DOCTOR_EMAIL_ENABLED="true"
-$env:DOCTOR_EMAIL_TO="owner@example.com"
-$env:DOCTOR_EMAIL_FROM="doctor@example.com"
-$env:DOCTOR_SMTP_USER="doctor@example.com"
-$env:DOCTOR_SMTP_SECRET="app-password"
+$env:PUBLIC_SUBMISSION_ENDPOINT="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"
+$env:PUBLIC_ORDER_TOKEN="your-shared-secret"
 npm run doctor
 ```
 
 If email is not configured, Doctor skips delivery and reports:
 ```
-ℹ Email delivery skipped - not configured (set DOCTOR_EMAIL_ENABLED=true)
+ℹ Email delivery skipped - not configured (set Doctor Enabled = Yes in Doctor Config sheet)
 ```
 
 **GitHub Actions (`.github/workflows/doctor.yml`):**
 - Manual trigger (`workflow_dispatch`)
 - Weekly schedule (Monday 08:00 UTC)
-- Set secrets in GitHub repository: `DOCTOR_EMAIL_ENABLED`, `DOCTOR_EMAIL_TO`, `DOCTOR_EMAIL_FROM`, `DOCTOR_SMTP_HOST`, `DOCTOR_SMTP_PORT`, `DOCTOR_SMTP_USER`, `DOCTOR_SMTP_SECRET`
+- Set secrets in GitHub repository: `PUBLIC_SUBMISSION_ENDPOINT`, `PUBLIC_ORDER_TOKEN`
 
-**Google Workspace SMTP:**
-1. Enable 2FA on the Google account
-2. Generate an App Password at https://myaccount.google.com/apppasswords
-3. Set `DOCTOR_SMTP_HOST=smtp.gmail.com`, `DOCTOR_SMTP_PORT=587`
-4. Use the full email address as `DOCTOR_SMTP_USER` and the App Password as `DOCTOR_SMTP_SECRET`
+**Doctor Config Sheet:**
+- Enable/disable and recipient settings are managed in the `Doctor Config` sheet tab of the Google Spreadsheet.
+- Requires `GOOGLE_SERVICE_ACCOUNT_EMAIL`, `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`, and `INVENTORY_GOOGLE_SHEETS_ID` env vars for Sheets access.
