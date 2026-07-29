@@ -4,9 +4,11 @@ import * as path from "node:path";
 import type { DoctorCheck, DoctorResult, DoctorReport } from "./types.ts";
 import { getRegisteredChecks, registerChecks } from "./registry.ts";
 import { buildHealthScore } from "./scoring.ts";
+import { buildBusinessHealth } from "./business.ts";
 import { consoleReport } from "./reporters/console.reporter.ts";
 import { markdownReport } from "./reporters/markdown.reporter.ts";
 import { jsonReport } from "./reporters/json.reporter.ts";
+import { ownerReport } from "./reporters/owner.reporter.ts";
 import exampleCheck from "./checks/example.check.ts";
 import configChecks from "./checks/config.check.ts";
 import dataChecks from "./checks/data.check.ts";
@@ -67,13 +69,15 @@ async function main(): Promise<void> {
   const checks = getRegisteredChecks();
   const results = await runChecks(checks);
   const summary = buildSummary(results);
-  const healthScore = buildHealthScore(results);
+  const websiteHealth = buildHealthScore(results);
+  const businessHealth = buildBusinessHealth();
 
   const report: DoctorReport = {
     timestamp: new Date().toISOString(),
     version: getVersion(),
     commit: getCommit(),
-    healthScore,
+    websiteHealth,
+    businessHealth: businessHealth as unknown as Record<string, unknown>,
     summary,
     results,
   };
@@ -81,6 +85,7 @@ async function main(): Promise<void> {
   consoleReport(report);
   markdownReport(report);
   jsonReport(report);
+  ownerReport(report);
 
   if (summary.fail > 0) {
     process.exitCode = 1;

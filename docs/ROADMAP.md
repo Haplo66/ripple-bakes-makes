@@ -646,7 +646,7 @@ Prevent silent business website failures by validating the relationship between:
 - Document checks and expected fixes
 
 
-#### v1.17.3 — Gallery Enhancements
+#### v1.19 — Gallery Enhancements
 
 **Status:** Future
 
@@ -789,4 +789,3 @@ RIPPLE Website → Customers
   - hero picture area
   - images getting cut (sizing issue?)
   - home page first sentence - wording and font
-- gallery

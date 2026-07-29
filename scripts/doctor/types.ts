@@ -34,7 +34,8 @@ type DoctorReport = {
   timestamp: string;
   version: string;
   commit: string;
-  healthScore: DoctorHealthScore;
+  websiteHealth: DoctorHealthScore;
+  businessHealth: Record<string, unknown>;
   summary: DoctorSummary;
   results: DoctorResult[];
 };
