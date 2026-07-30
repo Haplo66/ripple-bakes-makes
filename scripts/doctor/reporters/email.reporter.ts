@@ -103,13 +103,6 @@ function businessExplanation(score: number, maxScore: number): string {
   return "Your product catalog needs significant improvements.";
 }
 
-function progressBar(filled: number, total: number, width: number): string {
-  const pct = total > 0 ? Math.round((filled / total) * 100) : 0;
-  const filledCount = Math.round((pct / 100) * width);
-  const emptyCount = width - filledCount;
-  return "\u2588".repeat(Math.max(0, filledCount)) + "\u25A1".repeat(Math.max(0, emptyCount)) + " " + pct + "%";
-}
-
 function readProductAnalysis(): ProductAnalysisRow[] {
   const fullPath = path.resolve("scripts/doctor/reports/doctor-report.json");
   try {
@@ -126,7 +119,7 @@ function readCollectionsCount(): number {
   try {
     if (!fs.existsSync(p)) return 0;
     const raw = JSON.parse(fs.readFileSync(p, "utf-8"));
-    return Array.isArray(raw) ? raw.length : 0;
+    return Array.isArray(raw.data) ? raw.data.length : 0;
   } catch {
     return 0;
   }
@@ -148,183 +141,408 @@ function readBusinessProductMetrics(): { homepageFeatured: number; galleryFeatur
   }
 }
 
-function buildInventoryTableRows(): string[] {
-  const analysis = readProductAnalysis();
-  if (analysis.length === 0) return [];
-
-  const lines: string[] = [];
-  const header = "| Product | Images | Form | Price | Short | Description | Featured | Home | Gallery |";
-  const sep = "|---------|--------|------|-------|-------|-------------|----------|------|---------|";
-  lines.push(header);
-  lines.push(sep);
-
-  for (const p of analysis) {
-    const icon = p.imageCount === 0 ? "\u2717" : p.imageCount === 1 ? "\u26A0" : "\u2713";
-    const ok = "\u2713";
-    const no = "\u2717";
-    const row = [
-      p.name,
-      p.imageCount + " " + icon,
-      p.hasValidFormId === true ? ok : p.hasValidFormId === false ? no : "\u2014",
-      p.hasPrice ? ok : no,
-      p.hasShortDescription ? ok : no,
-      p.hasDescription ? ok : no,
-      p.isFeatured ? ok : no,
-      p.isHomepageFeatured ? ok : no,
-      p.isGalleryFeatured ? ok : no,
-    ];
-    lines.push("| " + row.join(" | ") + " |");
-  }
-
-  return lines;
-}
-
-function buildBody(data: OwnerReportData, businessName: string, dashboardUrl: string): string {
-  const lines: string[] = [];
-  const p = data.business.products;
-  const m = data.business;
-  const ws = data.website;
-
-  const header = businessName || "RIPPLE";
-
-  lines.push("# " + header + " Bakes & Makes Health Report");
-  lines.push("");
-  lines.push("Generated: " + new Date(data.generated).toLocaleDateString("en-GB", {
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("en-GB", {
     day: "numeric",
     month: "long",
     year: "numeric",
-  }));
+  });
+}
+
+function escHtml(s: string | number): string {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+// ─── Plain text fallback ─────────────────────────────────────────
+
+function buildPlainTextBody(data: OwnerReportData, businessName: string, dashboardUrl: string): string {
+  const p = data.business.products;
+  const m = data.business;
+  const ws = data.website;
+  const header = businessName || "RIPPLE";
+
+  const lines: string[] = [];
+
+  lines.push(header + " Health Report");
+  lines.push("Generated: " + formatDate(data.generated));
   lines.push("");
-  lines.push("----------------------------------------");
-  lines.push("");
-  lines.push("# Overall Health");
-  lines.push("");
-  lines.push("Website Health");
-  lines.push("");
-  lines.push("Score:");
-  lines.push(ws.score + "/" + ws.maxScore);
-  lines.push("");
-  lines.push("Status:");
-  lines.push(websiteStatusLabel(ws.status));
-  lines.push("");
-  lines.push(healthExplanation(ws.status));
-  lines.push("");
-  lines.push("Business Health");
-  lines.push("");
-  lines.push("Score:");
-  lines.push(m.score + "/" + m.maxScore);
-  lines.push("");
-  lines.push("Status:");
-  lines.push(businessStatusLabel(m.score, m.maxScore));
-  lines.push("");
-  lines.push(businessExplanation(m.score, m.maxScore));
-  lines.push("");
-  lines.push("----------------------------------------");
-  lines.push("");
-  lines.push("# Top Priorities");
+  lines.push("Website Health: " + ws.score + "/" + ws.maxScore + " " + websiteStatusLabel(ws.status));
+  lines.push("Business Health: " + m.score + "/" + m.maxScore + " " + businessStatusLabel(m.score, m.maxScore));
   lines.push("");
 
-  const priorities: { icon: string; label: string; detail: string }[] = [];
-
-  if (p.missingDescriptions > 0) {
-    priorities.push({ icon: "\uD83D\uDD34", label: "Product Descriptions", detail: p.missingDescriptions + " products missing." });
-  }
-
+  if (p.missingDescriptions > 0) lines.push("Product Descriptions: " + p.missingDescriptions + " missing");
+  if (p.missingShortDescriptions > 0) lines.push("Short Descriptions: " + p.missingShortDescriptions + " missing");
   const needingImages = p.productsWithOneImage + p.productsWithNoImages;
-  if (needingImages > 0) {
-    priorities.push({ icon: "\uD83D\uDFE1", label: "Product Images", detail: needingImages + " products need additional images." });
-  }
-
-  if (p.missingShortDescriptions > 0) {
-    priorities.push({ icon: "\uD83D\uDFE1", label: "Short Descriptions", detail: p.missingShortDescriptions + " products missing." });
-  }
-
-  if (p.missingPrices > 0) {
-    priorities.push({ icon: "\uD83D\uDD34", label: "Product Pricing", detail: p.missingPrices + " products missing price." });
-  }
-
-  if (data.business.forms.missing > 0) {
-    priorities.push({ icon: "\uD83D\uDFE1", label: "Order Forms", detail: data.business.forms.missing + " products missing form reference." });
-  }
-
-  if (priorities.length === 0) {
-    lines.push("No issues found. Everything looks good!");
-  } else {
-    for (const pri of priorities) {
-      lines.push(pri.icon + " " + pri.label);
-      lines.push(pri.detail);
-      lines.push("");
-    }
-  }
-
-  lines.push("----------------------------------------");
-  lines.push("");
-  lines.push("# Business Metrics");
-  lines.push("");
-
-  const collectionsCount = readCollectionsCount();
-  const fullMetrics = readBusinessProductMetrics();
-
-  const metrics: [string, number | string][] = [
-    ["Total Products", p.total],
-    ["Active Products", p.active],
-    ["Collections", collectionsCount],
-    ["Forms", data.business.forms.available],
-    ["Featured Products", p.featured],
-    ["Homepage Featured", fullMetrics?.homepageFeatured ?? "\u2014"],
-    ["Gallery Featured", fullMetrics?.galleryFeatured ?? "\u2014"],
-    ["Average Images/Product", data.business.images.averagePerProduct.toFixed(1)],
-    ["Missing Descriptions", p.missingDescriptions],
-    ["Missing Short Desc", p.missingShortDescriptions],
-    ["Products Needing Images", needingImages],
-  ];
-
-  const labelWidth = Math.max(...metrics.map((r) => r[0].length));
-  for (const [label, value] of metrics) {
-    lines.push(label.padEnd(labelWidth) + "  " + value);
-  }
+  if (needingImages > 0) lines.push("Product Images: " + needingImages + " need attention");
 
   lines.push("");
-  lines.push("----------------------------------------");
-  lines.push("");
-  lines.push("# Progress");
-  lines.push("");
-
-  const barWidth = 20;
-  const descFilled = p.total - p.missingDescriptions;
-  const shortFilled = p.total - p.missingShortDescriptions;
-  const imagesFilled = p.total - needingImages;
-
-  lines.push("Products");
-  lines.push(progressBar(p.active, p.total, barWidth) + " (" + p.active + "/" + p.total + ")");
-  lines.push("");
-  lines.push("Descriptions");
-  lines.push(progressBar(descFilled, p.total, barWidth) + " (" + descFilled + "/" + p.total + ")");
-  lines.push("");
-  lines.push("Short Descriptions");
-  lines.push(progressBar(shortFilled, p.total, barWidth) + " (" + shortFilled + "/" + p.total + ")");
-  lines.push("");
-  lines.push("Images (\u22652)");
-  lines.push(progressBar(imagesFilled, p.total, barWidth) + " (" + imagesFilled + "/" + p.total + ")");
-  lines.push("");
-  lines.push("----------------------------------------");
-  lines.push("");
-  lines.push("# Product Inventory");
-  lines.push("");
-
-  const tableRows = buildInventoryTableRows();
-  if (tableRows.length > 0) {
-    for (const r of tableRows) {
-      lines.push(r);
-    }
-    lines.push("");
-  }
-
   const url = dashboardUrl || "https://haplo66.github.io/ripple-bakes-makes/doctor";
   lines.push("Dashboard: " + url);
 
   return lines.join("\n");
 }
+
+// ─── HTML body ───────────────────────────────────────────────────
+
+function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl: string): string {
+  const p = data.business.products;
+  const m = data.business;
+  const ws = data.website;
+  const header = businessName || "RIPPLE";
+
+  const needingImages = p.productsWithOneImage + p.productsWithNoImages;
+  const collectionsCount = readCollectionsCount();
+  const fullMetrics = readBusinessProductMetrics();
+
+  const dateStr = formatDate(data.generated);
+
+  const primary = "#5a3e36";
+  const warmBg = "#faf8f6";
+  const accent = "#e8d5c4";
+  const muted = "#8a7a6a";
+  const green = "#4a9e5c";
+  const amber = "#d97706";
+  const red = "#dc2626";
+
+  const wsStatusLabel = websiteStatusLabel(ws.status);
+  const wsColor = ws.status === "GOOD" ? green : ws.status === "ATTENTION" ? amber : red;
+
+  const bsLabel = businessStatusLabel(m.score, m.maxScore);
+  let bsColor = red;
+  const bsPct = m.score / m.maxScore;
+  if (bsPct >= 0.9) bsColor = green;
+  else if (bsPct >= 0.75) bsColor = "#6b8e5a";
+  else if (bsPct >= 0.5) bsColor = amber;
+
+  // ── Priority cards ──────────────────────────────────────────────
+
+  const priorities: { icon: string; label: string; detail: string; color: string }[] = [];
+
+  if (p.missingDescriptions > 0) {
+    priorities.push({
+      icon: "&#128221;",
+      label: "Product Descriptions",
+      detail: p.missingDescriptions + " products need descriptions.",
+      color: red,
+    });
+  }
+
+  if (needingImages > 0) {
+    priorities.push({
+      icon: "&#128248;",
+      label: "Product Images",
+      detail: needingImages + " products need additional images.",
+      color: amber,
+    });
+  }
+
+  if (p.missingShortDescriptions > 0) {
+    priorities.push({
+      icon: "&#128196;",
+      label: "Short Descriptions",
+      detail: p.missingShortDescriptions + " products missing short descriptions.",
+      color: amber,
+    });
+  }
+
+  if (p.missingPrices > 0) {
+    priorities.push({
+      icon: "&#128176;",
+      label: "Product Pricing",
+      detail: p.missingPrices + " products missing price.",
+      color: red,
+    });
+  }
+
+  if (data.business.forms.missing > 0) {
+    priorities.push({
+      icon: "&#128203;",
+      label: "Order Forms",
+      detail: data.business.forms.missing + " products missing form reference.",
+      color: amber,
+    });
+  }
+
+  // ── Product inventory (needing attention vs complete) ─────────
+
+  const analysis = readProductAnalysis();
+  const needingAttention: ProductAnalysisRow[] = [];
+  const complete: ProductAnalysisRow[] = [];
+
+  for (const pr of analysis) {
+    const issues: string[] = [];
+    if (pr.imageCount <= 1) issues.push("image");
+    if (!pr.hasDescription) issues.push("description");
+    if (!pr.hasShortDescription) issues.push("short description");
+    if (!pr.hasPrice) issues.push("price");
+    if (pr.hasValidFormId === false) issues.push("form");
+    if (issues.length > 0) {
+      needingAttention.push(pr);
+    } else {
+      complete.push(pr);
+    }
+  }
+
+  // ── Build HTML ────────────────────────────────────────────────
+
+  const h = (...parts: string[]) => parts.join("");
+
+  function card(score: number, max: number, label: string, color: string, explanation: string): string {
+    return h(
+      '<table width="100%" cellpadding="0" cellspacing="0" style="background:', warmBg, '; border:1px solid ', accent, '; border-radius:8px;">',
+      '<tr><td style="padding:20px; text-align:center;">',
+      '<p style="color:', muted, '; margin:0 0 4px; font-size:11px; text-transform:uppercase; letter-spacing:1px;">', escHtml(label), '</p>',
+      '<p style="font-size:32px; font-weight:bold; color:', primary, '; margin:8px 0 4px;">', escHtml(score), '/', escHtml(max), '</p>',
+      '<p style="color:', color, '; margin:0 0 6px; font-size:15px; font-weight:bold;">', escHtml(label === "Website Health" ? websiteStatusLabel(data.website.status) : businessStatusLabel(m.score, m.maxScore)), '</p>',
+      '<p style="color:', muted, '; margin:0; font-size:12px; line-height:1.4;">', escHtml(explanation), '</p>',
+      '</td></tr></table>',
+    );
+  }
+
+  function progressRow(name: string, filled: number, total: number, showCount?: boolean): string {
+    const pct = total > 0 ? Math.round((filled / total) * 100) : 0;
+    const barColor = pct >= 90 ? green : pct >= 50 ? amber : red;
+    const display = showCount ? filled + "/" + total : pct + "%";
+    return h(
+      '<tr>',
+      '<td style="padding:6px 0; font-size:13px; color:', primary, '; font-weight:bold; width:140px;">', escHtml(name), '</td>',
+      '<td style="padding:6px 0;">',
+      '<div style="background:', accent, '; border-radius:8px; height:12px; overflow:hidden; width:200px;">',
+      '<div style="background:', barColor, '; width:', pct, '%; height:12px; border-radius:8px;"></div>',
+      '</div></td>',
+      '<td style="padding:6px 0 6px 10px; font-size:12px; color:', muted, ';">', display, '</td>',
+      '</tr>',
+    );
+  }
+
+  // ── Assemble document ──────────────────────────────────────────
+
+  const parts: string[] = [];
+
+  parts.push('<!DOCTYPE html>');
+  parts.push('<html><head><meta charset="utf-8"></head><body style="margin:0; padding:0; background:#f4f2ee; font-family:\'Segoe UI\',Arial,Helvetica,sans-serif;">');
+  parts.push('<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:20px 10px;">');
+  parts.push('<table width="600" cellpadding="0" cellspacing="0" style="background:#fff; border-radius:8px; overflow:hidden;">');
+
+  // ── Header ─────────────────────────────────────────────────────
+
+  parts.push(
+    '<tr><td style="background:', primary, '; padding:28px 30px 24px; text-align:center;">',
+    '<h1 style="color:#fff; margin:0; font-size:22px;">', escHtml(header), ' Health Report</h1>',
+    '<p style="color:', accent, '; margin:6px 0 0; font-size:15px;">Weekly Business Health Report</p>',
+    '<p style="color:#c4a99a; margin:4px 0 0; font-size:12px;">', escHtml(dateStr), '</p>',
+    '</td></tr>',
+  );
+
+  // ── Section 1: Overall Health ─────────────────────────────────
+
+  parts.push(
+    '<tr><td style="padding:28px 30px 8px;"><h2 style="color:', primary, '; margin:0; font-size:18px;">Overall Health</h2></td></tr>',
+    '<tr><td style="padding:0 30px 20px;">',
+    '<table width="100%" cellpadding="0" cellspacing="0"><tr>',
+    '<td width="50%" style="vertical-align:top; padding-right:8px;">',
+    card(ws.score, ws.maxScore, "Website Health", wsColor, healthExplanation(ws.status)),
+    '</td>',
+    '<td width="50%" style="vertical-align:top; padding-left:8px;">',
+    card(m.score, m.maxScore, "Business Health", bsColor, businessExplanation(m.score, m.maxScore)),
+    '</td>',
+    '</tr></table>',
+    '</td></tr>',
+  );
+
+  // ── Section 2: Top Priorities ──────────────────────────────────
+
+  parts.push(
+    '<tr><td style="padding:0 30px;"><div style="border-top:1px solid ', accent, '; margin:0;"></div></td></tr>',
+    '<tr><td style="padding:20px 30px 8px;"><h2 style="color:', primary, '; margin:0; font-size:18px;">Top Priorities</h2></td></tr>',
+    '<tr><td style="padding:0 30px 20px;">',
+  );
+
+  if (priorities.length === 0) {
+    parts.push(
+      '<p style="color:', muted, '; font-size:14px; margin:0;">No issues found \u2014 everything looks good!</p>',
+    );
+  } else {
+    for (const pri of priorities) {
+      parts.push(
+        '<table width="100%" cellpadding="0" cellspacing="0" style="background:', warmBg, '; border:1px solid ', accent, '; border-radius:6px; margin-bottom:10px;">',
+        '<tr><td style="padding:14px 18px;">',
+        '<table width="100%" cellpadding="0" cellspacing="0"><tr>',
+        '<td width="32" style="font-size:20px; vertical-align:top; line-height:1;">', pri.icon, '</td>',
+        '<td style="vertical-align:top;">',
+        '<p style="color:', pri.color, '; margin:0; font-size:14px; font-weight:bold;">', escHtml(pri.label), '</p>',
+        '<p style="color:', muted, '; margin:2px 0 0; font-size:13px;">', escHtml(pri.detail), '</p>',
+        '</td>',
+        '</tr></table>',
+        '</td></tr></table>',
+      );
+    }
+  }
+
+  parts.push('</td></tr>');
+
+  // ── Section 3: Business Snapshot ──────────────────────────────
+
+  parts.push(
+    '<tr><td style="padding:0 30px;"><div style="border-top:1px solid ', accent, '; margin:0;"></div></td></tr>',
+    '<tr><td style="padding:20px 30px 8px;"><h2 style="color:', primary, '; margin:0; font-size:18px;">Business Snapshot</h2></td></tr>',
+    '<tr><td style="padding:0 30px 20px;">',
+    '<table width="100%" cellpadding="0" cellspacing="0">',
+  );
+
+  const snapshot: [string, number | string][] = [
+    ["Total Products", p.total],
+    ["Collections", collectionsCount],
+    ["Avg Images / Product", data.business.images.averagePerProduct.toFixed(1)],
+    ["Featured Products", p.featured],
+    ["Homepage Featured", fullMetrics?.homepageFeatured ?? "\u2014"],
+    ["Gallery Featured", fullMetrics?.galleryFeatured ?? "\u2014"],
+  ];
+
+  for (let i = 0; i < snapshot.length; i += 3) {
+    parts.push('<tr>');
+    for (let j = i; j < i + 3 && j < snapshot.length; j++) {
+      const [label, value] = snapshot[j];
+      const w = j === i + 2 ? ' style="width:33.33%;"' : ' style="width:33.33%;"';
+      parts.push(
+        '<td', w, '>',
+        '<table width="100%" cellpadding="0" cellspacing="0" style="background:', warmBg, '; border:1px solid ', accent, '; border-radius:6px;">',
+        '<tr><td style="padding:12px; text-align:center;">',
+        '<p style="color:', muted, '; margin:0; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">', escHtml(label), '</p>',
+        '<p style="color:', primary, '; margin:6px 0 0; font-size:22px; font-weight:bold;">', escHtml(value), '</p>',
+        '</td></tr></table>',
+        '</td>',
+      );
+    }
+    parts.push('</tr>');
+    parts.push('<tr><td colspan="3" style="height:8px;"></td></tr>');
+  }
+
+  parts.push('</table></td></tr>');
+
+  // ── Section 4: Progress ──────────────────────────────────────
+
+  const descFilled = p.total - p.missingShortDescriptions;
+  const imagesFilled = p.total - needingImages;
+
+  parts.push(
+    '<tr><td style="padding:0 30px;"><div style="border-top:1px solid ', accent, '; margin:0;"></div></td></tr>',
+    '<tr><td style="padding:20px 30px 8px;"><h2 style="color:', primary, '; margin:0; font-size:18px;">Progress</h2></td></tr>',
+    '<tr><td style="padding:0 30px 20px;">',
+    '<table width="100%" cellpadding="0" cellspacing="0">',
+    progressRow("Active Products", p.active, p.total, true),
+    progressRow("Descriptions", descFilled, p.total),
+    progressRow("Images (\u22652)", imagesFilled, p.total),
+    '</table>',
+    '</td></tr>',
+  );
+
+  // ── Section 5: Product Inventory ─────────────────────────────
+
+  parts.push(
+    '<tr><td style="padding:0 30px;"><div style="border-top:1px solid ', accent, '; margin:0;"></div></td></tr>',
+    '<tr><td style="padding:20px 30px 8px;"><h2 style="color:', primary, '; margin:0; font-size:18px;">Product Inventory</h2></td></tr>',
+    '<tr><td style="padding:0 30px 20px;">',
+  );
+
+  if (needingAttention.length > 0) {
+    parts.push(
+      '<p style="color:', amber, '; font-size:13px; font-weight:bold; margin:0 0 10px;">Needs Attention</p>',
+      '<table width="100%" cellpadding="0" cellspacing="0">',
+    );
+    for (let i = 0; i < needingAttention.length; i += 3) {
+      parts.push('<tr>');
+      for (let j = i; j < i + 3 && j < needingAttention.length; j++) {
+        const pr = needingAttention[j];
+        const cardIssues: string[] = [];
+        if (pr.imageCount <= 1) cardIssues.push("More images needed");
+        if (!pr.hasDescription) cardIssues.push("Description needed");
+        if (!pr.hasShortDescription) cardIssues.push("Short description needed");
+        if (!pr.hasPrice) cardIssues.push("Price needed");
+        if (pr.hasValidFormId === false) cardIssues.push("Form needed");
+
+        parts.push(
+          '<td width="33.33%" style="padding:4px; vertical-align:top;">',
+          '<table width="100%" cellpadding="0" cellspacing="0" style="background:', warmBg, '; border:1px solid ', accent, '; border-radius:6px;">',
+          '<tr><td style="padding:10px;">',
+          '<p style="margin:0 0 6px; color:', amber, '; font-size:13px;">&#9888; <strong style="color:', primary, ';">', escHtml(pr.name), '</strong></p>',
+          '<p style="margin:0; color:', muted, '; font-size:11px; line-height:1.5;">',
+          cardIssues.map((i) => "\u2022 " + i).join("<br>"),
+          '</p>',
+          '</td></tr></table>',
+          '</td>',
+        );
+      }
+      for (let e = needingAttention.length - i; e < 3; e++) {
+        parts.push('<td width="33.33%" style="padding:4px;"></td>');
+      }
+      parts.push('</tr>');
+      parts.push('<tr><td colspan="3" style="height:4px;"></td></tr>');
+    }
+    parts.push('</table>');
+  }
+
+  if (complete.length > 0) {
+    parts.push(
+      '<p style="color:', green, '; font-size:13px; font-weight:bold; margin:16px 0 10px;">Complete</p>',
+      '<table width="100%" cellpadding="0" cellspacing="0">',
+    );
+    for (let i = 0; i < complete.length; i += 3) {
+      parts.push('<tr>');
+      for (let j = i; j < i + 3 && j < complete.length; j++) {
+        const pr = complete[j];
+        parts.push(
+          '<td width="33.33%" style="padding:4px; vertical-align:top;">',
+          '<table width="100%" cellpadding="0" cellspacing="0" style="background:', warmBg, '; border:1px solid ', accent, '; border-radius:6px;">',
+          '<tr><td style="padding:10px;">',
+          '<p style="margin:0; color:', green, '; font-size:13px;">&#10003; <strong style="color:', primary, ';">', escHtml(pr.name), '</strong></p>',
+          '</td></tr></table>',
+          '</td>',
+        );
+      }
+      for (let e = complete.length - i; e < 3; e++) {
+        parts.push('<td width="33.33%" style="padding:4px;"></td>');
+      }
+      parts.push('</tr>');
+      parts.push('<tr><td colspan="3" style="height:4px;"></td></tr>');
+    }
+    parts.push('</table>');
+  }
+
+  parts.push('</td></tr>');
+
+  // ── Footer ──────────────────────────────────────────────────
+
+  const url = dashboardUrl || "https://haplo66.github.io/ripple-bakes-makes/doctor";
+
+  parts.push(
+    '<tr><td style="padding:0 30px;"><div style="border-top:1px solid ', accent, '; margin:0;"></div></td></tr>',
+    '<tr><td style="padding:20px 30px 28px; text-align:center;">',
+    '<p style="color:', muted, '; margin:0 0 8px; font-size:13px;">',
+    '<a href="', escHtml(url), '" style="color:', primary, '; text-decoration:underline;">View full dashboard</a>',
+    '</p>',
+    '<p style="color:#c4a99a; margin:0; font-size:11px;">Generated automatically by RIPPLE Doctor</p>',
+    '</td></tr>',
+  );
+
+  // ── Close ────────────────────────────────────────────────────
+
+  parts.push('</table></td></tr></table></body></html>');
+
+  return parts.join("");
+}
+
+// ─── Backward-compatible alias ─────────────────────────────────
+
+function buildBody(data: OwnerReportData, businessName: string, dashboardUrl: string): string {
+  return buildPlainTextBody(data, businessName, dashboardUrl);
+}
+
+// ─── Delivery ──────────────────────────────────────────────────
 
 async function postToAppsScript(payload: unknown): Promise<Response> {
   const endpoint = getEnv("PUBLIC_SUBMISSION_ENDPOINT");
@@ -358,9 +576,10 @@ async function sendEmail(
   const dashboardUrl = config.dashboardUrl || "";
   const subject = buildSubject(businessName, data.website.status, data.business.status);
   const body = buildBody(data, businessName, dashboardUrl);
+  const htmlBody = buildHtmlBody(data, businessName, dashboardUrl);
 
   const response = await postToAppsScript({
-    doctor: { recipients, subject, body },
+    doctor: { recipients, subject, body, htmlBody },
     token,
   });
 

@@ -181,6 +181,78 @@ handleInquiry()
     └── Email notification to owner
 ```
 
+## Doctor Health Monitoring System
+
+The Doctor is a separate operational tool that evaluates website technical health and business catalog completeness on demand. It is independent of the build pipeline and website runtime.
+
+### Architecture
+
+```
+npm run doctor
+    ↓
+scripts/doctor/doctor.ts (entry point)
+    ├── Website health checks (19 checks, 100/100)
+    ├── Business health analysis (catalog scoring)
+    ├── Doctor Config sheet reader (enable/disable, recipients)
+    └── Report generation
+         ├── Console reporter (stdout)
+         ├── Markdown report (scripts/doctor/reports/doctor-report.md)
+         ├── JSON report (scripts/doctor/reports/doctor-report.json)
+         ├── Owner JSON report (scripts/doctor/reports/doctor-report-owner.json)
+         └── Email reporter (HTML via Apps Script)
+              └── PUBLIC_SUBMISSION_ENDPOINT
+                   └── Apps Script handleDoctorReport()
+                        ├── Doctor Config sheet (enable/disable, recipients)
+                        └── Email notification with htmlBody
+```
+
+### Key design decisions
+
+- **Read-only by design.** Doctor reports only — no automatic repairs.
+- **Two independent scoring systems.** Website Health (technical checks, 100/100) and Business Health (catalog completeness, 32/100). Each has its own score, status, and recommendations.
+- **Separate Google Sheets for inventory vs. operations.** `INVENTORY_GOOGLE_SHEETS_ID` for products/collections/forms; `ORDERS_GOOGLE_SHEETS_ID` for orders, inquiries, and Doctor Config.
+- **Doctor Config sheet controls delivery.** Enable/disable and recipient emails managed in the Orders spreadsheet — no code changes needed.
+- **HTML email via Apps Script MailApp.** The reporter sends both `body` (plain text fallback) and `htmlBody` (full HTML with inline CSS). Apps Script uses `htmlBody` parameter for HTML rendering.
+- **Generated reports are cached JSON.** Owner report (`doctor-report-owner.json`) is read by both the dashboard (at build time) and the email reporter (at doctor runtime).
+
+### Email structure
+
+```
+600px centered table
+├── Header (branded, date)
+├── Overall Health (Website Health + Business Health score cards)
+├── Top Priorities (action cards with severity colors)
+├── Business Snapshot (6 metrics in 3-column grid)
+│   ├── Total Products
+│   ├── Collections
+│   ├── Avg Images / Product
+│   ├── Featured Products
+│   ├── Homepage Featured
+│   └── Gallery Featured
+├── Progress (progress bars with counts)
+│   ├── Active Products (count: 18/18)
+│   ├── Descriptions (percentage)
+│   └── Images ≥2 (percentage)
+├── Product Inventory (3-column card grid — only multi-column section)
+│   ├── Needs Attention (⚠ cards with issue labels)
+│   └── Complete (✓ cards)
+└── Footer (dashboard link, generation timestamp)
+```
+
+### Commands
+
+- `npm run doctor`: runs all checks and generates all reports (including email if configured)
+- `npm run build`: builds the dashboard page from cached owner report (no live Doctor run)
+
+### Related files
+
+- `scripts/doctor/doctor.ts` — entry point
+- `scripts/doctor/business.ts` — business health scoring
+- `scripts/doctor/doctor-config.reader.ts` — Doctor Config sheet reader
+- `scripts/doctor/reporters/email.reporter.ts` — HTML email generation + Apps Script delivery
+- `scripts/doctor/reports/doctor-report-owner.json` — report consumed by dashboard and email
+- `src/pages/doctor.astro` — dashboard page (reads owner report at build time)
+
 **Provider selection:** `PUBLIC_SUBMISSION_ENDPOINT` is shared by both flows. When set, the Apps Script provider is active and handles both orders and inquiries. Without it, the mock provider handles submissions locally (no data written to Sheets).
 
 Products without a numeric price display as **Coming Soon** and cannot be added to the cart. Products with `price: 0` are purchasable. Inactive products are hidden from listings.

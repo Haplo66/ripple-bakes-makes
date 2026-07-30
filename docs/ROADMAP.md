@@ -643,59 +643,111 @@ The Doctor system can automatically evaluate website health and deliver reports 
 **Why it matters:** The owner now has automated visibility into website and catalog health without manual inspection. Issues are caught before they affect customers.
 
 
-### v1.18.1 — Owner Health Report & Dashboard Polish
+### v1.18.1 — Owner Health Report & Dashboard Polish ✅
 
-**Status:** Planned
+**Status:** Complete
 
 **Purpose:**
 Transform the initial Doctor report from a technical health output into an owner-friendly RIPPLE Control Center experience.
 
-**Current State:**
-- Doctor system works end-to-end
-- Reports are generated and emailed successfully
-- Dashboard exists
-- Email report is functional but needs better owner-focused presentation
+**Completed capabilities:**
 
-**Goals:**
-
-**Owner Email Report:**
-- Clear health summary
-- Website status
-- Business readiness status
-- Priority recommendations
-- Action-oriented guidance
-- Dashboard link
-
-The report should answer: "Is my business website healthy?"
+**Email Report Improvements:**
+- Full HTML email format with inline CSS for Gmail compatibility
+- Apps Script `htmlBody` parameter integration for HTML rendering
+- Overall Health section (Website Health + Business Health score cards)
+- Top Priorities action cards with color-coded severity
+- Business Snapshot metric grid (Total Products, Collections, Avg Images/Product, Featured Products, Homepage Featured, Gallery Featured)
+- Collections count fixed — now correctly reads `collections.json.data` array
+- Forms metric removed — replaced by Avg Images/Product in main metrics
+- Progress section with progress bars and Active Products count display (18/18 format)
+- Product Inventory section split into Needs Attention (3-column card grid with compact issue labels) and Complete
+- 3-column card layout used only within Product Inventory — rest of email remains single-column
+- Description completion metric fixed — now reads actual `shortDescription` field from products.json
+- Footer with dashboard link and generation timestamp
 
 **Dashboard Alignment:**
-Ensure email and dashboard share:
-- Same health scores
-- Same terminology
-- Same severity levels
-- Same recommendations
+- Email and dashboard share same health scores, terminology, severity levels, and recommendations
 
-**Future Enhancements:**
-- Health history tracking
-- Score trends over time
-- Previous report comparison
-- Improvement tracking
-- Deployment status
-- Asset sync status
-- Pipeline status
+**Architecture:**
+- `htmlBody` sent alongside `body` in Apps Script payload
+- Email reporter at `scripts/doctor/reporters/email.reporter.ts`
+- All sections render inside a 600px centered table wrapper
+- Only Product Inventory uses multi-column layout (nested `<table>` grid)
+- No Doctor scoring logic, JSON formats, or dashboard code was modified
 
-**Implementation Notes:**
-- Keep Orders spreadsheet and Doctor Config separation
-- No Apps Script architecture changes required
-- Future changes should remain inside RIPPLE report generation and dashboard layers
-
-**Acceptance Criteria:**
-- Business owner can understand report without technical knowledge
-- Report clearly explains problems and next actions
-- Email and dashboard feel like one integrated product
+**Why it matters:**
+The owner now receives a professional, actionable health report directly in their inbox with clear metrics, priorities, and product-level inventory details — no dashboard visit required for daily checks.
 
 
-#### v1.19 — Gallery Enhancements
+### v1.18.2 — Google Insights Integration (Planning)
+
+**Status:** Planned
+
+**Goal:**
+Extend RIPPLE Doctor beyond internal website and business health checks by integrating external performance, search, and visitor data sources. Transform Doctor into a comprehensive business intelligence dashboard that answers: "How is my website performing on the web?"
+
+**Proposed data sources:**
+
+| Source | Type | What it provides |
+|--------|------|------------------|
+| Google Search Console | API (read-only) | Search queries, click-through rates, impressions, average position, indexed pages |
+| Google Analytics 4 | API (if available) | Visitor counts, page views, session duration, traffic sources, device breakdown |
+| Page performance | Built-in checks | Lighthouse-style metrics (load time, Core Web Vitals) measured at build time |
+| SEO visibility | Generated + external | Indexed page count, meta tag coverage, structured data presence, sitemap health |
+
+**Proposed report sections:**
+
+1. **Website Traffic Health**
+   - Estimated monthly visitors
+   - Top landing pages
+   - Traffic sources breakdown (organic, direct, referral)
+   - Visitor device split (mobile vs desktop)
+   - Trend arrows (up/down from previous report)
+
+2. **Search Visibility**
+   - Total indexed pages (Search Console)
+   - Top search queries by clicks and impressions
+   - Average click-through rate and position
+   - Coverage report (valid pages, warnings, errors, excluded)
+   - Search visibility score (new composite metric)
+
+3. **Performance Health**
+   - Build-time performance audit results
+   - Page load estimates
+   - Core Web Vitals scores (if measurable from static build)
+   - Image optimization opportunities
+   - Largest Contentful Paint (LCP) estimates
+
+4. **SEO Opportunities**
+   - Missing or weak meta descriptions
+   - Pages without Open Graph tags
+   - Missing structured data (Product schema, FAQ schema)
+   - Indexability issues (noindex tags, canonical errors)
+   - Sitemap submission status
+
+**Design constraints:**
+- All external API calls happen during `npm run doctor` — no runtime dependencies
+- API keys and credentials stored as environment variables (same pattern as existing Google service accounts)
+- Data is snapshotted at report time, not streamed live
+- New report sections follow existing Doctor pattern: check → metric → score → recommendation
+- Existing Website Health (100/100) and Business Health (32/100) scores remain unchanged
+- Google Insights gets its own score section (e.g. "Search Health: 85/100")
+- Mock data provider for development when API credentials are not configured
+
+**What stays the same:**
+- Doctor is read-only — no automatic repairs based on external data
+- Email report continues as the primary delivery mechanism
+- Dashboard at `/doctor` displays all sections
+- Doctor Config sheet controls enable/disable per section
+- No paid services — all Google APIs are free-tier
+
+**Implementation order (suggested):**
+1. Page performance checks (built-in, no external API needed)
+2. SEO visibility scanning (meta tags, structured data analysis)
+3. Google Search Console integration
+4. Google Analytics integration (if GA4 property exists)
+5. Combined Insights scoring and dashboard section#### v1.19 — Gallery Enhancements
 
 **Status:** Future
 
