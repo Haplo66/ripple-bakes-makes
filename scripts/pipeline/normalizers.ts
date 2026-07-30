@@ -6,20 +6,20 @@
 
 import type { CsvRecord, PipelineWarning } from './types.ts';
 
-const parseBoolean = (value: string, fallback = false): boolean => {
+export const parseBoolean = (value: string, fallback = false): boolean => {
   if (!value) return fallback;
   return ['true', 'yes', '1', 'active'].includes(value.toLowerCase());
 };
 
-const parseNumber = (value: string, fallback = 0): number => {
+export const parseNumber = (value: string, fallback = 0): number => {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
 };
 
-const parseNullableString = (value: string): string | null =>
+export const parseNullableString = (value: string): string | null =>
   value.trim() ? value.trim() : null;
 
-const parsePipeField = (value: string): string[] =>
+export const parsePipeField = (value: string): string[] =>
   value.trim() ? value.split('|').map((part) => part.trim()).filter(Boolean) : [];
 
 /** Shared normalization: lowercase, spaces/underscores → hyphens, strip non-alphanumeric. */
