@@ -325,15 +325,15 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
 
   const h = (...parts: string[]) => parts.join("");
 
-  function card(score: number, max: number, label: string, color: string, explanation: string): string {
+  function cardCell(score: number, max: number, label: string, color: string, explanation: string, halfWidth: boolean): string {
+    const w = halfWidth ? '50%' : '50%';
     return h(
-      '<table width="100%" cellpadding="0" cellspacing="0" style="background:', warmBg, '; border:1px solid ', accent, '; border-radius:8px;">',
-      '<tr><td style="padding:20px; text-align:center;">',
+      '<td width="', w, '" style="vertical-align:top; padding:8px; background:', warmBg, '; border:1px solid ', accent, '; border-radius:8px; text-align:center;">',
       '<p style="color:', muted, '; margin:0 0 4px; font-size:11px; text-transform:uppercase; letter-spacing:1px;">', escHtml(label), '</p>',
       '<p style="font-size:32px; font-weight:bold; color:', primary, '; margin:8px 0 4px;">', escHtml(score), '/', escHtml(max), '</p>',
       '<p style="color:', color, '; margin:0 0 6px; font-size:15px; font-weight:bold;">', escHtml(label === "Website Health" ? websiteStatusLabel(data.website.status) : businessStatusLabel(m.score, m.maxScore)), '</p>',
       '<p style="color:', muted, '; margin:0; font-size:12px; line-height:1.4;">', escHtml(explanation), '</p>',
-      '</td></tr></table>',
+      '</td>',
     );
   }
 
@@ -353,27 +353,12 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
     );
   }
 
-  function metricCell(label: string, value: number | string | null, mutedColor: string, primaryColor: string, accentColor: string, bg: string): string {
+  function statCell(label: string, value: number | string | null, widthPct: number, mutedColor: string, primaryColor: string, accentColor: string, bg: string): string {
     const display = value != null ? escHtml(value) : "Unavailable";
     return h(
-      '<td style="width:33.33%; padding:4px; vertical-align:top;">',
-      '<table width="100%" cellpadding="0" cellspacing="0" style="background:', bg, '; border:1px solid ', accentColor, '; border-radius:6px;">',
-      '<tr><td style="padding:12px; text-align:center;">',
-      '<p style="color:', mutedColor, '; margin:0 0 4px; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">', escHtml(label), '</p>',
-      '<p style="color:', primaryColor, '; margin:0; font-size:18px; font-weight:bold;">', display, '</p>',
-      '</td></tr></table>',
-      '</td>',
-    );
-  }
-
-  function topPageCell(label: string, value: string | null, mutedColor: string, primaryColor: string, accentColor: string, bg: string): string {
-    return h(
-      '<td style="width:33.33%; padding:4px; vertical-align:top;">',
-      '<table width="100%" cellpadding="0" cellspacing="0" style="background:', bg, '; border:1px solid ', accentColor, '; border-radius:6px;">',
-      '<tr><td style="padding:12px; text-align:center;">',
-      '<p style="color:', mutedColor, '; margin:0 0 4px; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">', escHtml(label), '</p>',
-      '<p style="color:', primaryColor, '; margin:0; font-size:13px; font-weight:bold; word-break:break-all;">', value ? escHtml(value) : "Unavailable", '</p>',
-      '</td></tr></table>',
+      '<td style="width:', widthPct, '%; padding:4px; vertical-align:top; background:', bg, '; border:1px solid ', accentColor, '; border-radius:6px; text-align:center;">',
+      '<p style="color:', mutedColor, '; margin:4px 6px 2px; font-size:11px; text-transform:uppercase; letter-spacing:0.5px; line-height:1.3;">', escHtml(label), '</p>',
+      '<p style="color:', primaryColor, '; margin:2px 6px 6px; font-size:18px; font-weight:bold; word-break:break-all;">', display, '</p>',
       '</td>',
     );
   }
@@ -403,68 +388,13 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
     '<tr><td style="padding:28px 30px 8px;"><h2 style="color:', primary, '; margin:0; font-size:18px;">Overall Health</h2></td></tr>',
     '<tr><td style="padding:0 30px 20px;">',
     '<table width="100%" cellpadding="0" cellspacing="0"><tr>',
-    '<td width="50%" style="vertical-align:top; padding-right:8px;">',
-    card(ws.score, ws.maxScore, "Website Health", wsColor, healthExplanation(ws.status)),
-    '</td>',
-    '<td width="50%" style="vertical-align:top; padding-left:8px;">',
-    card(m.score, m.maxScore, "Business Health", bsColor, businessExplanation(m.score, m.maxScore)),
-    '</td>',
+    cardCell(ws.score, ws.maxScore, "Website Health", wsColor, healthExplanation(ws.status), true),
+    cardCell(m.score, m.maxScore, "Business Health", bsColor, businessExplanation(m.score, m.maxScore), true),
     '</tr></table>',
     '</td></tr>',
   );
 
-  // ── Section 2: Visibility ─────────────────────────────────────
-
-  if (data.visibility) {
-    const v = data.visibility;
-    parts.push(
-      '<tr><td style="padding:0 30px;"><div style="border-top:1px solid ', accent, '; margin:0;"></div></td></tr>',
-      '<tr><td style="padding:20px 30px 8px;"><h2 style="color:', primary, '; margin:0; font-size:18px;">Visibility</h2></td></tr>',
-      '<tr><td style="padding:0 30px 20px;">',
-      '<table width="100%" cellpadding="0" cellspacing="0">',
-      '<tr>',
-      metricCell("Search Impressions", v.impressions, muted, primary, accent, warmBg),
-      metricCell("Search Clicks", v.clicks, muted, primary, accent, warmBg),
-      metricCell("Avg Position", v.averagePosition, muted, primary, accent, warmBg),
-      '</tr>',
-      '<tr><td colspan="3" style="height:8px;"></td></tr>',
-      '<tr>',
-      metricCell("Indexed Pages", v.indexedPages, muted, primary, accent, warmBg),
-      '<td style="width:33.33%;"></td>',
-      '<td style="width:33.33%;"></td>',
-      '</tr>',
-      '</table>',
-      '</td></tr>',
-    );
-  }
-
-  // ── Section 3: Visitors ───────────────────────────────────────
-
-  if (data.visitors) {
-    const v = data.visitors;
-    const eng = v.averageEngagementTime != null ? Math.round(v.averageEngagementTime) + "s" : null;
-    parts.push(
-      '<tr><td style="padding:0 30px;"><div style="border-top:1px solid ', accent, '; margin:0;"></div></td></tr>',
-      '<tr><td style="padding:20px 30px 8px;"><h2 style="color:', primary, '; margin:0; font-size:18px;">Visitors</h2></td></tr>',
-      '<tr><td style="padding:0 30px 20px;">',
-      '<table width="100%" cellpadding="0" cellspacing="0">',
-      '<tr>',
-      metricCell("Users", v.users, muted, primary, accent, warmBg),
-      metricCell("Page Views", v.pageViews, muted, primary, accent, warmBg),
-      metricCell("Avg Engagement", eng, muted, primary, accent, warmBg),
-      '</tr>',
-      '<tr><td colspan="3" style="height:8px;"></td></tr>',
-      '<tr>',
-      topPageCell("Top Page", v.topPage, muted, primary, accent, warmBg),
-      '<td style="width:33.33%;"></td>',
-      '<td style="width:33.33%;"></td>',
-      '</tr>',
-      '</table>',
-      '</td></tr>',
-    );
-  }
-
-  // ── Section 4: Top Priorities ──────────────────────────────────
+  // ── Section 2: Top Priorities ──────────────────────────────────
 
   parts.push(
     '<tr><td style="padding:0 30px;"><div style="border-top:1px solid ', accent, '; margin:0;"></div></td></tr>',
@@ -495,7 +425,7 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
 
   parts.push('</td></tr>');
 
-  // ── Section 5: Business Snapshot ──────────────────────────────
+  // ── Section 3: Business Snapshot ──────────────────────────────
 
   parts.push(
     '<tr><td style="padding:0 30px;"><div style="border-top:1px solid ', accent, '; margin:0;"></div></td></tr>',
@@ -534,7 +464,7 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
 
   parts.push('</table></td></tr>');
 
-  // ── Section 6: Progress ──────────────────────────────────────
+  // ── Section 4: Progress ──────────────────────────────────────
 
   const descFilled = p.total - p.missingShortDescriptions;
   const imagesFilled = p.total - needingImages;
@@ -551,7 +481,7 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
     '</td></tr>',
   );
 
-  // ── Section 7: Product Inventory ─────────────────────────────
+  // ── Section 5: Product Inventory ─────────────────────────────
 
   parts.push(
     '<tr><td style="padding:0 30px;"><div style="border-top:1px solid ', accent, '; margin:0;"></div></td></tr>',
@@ -576,9 +506,8 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
         if (pr.hasValidFormId === false) cardIssues.push("Form needed");
 
         parts.push(
-          '<td width="33.33%" style="padding:4px; vertical-align:top;">',
-          '<table width="100%" cellpadding="0" cellspacing="0" style="background:', warmBg, '; border:1px solid ', accent, '; border-radius:6px;">',
-          '<tr><td style="padding:10px;">',
+          '<td width="33.33%" style="padding:4px; vertical-align:top; background:', warmBg, '; border:1px solid ', accent, '; border-radius:6px;">',
+          '<table width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:10px;">',
           '<p style="margin:0 0 6px; color:', amber, '; font-size:13px;">&#9888; <strong style="color:', primary, ';">', escHtml(pr.name), '</strong></p>',
           '<p style="margin:0; color:', muted, '; font-size:11px; line-height:1.5;">',
           cardIssues.map((i) => "\u2022 " + i).join("<br>"),
@@ -606,9 +535,8 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
       for (let j = i; j < i + 3 && j < complete.length; j++) {
         const pr = complete[j];
         parts.push(
-          '<td width="33.33%" style="padding:4px; vertical-align:top;">',
-          '<table width="100%" cellpadding="0" cellspacing="0" style="background:', warmBg, '; border:1px solid ', accent, '; border-radius:6px;">',
-          '<tr><td style="padding:10px;">',
+          '<td width="33.33%" style="padding:4px; vertical-align:top; background:', warmBg, '; border:1px solid ', accent, '; border-radius:6px;">',
+          '<table width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:10px;">',
           '<p style="margin:0; color:', green, '; font-size:13px;">&#10003; <strong style="color:', primary, ';">', escHtml(pr.name), '</strong></p>',
           '</td></tr></table>',
           '</td>',
@@ -624,6 +552,49 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
   }
 
   parts.push('</td></tr>');
+
+  // ── Section 6: Visibility ─────────────────────────────────────
+
+  if (data.visibility) {
+    const v = data.visibility;
+    parts.push(
+      '<tr><td style="padding:0 30px;"><div style="border-top:1px solid ', accent, '; margin:0;"></div></td></tr>',
+      '<tr><td style="padding:20px 30px 8px;"><h2 style="color:', primary, '; margin:0; font-size:18px;">Visibility</h2></td></tr>',
+      '<tr><td style="padding:0 30px 20px;">',
+      '<table width="100%" cellpadding="0" cellspacing="0"><tr>',
+      statCell("Impressions", v.impressions, 25, muted, primary, accent, warmBg),
+      statCell("Search Clicks", v.clicks, 25, muted, primary, accent, warmBg),
+      statCell("Avg Position", v.averagePosition, 25, muted, primary, accent, warmBg),
+      statCell("Indexed Pages", v.indexedPages, 25, muted, primary, accent, warmBg),
+      '</tr></table>',
+      '</td></tr>',
+    );
+  }
+
+  // ── Section 7: Visitors ───────────────────────────────────────
+
+  if (data.visitors) {
+    const v = data.visitors;
+    const eng = v.averageEngagementTime != null ? Math.round(v.averageEngagementTime) + "s" : null;
+    const topPageDisplay = v.topPage != null ? escHtml(v.topPage) : "Unavailable";
+    parts.push(
+      '<tr><td style="padding:0 30px;"><div style="border-top:1px solid ', accent, '; margin:0;"></div></td></tr>',
+      '<tr><td style="padding:20px 30px 8px;"><h2 style="color:', primary, '; margin:0; font-size:18px;">Visitors</h2></td></tr>',
+      '<tr><td style="padding:0 30px 20px;">',
+      '<table width="100%" cellpadding="0" cellspacing="0"><tr>',
+      statCell("Users", v.users, 33, muted, primary, accent, warmBg),
+      statCell("Page Views", v.pageViews, 33, muted, primary, accent, warmBg),
+      statCell("Avg Engagement", eng, 34, muted, primary, accent, warmBg),
+      '</tr></table>',
+      '<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:8px;"><tr>',
+      '<td style="padding:4px; vertical-align:top; background:', warmBg, '; border:1px solid ', accent, '; border-radius:6px; text-align:center;">',
+      '<p style="color:', muted, '; margin:4px 6px 2px; font-size:11px; text-transform:uppercase; letter-spacing:0.5px; line-height:1.3;">Top Page</p>',
+      '<p style="color:', primary, '; margin:2px 6px 6px; font-size:18px; font-weight:bold; word-break:break-all;">', topPageDisplay, '</p>',
+      '</td>',
+      '</tr></table>',
+      '</td></tr>',
+    );
+  }
 
   // ── Footer ──────────────────────────────────────────────────
 
