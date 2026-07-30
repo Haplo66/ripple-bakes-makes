@@ -274,13 +274,22 @@ No build step, no config file, no test framework installation.
 
 **Outcome:** Doctor scoring and analysis logic is regression-proofed.
 
-### v1.19.5 — CI Integration
+### v1.19.5 — CI Integration ✅ Complete
 
 **Goal:** Run tests automatically on push and PR.
 
 **Scope:**
-- Add `npm run test` to GitHub Actions workflow
-- Configure `--experimental-test-coverage` for visibility (non-blocking)
-- Document CI test behavior in the repo
+- Add `npm run test` to deploy workflow (`.github/workflows/deploy.yml`) — blocks deployment on test failure
+- Create CI workflow (`.github/workflows/ci.yml`) — triggers on push (non-master branches) and pull requests
+- CI runs: `npm ci` → `npm run test` → `npm run build`; test or build failure fails the workflow
+- No secrets, no `.env`, no pipeline execution in CI
+- Documentation updated
 
 **Outcome:** Every push and PR runs the test suite. Broken code cannot reach production.
+
+**Workflows:**
+
+| Workflow | Trigger | Steps | Secrets |
+|----------|---------|-------|---------|
+| `deploy.yml` | push to master, schedule, manual | ci → test → update → deploy | Yes |
+| `ci.yml` | push (non-master), pull_request | ci → test → build | No |
