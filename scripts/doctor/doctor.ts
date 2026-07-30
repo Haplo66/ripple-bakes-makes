@@ -62,7 +62,7 @@ async function runChecks(checks: DoctorCheck[]): Promise<DoctorResult[]> {
   return results;
 }
 
-function buildSummary(results: DoctorResult[]): DoctorSummary {
+export function buildSummary(results: DoctorResult[]): DoctorSummary {
   const summary: DoctorSummary = { total: results.length, pass: 0, warn: 0, fail: 0, info: 0 };
   for (const r of results) {
     if (r.status === "PASS") summary.pass++;

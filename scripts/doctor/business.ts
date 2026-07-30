@@ -109,13 +109,13 @@ function scanFolder(folderPath: string): string[] {
   }
 }
 
-function imageScore(count: number): string {
+export function imageScore(count: number): string {
   if (count === 0) return "FAIL";
   if (count === 1) return "WARN";
   return "PASS";
 }
 
-function analyzeProducts(
+export function analyzeProducts(
   products: ProductRecord[],
   validCollectionIds: Set<string>,
   validFormIds: Set<string>,
@@ -150,7 +150,7 @@ function analyzeProducts(
     });
 }
 
-function computeMetrics(analysis: ProductAnalysis[]): BusinessMetrics {
+export function computeMetrics(analysis: ProductAnalysis[]): BusinessMetrics {
   const metrics: BusinessMetrics = {
     totalProducts: analysis.length,
     activeProducts: analysis.length,
@@ -172,7 +172,7 @@ function computeMetrics(analysis: ProductAnalysis[]): BusinessMetrics {
   return metrics;
 }
 
-function computeFormCoverage(
+export function computeFormCoverage(
   products: ProductRecord[],
   validFormIds: Set<string>,
 ): FormCoverage {
@@ -197,7 +197,7 @@ function computeFormCoverage(
   };
 }
 
-function calculateBusinessScore(
+export function calculateBusinessScore(
   analysis: ProductAnalysis[],
   metrics: BusinessMetrics,
   formCoverage: FormCoverage,
@@ -218,7 +218,7 @@ function getStatus(score: number): "GOOD" | "ATTENTION" | "CRITICAL" {
   return "CRITICAL";
 }
 
-function generateRecommendations(
+export function generateRecommendations(
   analysis: ProductAnalysis[],
   metrics: BusinessMetrics,
   formCoverage: FormCoverage,
