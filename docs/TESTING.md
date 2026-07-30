@@ -109,7 +109,7 @@ If mocking is needed (e.g., to simulate Google Sheets responses or file system s
 
 ```
 tests/
-  fixtures/
+  fixtures/            Test CSV and JSON data files (populated in v1.19.2+)
     collections/
       valid.csv
       missing-fields.csv
@@ -126,24 +126,11 @@ tests/
       products.json
       collections.json
       forms.json
-  business/
-    purchase-state.test.ts
-    order.test.ts
-    cart.test.ts
-    format.test.ts
-  pipeline/
-    validators.test.ts
-    normalizers.test.ts
-    generators.test.ts
-    csv-reader.test.ts
-  doctor/
-    scoring.test.ts
-    business.test.ts
-    registry.test.ts
-  data/
-    products.test.ts
-    collections.test.ts
-    forms.test.ts
+  business/             Business logic tests (src/utils/*, src/data/*) [v1.19.2]
+  pipeline/             Pipeline stage tests (scripts/pipeline/*) [v1.19.3]
+  doctor/               Doctor framework tests (scripts/doctor/*) [v1.19.4]
+  data/                 Data loader tests (src/data/*) [v1.19.2]
+    framework.test.ts   Framework validation test (v1.19.1)
 ```
 
 ---
@@ -217,30 +204,36 @@ All test fixtures live in `tests/fixtures/` and are version-controlled.
 
 ## Running Tests
 
-```json
-// Add to package.json scripts:
-"test": "node --experimental-strip-types --test tests/**/*.test.ts",
-"test:coverage": "node --experimental-strip-types --experimental-test-coverage --test tests/**/*.test.ts"
+```bash
+# Run all tests
+npm run test
+
+# Run with coverage (future milestone)
+npm run test:coverage
 ```
 
-Tests run directly with Node's built-in test runner. No build step, no config file, no test framework installation.
+Tests run directly with Node's built-in test runner: `node --experimental-strip-types --test tests/**/*.test.ts`
+
+No build step, no config file, no test framework installation.
 
 ---
 
 ## Implementation Milestones
 
-### v1.19.1 — Testing Foundation
+### v1.19.1 — Testing Foundation ✅ Complete
 
 **Goal:** Establish test infrastructure, runner, fixtures, and first test.
 
 **Scope:**
-- Create `tests/` folder structure
-- Create `tests/fixtures/` with sample inputs
-- Add `npm run test` and `npm run test:coverage` scripts
-- Write first test for `purchase-state.ts`
+- Create `tests/` folder structure (business/, pipeline/, doctor/, data/, fixtures/)
+- Add `npm run test` script (runs `node --experimental-strip-types --test tests/**/*.test.ts`)
+- Write framework validation test (`tests/data/framework.test.ts`)
 - Update documentation (this file + ARCHITECTURE.md + AGENTS.md)
 
-**Outcome:** Developer can run `npm run test` and see passing tests. The testing pipeline is validated.
+**Outcome:** `npm run test` succeeds (3/3 tests). Production build unchanged. Ready for v1.19.2.
+
+**Test file:**
+- `tests/data/framework.test.ts` — validates node:test, async support, and TypeScript execution
 
 ### v1.19.2 — Business Logic Tests
 

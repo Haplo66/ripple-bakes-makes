@@ -86,6 +86,7 @@ tests/
   business/        ← src/utils/* and src/data/*
   pipeline/        ← scripts/pipeline/*
   doctor/          ← scripts/doctor/*
+  data/            ← src/data/* loader tests
   fixtures/        ← test CSV and JSON data files
 ```
 
