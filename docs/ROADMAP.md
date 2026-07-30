@@ -414,11 +414,21 @@ Includes:
 - `cleanup-assets.ts`: BA duplicate folder merge, Collection Images hierarchy restructure, missing folder creation
 - `asset-validator.ts`: Sheets-driven validation with JSON report
 
+### v1.18.2 — Google Insights Integration ✅
+
+Includes:
+- Google Search Console visibility metrics (Impressions, Clicks, Average Position, Indexed Pages)
+- Google Analytics 4 visitor metrics (Users, Page Views, Average Engagement, Top Page)
+- Same Google service account authentication — no new credential setup
+- Missing analytics data displays as "Unavailable" — no health score impact
+- Visibility 4-card and Visitors 2-row sections in email report
+- Doctor remains useful without Google integrations
+
 ---
 
 ## Current Status
 
-**Version: v1.18**
+**Version: v1.18.2**
 
 ### What Works Today
 
@@ -680,74 +690,56 @@ Transform the initial Doctor report from a technical health output into an owner
 The owner now receives a professional, actionable health report directly in their inbox with clear metrics, priorities, and product-level inventory details — no dashboard visit required for daily checks.
 
 
-### v1.18.2 — Google Insights Integration (Planning)
+### v1.18.2 — Google Insights Integration ✅ Complete
 
-**Status:** Planned
+**Goal:** Extend RIPPLE Doctor beyond internal website and business health checks by integrating external search and visitor data sources.
 
-**Goal:**
-Extend RIPPLE Doctor beyond internal website and business health checks by integrating external performance, search, and visitor data sources. Transform Doctor into a comprehensive business intelligence dashboard that answers: "How is my website performing on the web?"
+**Completed capabilities:**
 
-**Proposed data sources:**
+**Google Search Console Integration:**
+- Search Impressions metric
+- Search Clicks metric
+- Average Position metric
+- Indexed Pages metric
 
-| Source | Type | What it provides |
-|--------|------|------------------|
-| Google Search Console | API (read-only) | Search queries, click-through rates, impressions, average position, indexed pages |
-| Google Analytics 4 | API (if available) | Visitor counts, page views, session duration, traffic sources, device breakdown |
-| Page performance | Built-in checks | Lighthouse-style metrics (load time, Core Web Vitals) measured at build time |
-| SEO visibility | Generated + external | Indexed page count, meta tag coverage, structured data presence, sitemap health |
+**Google Analytics 4 Integration:**
+- Users metric
+- Page Views metric
+- Average Engagement metric
+- Top Page metric
 
-**Proposed report sections:**
+**Implementation notes:**
+- Uses existing Google service account authentication pattern — no new credential setup
+- External APIs fail gracefully — when Google has no processed data, report displays "Unavailable"
+- Missing analytics data does not affect website health score
+- Doctor remains fully useful without Google integrations enabled
 
-1. **Website Traffic Health**
-   - Estimated monthly visitors
-   - Top landing pages
-   - Traffic sources breakdown (organic, direct, referral)
-   - Visitor device split (mobile vs desktop)
-   - Trend arrows (up/down from previous report)
+**Email Report:**
+- Visibility section renders 4 KPI cards in a single row (Impressions, Search Clicks, Avg Position, Indexed Pages)
+- Visitors section renders Users, Page Views, Avg Engagement in one row, with Top Page on its own full-width row below
+- Layout changes are scoped to these two sections only — no other email sections modified
+- All cards use direct `<td>` background/border for equal-height rendering across rows
+- All metric values use consistent 18px bold font size
 
-2. **Search Visibility**
-   - Total indexed pages (Search Console)
-   - Top search queries by clicks and impressions
-   - Average click-through rate and position
-   - Coverage report (valid pages, warnings, errors, excluded)
-   - Search visibility score (new composite metric)
-
-3. **Performance Health**
-   - Build-time performance audit results
-   - Page load estimates
-   - Core Web Vitals scores (if measurable from static build)
-   - Image optimization opportunities
-   - Largest Contentful Paint (LCP) estimates
-
-4. **SEO Opportunities**
-   - Missing or weak meta descriptions
-   - Pages without Open Graph tags
-   - Missing structured data (Product schema, FAQ schema)
-   - Indexability issues (noindex tags, canonical errors)
-   - Sitemap submission status
-
-**Design constraints:**
-- All external API calls happen during `npm run doctor` — no runtime dependencies
-- API keys and credentials stored as environment variables (same pattern as existing Google service accounts)
+**Design decisions:**
+- Analytics are informational, not health blockers
+- Missing external data does not reduce health score
+- Doctor remains useful without Google integrations
+- API calls happen during `npm run doctor` — no runtime dependencies
+- Credentials stored in environment variables (same pattern as existing Google service accounts)
 - Data is snapshotted at report time, not streamed live
-- New report sections follow existing Doctor pattern: check → metric → score → recommendation
-- Existing Website Health (100/100) and Business Health (32/100) scores remain unchanged
-- Google Insights gets its own score section (e.g. "Search Health: 85/100")
-- Mock data provider for development when API credentials are not configured
 
-**What stays the same:**
-- Doctor is read-only — no automatic repairs based on external data
-- Email report continues as the primary delivery mechanism
+**What stayed the same:**
+- Doctor is read-only — no automatic repairs
+- Email report continues as primary delivery mechanism
 - Dashboard at `/doctor` displays all sections
-- Doctor Config sheet controls enable/disable per section
+- Doctor Config sheet controls enable/disable
 - No paid services — all Google APIs are free-tier
+- Website Health (max 100) and Business Health (max 32) scores unchanged
 
-**Implementation order (suggested):**
-1. Page performance checks (built-in, no external API needed)
-2. SEO visibility scanning (meta tags, structured data analysis)
-3. Google Search Console integration
-4. Google Analytics integration (if GA4 property exists)
-5. Combined Insights scoring and dashboard section#### v1.19 — Gallery Enhancements
+**Why it matters:** The owner now has automated visibility into website search performance and visitor activity without logging into Google Search Console or Analytics separately. Combined with the existing health checks, Doctor provides a complete picture of website and business health in one place.
+
+#### v1.19 — Gallery Enhancements
 
 **Status:** Future
 
@@ -878,6 +870,29 @@ Long-term possibility of expanding Google Workspace into a lightweight business 
 RIPPLE Website → Customers
 
 **Principle:** Add complexity only when it directly supports business growth.
+
+### 5. Future Dashboard Planning
+
+**Doctor Dashboard / Business Command Center**
+
+Purpose: Provide a visual owner dashboard combining:
+- Website Health
+- Business Health
+- Product Inventory status
+- Google Visibility trends
+- Visitor trends
+
+Possible future sections:
+- Health score history
+- Traffic trends
+- Search growth
+- Product/content improvement tracking
+- Historical reports
+
+**Constraints:**
+- Keep Doctor as the data engine
+- Dashboard should consume existing Doctor reports/data
+- Do not create a separate analytics system
 
 
 ### **DEVELOPER NOTES - DO NOT REMOVE**

@@ -193,6 +193,8 @@ npm run doctor
 scripts/doctor/doctor.ts (entry point)
     ├── Website health checks (19 checks, 100/100)
     ├── Business health analysis (catalog scoring)
+    ├── Google visibility data (Search Console API)
+    ├── Google visitor data (GA4 Data API)
     ├── Doctor Config sheet reader (enable/disable, recipients)
     └── Report generation
          ├── Console reporter (stdout)
@@ -210,6 +212,8 @@ scripts/doctor/doctor.ts (entry point)
 
 - **Read-only by design.** Doctor reports only — no automatic repairs.
 - **Two independent scoring systems.** Website Health (technical checks, 100/100) and Business Health (catalog completeness, 32/100). Each has its own score, status, and recommendations.
+- **External analytics are informational, not health blockers.** Google Search Console and GA4 data are fetched during report generation but never affect health scores. Missing or unavailable external data displays as "Unavailable" without degrading any health status.
+- **Same authentication pattern for all Google APIs.** Visibility and visitor services reuse the existing Google service account credentials — no additional setup required beyond configuring the environment variables already in use.
 - **Separate Google Sheets for inventory vs. operations.** `INVENTORY_GOOGLE_SHEETS_ID` for products/collections/forms; `ORDERS_GOOGLE_SHEETS_ID` for orders, inquiries, and Doctor Config.
 - **Doctor Config sheet controls delivery.** Enable/disable and recipient emails managed in the Orders spreadsheet — no code changes needed.
 - **HTML email via Apps Script MailApp.** The reporter sends both `body` (plain text fallback) and `htmlBody` (full HTML with inline CSS). Apps Script uses `htmlBody` parameter for HTML rendering.
@@ -233,9 +237,11 @@ scripts/doctor/doctor.ts (entry point)
 │   ├── Active Products (count: 18/18)
 │   ├── Descriptions (percentage)
 │   └── Images ≥2 (percentage)
-├── Product Inventory (3-column card grid — only multi-column section)
+├── Product Inventory (3-column card grid)
 │   ├── Needs Attention (⚠ cards with issue labels)
 │   └── Complete (✓ cards)
+├── Visibility (4 KPI cards: Impressions, Search Clicks, Avg Position, Indexed Pages)
+├── Visitors (3 KPI cards + full-width Top Page card)
 └── Footer (dashboard link, generation timestamp)
 ```
 
@@ -249,6 +255,8 @@ scripts/doctor/doctor.ts (entry point)
 - `scripts/doctor/doctor.ts` — entry point
 - `scripts/doctor/business.ts` — business health scoring
 - `scripts/doctor/doctor-config.reader.ts` — Doctor Config sheet reader
+- `scripts/doctor/services/visibility.service.ts` — Google Search Console data fetcher
+- `scripts/doctor/services/visitors.service.ts` — Google Analytics 4 data fetcher
 - `scripts/doctor/reporters/email.reporter.ts` — HTML email generation + Apps Script delivery
 - `scripts/doctor/reports/doctor-report-owner.json` — report consumed by dashboard and email
 - `src/pages/doctor.astro` — dashboard page (reads owner report at build time)
