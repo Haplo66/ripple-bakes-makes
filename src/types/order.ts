@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import type { CartItemConfiguration } from './cart';
 
 /** Optional customer details reserved for the future checkout flow. */

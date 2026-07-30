@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import { createWriteStream, existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { pipeline } from 'node:stream/promises';

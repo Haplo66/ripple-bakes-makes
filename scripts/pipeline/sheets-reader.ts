@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import type { sheets_v4 } from 'googleapis';
 import type { CsvRecord, DatasetName, PipelineWarning } from './types.ts';
 import { SHEET_TABS } from './constants.ts';

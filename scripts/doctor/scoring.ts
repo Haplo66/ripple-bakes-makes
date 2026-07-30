@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import type { DoctorResult } from "./types.ts";
 
 type HealthStatus = "GOOD" | "ATTENTION" | "CRITICAL";

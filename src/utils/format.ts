@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 export const formatLabel = (value: string): string =>
   value
     .replace(/([A-Z])/g, ' $1')

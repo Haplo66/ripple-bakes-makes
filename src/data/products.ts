@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import type { Product, ProductCategory } from '../types/product';
 import type { CollectionCategory, CollectionImageTone } from '../types/collection';
 import productRecords from '../content/products.json';

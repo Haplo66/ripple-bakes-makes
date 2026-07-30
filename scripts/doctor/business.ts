@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type { DoctorResult } from "./types.ts";

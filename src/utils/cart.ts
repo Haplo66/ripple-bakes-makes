@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import type { Cart, CartItem, CartItemInput } from '../types/cart';
 import { getProductById } from '../data/products';
 

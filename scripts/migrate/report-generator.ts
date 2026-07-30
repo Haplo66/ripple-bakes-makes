@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { PROJECT_ROOT } from '../pipeline/constants.ts';

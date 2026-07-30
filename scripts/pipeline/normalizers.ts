@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import type { CsvRecord, PipelineWarning } from './types.ts';
 
 const parseBoolean = (value: string, fallback = false): boolean => {

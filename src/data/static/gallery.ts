@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 export const galleryItems = [
   {category:'Baking',title:'Morning loaves',caption:'Crusty, golden, made in small batches.',tone:'wheat',image:'morning-loaves.jpg'},
   {category:'Sewing',title:'Stitched with care',caption:'Thoughtful fabric details for every day.',tone:'sage',image:'stitched-care.jpg'},

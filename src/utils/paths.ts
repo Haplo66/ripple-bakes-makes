@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import type { Product } from '../types/product';
 import { collections } from '../data/collections';
 

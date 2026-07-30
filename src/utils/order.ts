@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import type { Cart } from '../types/cart';
 import type { Order } from '../types/order';
 

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { authenticateDrive } from '../pipeline/drive-auth.ts';

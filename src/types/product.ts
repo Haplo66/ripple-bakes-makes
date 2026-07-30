@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import type { CollectionCategory, CollectionImageTone } from './collection';
 
 /** Specific product types offered by RIPPLE Bakes & Makes. */

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import { authenticateDriveWithWrite } from '../pipeline/drive-write-auth.ts';
 import { buildNameMappings } from './name-mapper.ts';
 import {

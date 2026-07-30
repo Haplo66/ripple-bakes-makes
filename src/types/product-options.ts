@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 /** Input styles supported for future product customization. */
 export type ProductOptionType =
   | 'select'

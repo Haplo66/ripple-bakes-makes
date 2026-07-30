@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 export type DatasetName = 'collections' | 'products' | 'forms';
 
 export type CsvRow = Record<string, string>;

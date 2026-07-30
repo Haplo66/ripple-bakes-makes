@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import type { DatasetName, PipelineWarning } from './types.ts';
 
 const labels: Record<DatasetName, string> = {

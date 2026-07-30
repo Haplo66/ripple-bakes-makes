@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import type { Product } from '../types/product';
 
 export type PurchaseState = 'purchasable' | 'coming-soon' | 'unavailable';

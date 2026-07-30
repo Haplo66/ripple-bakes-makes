@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import path from 'node:path';
 
 export const PIPELINE_NAME = 'RIPPLE Data Pipeline';

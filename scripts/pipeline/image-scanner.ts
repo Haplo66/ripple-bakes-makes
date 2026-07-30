@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import { readdirSync } from 'node:fs';
 
 export interface ScanResult {

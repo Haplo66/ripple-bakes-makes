@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import { google } from "googleapis";
 
 const DOCTOR_CONFIG_TAB = "Doctor Config";

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import { existsSync, readdirSync } from 'node:fs';
 import { basename, extname, join } from 'node:path';
 import { IMPORT_FILES, IMAGE_DIR, OUTPUT_FILES, PIPELINE_NAME, PIPELINE_VERSION } from './constants.ts';

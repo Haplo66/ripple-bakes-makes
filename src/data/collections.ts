@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import type { Collection, CollectionCategory } from '../types/collection';
 import collectionRecords from '../content/collections.json';
 

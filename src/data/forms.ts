@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import type { Form } from '../types/form';
 import formRecords from '../content/forms.json';
 

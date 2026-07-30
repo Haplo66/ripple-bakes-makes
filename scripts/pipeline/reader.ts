@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import type { DatasetName, PipelineWarning } from './types.ts';
 import { readCsvFile, type CsvReadResult } from './csv-reader.ts';
 import { authenticateSheets } from './sheets-auth.ts';

@@ -1,4 +1,9 @@
-﻿import type { DoctorResult, DoctorReport } from "../types.ts";
+﻿/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
+import type { DoctorResult, DoctorReport } from "../types.ts";
 import type { BusinessHealthResult } from "../business.ts";
 import * as fs from "node:fs";
 import * as path from "node:path";

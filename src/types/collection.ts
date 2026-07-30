@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 /** Business areas currently supported by the collection system. */
 export type CollectionCategory = 'bakery' | 'sewing';
 

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 /** Captured product option values for a cart item. */
 export type CartItemConfiguration = Record<string, string | string[] | boolean | number>;
 

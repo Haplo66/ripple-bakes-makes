@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import type { SubmissionProvider } from './submission-provider';
 
 const providerName = 'mock';

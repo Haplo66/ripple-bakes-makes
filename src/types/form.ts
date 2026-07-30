@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 /** Field input types supported by reusable product inquiry forms. */
 export type FormFieldType =
   | 'text'

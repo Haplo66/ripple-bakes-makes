@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { authenticateDriveWithWrite } from '../pipeline/drive-write-auth.ts';

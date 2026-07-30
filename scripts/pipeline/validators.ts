@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import type { CsvRecord, DatasetName, PipelineWarning } from './types.ts';
 
 const requiredFields: Record<DatasetName, string[]> = {

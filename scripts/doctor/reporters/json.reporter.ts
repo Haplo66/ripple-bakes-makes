@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import type { DoctorReport } from "../types.ts";
 import type { BusinessHealthResult } from "../business.ts";
 import * as fs from "node:fs";

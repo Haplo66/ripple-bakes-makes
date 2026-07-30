@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import { getAllProducts } from '../data/products';
 import { getAllCollections } from '../data/collections';
 import { getProductPrimaryImage, getCollectionPrimaryImage } from './images';

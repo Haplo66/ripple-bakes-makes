@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import type { SubmissionProvider } from './submission-provider';
 import type { Order } from '../../../types/order';
 import type { SubmissionResult } from '../../../types/submission';

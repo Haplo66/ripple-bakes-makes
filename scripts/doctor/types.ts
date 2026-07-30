@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 type DoctorStatus = "PASS" | "WARN" | "FAIL" | "INFO";
 
 type DoctorResult = {

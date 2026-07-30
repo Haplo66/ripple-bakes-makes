@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import { execSync } from "node:child_process";
 import * as fs from "node:fs";
 import * as path from "node:path";

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { IMPORT_DIR } from './constants.ts';

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import { join } from 'node:path';
 import { existsSync, readdirSync } from 'node:fs';
 import { IMAGE_DIR } from './constants.ts';

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Eyal Tal. All rights reserved.
+ *
+ */
+
 import { authenticateDriveWithWrite } from './drive-write-auth.ts';
 import type { drive_v3 } from 'googleapis';
 
