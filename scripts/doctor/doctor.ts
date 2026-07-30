@@ -9,7 +9,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import type { DoctorCheck, DoctorResult, DoctorReport } from "./types.ts";
 import { getRegisteredChecks, registerChecks } from "./registry.ts";
-import { buildHealthScore } from "./scoring.ts";
+import { buildHealthScore, buildSummary } from "./scoring.ts";
 import { buildBusinessHealth } from "./business.ts";
 import { consoleReport } from "./reporters/console.reporter.ts";
 import { markdownReport } from "./reporters/markdown.reporter.ts";
@@ -60,17 +60,6 @@ async function runChecks(checks: DoctorCheck[]): Promise<DoctorResult[]> {
     }
   }
   return results;
-}
-
-export function buildSummary(results: DoctorResult[]): DoctorSummary {
-  const summary: DoctorSummary = { total: results.length, pass: 0, warn: 0, fail: 0, info: 0 };
-  for (const r of results) {
-    if (r.status === "PASS") summary.pass++;
-    else if (r.status === "WARN") summary.warn++;
-    else if (r.status === "FAIL") summary.fail++;
-    else if (r.status === "INFO") summary.info++;
-  }
-  return summary;
 }
 
 async function main(): Promise<void> {

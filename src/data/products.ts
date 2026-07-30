@@ -30,7 +30,7 @@ interface ProductRecord {
   imageTone?: string;
   active: boolean;
   displayOrder: number;
-  price?: number;
+  price?: number | null;
   priceLabel?: string;
   title?: string;
 }

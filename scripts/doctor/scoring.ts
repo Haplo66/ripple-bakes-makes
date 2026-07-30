@@ -4,7 +4,7 @@
  *
  */
 
-import type { DoctorResult } from "./types.ts";
+import type { DoctorResult, DoctorSummary } from "./types.ts";
 
 type HealthStatus = "GOOD" | "ATTENTION" | "CRITICAL";
 
@@ -55,5 +55,16 @@ function buildHealthScore(results: DoctorResult[]): DoctorHealthScore {
   return { score, maxScore: MAX_SCORE, status, recommendations };
 }
 
+function buildSummary(results: DoctorResult[]): DoctorSummary {
+  const summary: DoctorSummary = { total: results.length, pass: 0, warn: 0, fail: 0, info: 0 };
+  for (const r of results) {
+    if (r.status === "PASS") summary.pass++;
+    else if (r.status === "WARN") summary.warn++;
+    else if (r.status === "FAIL") summary.fail++;
+    else if (r.status === "INFO") summary.info++;
+  }
+  return summary;
+}
+
 export type { HealthStatus, DoctorHealthScore };
-export { calculateScore, getStatus, collectRecommendations, buildHealthScore, WARN_DEDUCTION, FAIL_DEDUCTION, MAX_SCORE };
+export { calculateScore, getStatus, collectRecommendations, buildHealthScore, buildSummary, WARN_DEDUCTION, FAIL_DEDUCTION, MAX_SCORE };

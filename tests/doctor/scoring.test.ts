@@ -6,8 +6,7 @@
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { calculateScore, getStatus, collectRecommendations, buildHealthScore } from '../../scripts/doctor/scoring.ts';
-import { buildSummary } from '../../scripts/doctor/doctor.ts';
+import { calculateScore, getStatus, collectRecommendations, buildHealthScore, buildSummary } from '../../scripts/doctor/scoring.ts';
 import type { DoctorResult } from '../../scripts/doctor/types.ts';
 
 const pass = (): DoctorResult => ({ id: 'p1', category: 'Test', status: 'PASS', summary: 'ok' });

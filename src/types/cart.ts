@@ -24,7 +24,7 @@ export interface CartItem {
 
   quantity: number;
 
-  price?: number;
+  price?: number | null;
 
   notes?: string;
 }

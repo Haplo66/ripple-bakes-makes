@@ -88,7 +88,7 @@ export interface Product {
   formId?: string;
 
   /** Numeric price for consistent formatting and sorting. */
-  price?: number;
+  price?: number | null;
 
   /** Display-only price information. */
   priceLabel?: string;
