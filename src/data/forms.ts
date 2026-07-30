@@ -5,7 +5,7 @@
  */
 
 import type { Form } from '../types/form';
-import formRecords from '../content/forms.json';
+import formRecords from '../content/forms.json' with { type: 'json' };
 
 type GeneratedData<T> = {
   data: T[];
@@ -15,7 +15,7 @@ type FormRecord = Omit<Form, 'title'> & {
   title?: string;
 };
 
-const toForm = (record: FormRecord): Form => ({
+export const toForm = (record: FormRecord): Form => ({
   ...record,
   title: record.title || record.name,
 });

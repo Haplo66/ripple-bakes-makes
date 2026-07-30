@@ -6,7 +6,7 @@
 
 import type { Product, ProductCategory } from '../types/product';
 import type { CollectionCategory, CollectionImageTone } from '../types/collection';
-import productRecords from '../content/products.json';
+import productRecords from '../content/products.json' with { type: 'json' };
 
 interface ProductRecord {
   id: string;
@@ -51,7 +51,7 @@ const statusMap: Record<string, Product['status']> = {
   preorder: 'preorder',
 };
 
-const toProduct = (record: ProductRecord): Product => {
+export const toProduct = (record: ProductRecord): Product => {
   const images = record.images || [];
 
   return {

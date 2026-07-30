@@ -8,7 +8,7 @@ import { getAllProducts } from '../data/products';
 import { getAllCollections } from '../data/collections';
 import { getProductPrimaryImage, getCollectionPrimaryImage } from './images';
 import { sitePath } from './paths';
-import galleryAssets from '../content/gallery-assets.json';
+import galleryAssets from '../content/gallery-assets.json' with { type: 'json' };
 
 export interface GalleryItem {
   image: string;

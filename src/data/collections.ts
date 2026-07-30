@@ -5,7 +5,7 @@
  */
 
 import type { Collection, CollectionCategory } from '../types/collection';
-import collectionRecords from '../content/collections.json';
+import collectionRecords from '../content/collections.json' with { type: 'json' };
 
 type GeneratedData<T> = {
   data: T[];
@@ -38,7 +38,7 @@ const businessAreaMap: Record<CollectionRecord['businessArea'], CollectionCatego
   sewing: 'sewing',
 };
 
-const toCollection = (record: CollectionRecord): Collection => {
+export const toCollection = (record: CollectionRecord): Collection => {
   const category = businessAreaMap[record.businessArea];
   const title = record.title || record.name;
   const galleryCaptions = record.galleryCaptions || [];
