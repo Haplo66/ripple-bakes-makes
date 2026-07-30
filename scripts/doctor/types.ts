@@ -36,6 +36,18 @@ type DoctorReport = {
   commit: string;
   websiteHealth: DoctorHealthScore;
   businessHealth: Record<string, unknown>;
+  visibility?: {
+    impressions: number | null;
+    clicks: number | null;
+    averagePosition: number | null;
+    indexedPages: number | null;
+  };
+  visitors?: {
+    users: number | null;
+    pageViews: number | null;
+    averageEngagementTime: number | null;
+    topPage: string | null;
+  };
   summary: DoctorSummary;
   results: DoctorResult[];
 };

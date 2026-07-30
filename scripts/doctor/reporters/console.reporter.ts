@@ -99,6 +99,31 @@ function consoleReport(report: DoctorReport): void {
   }
   console.log("");
 
+  if (report.visibility) {
+    console.log("====================");
+    console.log("Visibility");
+    console.log("====================");
+    console.log("");
+    console.log("Search Impressions: " + (report.visibility.impressions != null ? report.visibility.impressions.toLocaleString() : "Unavailable"));
+    console.log("Search Clicks: " + (report.visibility.clicks != null ? report.visibility.clicks.toLocaleString() : "Unavailable"));
+    console.log("Average Position: " + (report.visibility.averagePosition != null ? report.visibility.averagePosition.toFixed(1) : "Unavailable"));
+    console.log("Indexed Pages: " + (report.visibility.indexedPages != null ? report.visibility.indexedPages.toLocaleString() : "Unavailable"));
+    console.log("");
+  }
+
+  if (report.visitors) {
+    console.log("====================");
+    console.log("Visitors");
+    console.log("====================");
+    console.log("");
+    console.log("Users: " + (report.visitors.users != null ? report.visitors.users.toLocaleString() : "Unavailable"));
+    console.log("Page Views: " + (report.visitors.pageViews != null ? report.visitors.pageViews.toLocaleString() : "Unavailable"));
+    const eng = report.visitors.averageEngagementTime;
+    console.log("Avg Engagement Time: " + (eng != null ? Math.round(eng) + "s" : "Unavailable"));
+    console.log("Top Page: " + (report.visitors.topPage ?? "Unavailable"));
+    console.log("");
+  }
+
   console.log("Business Metrics");
   console.log("");
   console.log("Total Products: " + m.totalProducts);

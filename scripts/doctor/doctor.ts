@@ -16,6 +16,8 @@ import configChecks from "./checks/config.check.ts";
 import dataChecks from "./checks/data.check.ts";
 import assetChecks from "./checks/asset.check.ts";
 import pipelineChecks from "./checks/pipeline.check.ts";
+import { fetchVisibility } from "./services/visibility.service.ts";
+import { fetchVisitors } from "./services/visitors.service.ts";
 
 function getVersion(): string {
   try {
@@ -73,6 +75,8 @@ async function main(): Promise<void> {
   const summary = buildSummary(results);
   const websiteHealth = buildHealthScore(results);
   const businessHealth = buildBusinessHealth();
+  const visibility = await fetchVisibility();
+  const visitors = await fetchVisitors();
 
   const report: DoctorReport = {
     timestamp: new Date().toISOString(),
@@ -80,6 +84,8 @@ async function main(): Promise<void> {
     commit: getCommit(),
     websiteHealth,
     businessHealth: businessHealth as unknown as Record<string, unknown>,
+    visibility,
+    visitors,
     summary,
     results,
   };

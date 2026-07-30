@@ -117,6 +117,22 @@ function ownerReport(report: DoctorReport): void {
         productsLinked: bh.formCoverage.productsWithForms,
       },
     },
+    visibility: report.visibility
+      ? {
+          impressions: report.visibility.impressions,
+          clicks: report.visibility.clicks,
+          averagePosition: report.visibility.averagePosition,
+          indexedPages: report.visibility.indexedPages,
+        }
+      : null,
+    visitors: report.visitors
+      ? {
+          users: report.visitors.users,
+          pageViews: report.visitors.pageViews,
+          averageEngagementTime: report.visitors.averageEngagementTime,
+          topPage: report.visitors.topPage,
+        }
+      : null,
     healthTable: buildHealthTable(report, bh),
     recommendations: buildOwnerRecommendations(bh),
   };

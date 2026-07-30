@@ -64,6 +64,22 @@ function jsonReport(report: DoctorReport): void {
       })),
       recommendations: bh.recommendations.map((r) => ({ priority: r.priority, text: r.text })),
     },
+    visibility: report.visibility
+      ? {
+          impressions: report.visibility.impressions,
+          clicks: report.visibility.clicks,
+          averagePosition: report.visibility.averagePosition,
+          indexedPages: report.visibility.indexedPages,
+        }
+      : null,
+    visitors: report.visitors
+      ? {
+          users: report.visitors.users,
+          pageViews: report.visitors.pageViews,
+          averageEngagementTime: report.visitors.averageEngagementTime,
+          topPage: report.visitors.topPage,
+        }
+      : null,
     results: report.results,
   };
   fs.writeFileSync(filePath, JSON.stringify(output, null, 2), "utf-8");

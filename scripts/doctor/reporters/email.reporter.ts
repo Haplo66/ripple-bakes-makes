@@ -33,6 +33,18 @@ type OwnerReportData = {
       productsLinked: number;
     };
   };
+  visibility: {
+    impressions: number | null;
+    clicks: number | null;
+    averagePosition: number | null;
+    indexedPages: number | null;
+  } | null;
+  visitors: {
+    users: number | null;
+    pageViews: number | null;
+    averageEngagementTime: number | null;
+    topPage: string | null;
+  } | null;
   healthTable: { check: string; result: string; status: string }[];
   recommendations: { priority: string; area: string; text: string }[];
 };
@@ -180,6 +192,28 @@ function buildPlainTextBody(data: OwnerReportData, businessName: string, dashboa
   if (needingImages > 0) lines.push("Product Images: " + needingImages + " need attention");
 
   lines.push("");
+  lines.push("--- Visibility ---");
+  if (data.visibility) {
+    lines.push("Search Impressions: " + (data.visibility.impressions != null ? data.visibility.impressions.toLocaleString() : "Unavailable"));
+    lines.push("Search Clicks: " + (data.visibility.clicks != null ? data.visibility.clicks.toLocaleString() : "Unavailable"));
+    lines.push("Average Position: " + (data.visibility.averagePosition != null ? data.visibility.averagePosition.toFixed(1) : "Unavailable"));
+    lines.push("Indexed Pages: " + (data.visibility.indexedPages != null ? data.visibility.indexedPages.toLocaleString() : "Unavailable"));
+  } else {
+    lines.push("Visibility data unavailable.");
+  }
+  lines.push("");
+  lines.push("--- Visitors ---");
+  if (data.visitors) {
+    lines.push("Users: " + (data.visitors.users != null ? data.visitors.users.toLocaleString() : "Unavailable"));
+    lines.push("Page Views: " + (data.visitors.pageViews != null ? data.visitors.pageViews.toLocaleString() : "Unavailable"));
+    const eng = data.visitors.averageEngagementTime;
+    lines.push("Avg Engagement Time: " + (eng != null ? Math.round(eng) + "s" : "Unavailable"));
+    lines.push("Top Page: " + (data.visitors.topPage ?? "Unavailable"));
+  } else {
+    lines.push("Visitors data unavailable.");
+  }
+
+  lines.push("");
   const url = dashboardUrl || "https://haplo66.github.io/ripple-bakes-makes/doctor";
   lines.push("Dashboard: " + url);
 
@@ -319,6 +353,31 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
     );
   }
 
+  function metricCell(label: string, value: number | string | null, mutedColor: string, primaryColor: string, accentColor: string, bg: string): string {
+    const display = value != null ? escHtml(value) : "Unavailable";
+    return h(
+      '<td style="width:33.33%; padding:4px; vertical-align:top;">',
+      '<table width="100%" cellpadding="0" cellspacing="0" style="background:', bg, '; border:1px solid ', accentColor, '; border-radius:6px;">',
+      '<tr><td style="padding:12px; text-align:center;">',
+      '<p style="color:', mutedColor, '; margin:0 0 4px; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">', escHtml(label), '</p>',
+      '<p style="color:', primaryColor, '; margin:0; font-size:18px; font-weight:bold;">', display, '</p>',
+      '</td></tr></table>',
+      '</td>',
+    );
+  }
+
+  function topPageCell(label: string, value: string | null, mutedColor: string, primaryColor: string, accentColor: string, bg: string): string {
+    return h(
+      '<td style="width:33.33%; padding:4px; vertical-align:top;">',
+      '<table width="100%" cellpadding="0" cellspacing="0" style="background:', bg, '; border:1px solid ', accentColor, '; border-radius:6px;">',
+      '<tr><td style="padding:12px; text-align:center;">',
+      '<p style="color:', mutedColor, '; margin:0 0 4px; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">', escHtml(label), '</p>',
+      '<p style="color:', primaryColor, '; margin:0; font-size:13px; font-weight:bold; word-break:break-all;">', value ? escHtml(value) : "Unavailable", '</p>',
+      '</td></tr></table>',
+      '</td>',
+    );
+  }
+
   // ── Assemble document ──────────────────────────────────────────
 
   const parts: string[] = [];
@@ -354,7 +413,58 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
     '</td></tr>',
   );
 
-  // ── Section 2: Top Priorities ──────────────────────────────────
+  // ── Section 2: Visibility ─────────────────────────────────────
+
+  if (data.visibility) {
+    const v = data.visibility;
+    parts.push(
+      '<tr><td style="padding:0 30px;"><div style="border-top:1px solid ', accent, '; margin:0;"></div></td></tr>',
+      '<tr><td style="padding:20px 30px 8px;"><h2 style="color:', primary, '; margin:0; font-size:18px;">Visibility</h2></td></tr>',
+      '<tr><td style="padding:0 30px 20px;">',
+      '<table width="100%" cellpadding="0" cellspacing="0">',
+      '<tr>',
+      metricCell("Search Impressions", v.impressions, muted, primary, accent, warmBg),
+      metricCell("Search Clicks", v.clicks, muted, primary, accent, warmBg),
+      metricCell("Avg Position", v.averagePosition, muted, primary, accent, warmBg),
+      '</tr>',
+      '<tr><td colspan="3" style="height:8px;"></td></tr>',
+      '<tr>',
+      metricCell("Indexed Pages", v.indexedPages, muted, primary, accent, warmBg),
+      '<td style="width:33.33%;"></td>',
+      '<td style="width:33.33%;"></td>',
+      '</tr>',
+      '</table>',
+      '</td></tr>',
+    );
+  }
+
+  // ── Section 3: Visitors ───────────────────────────────────────
+
+  if (data.visitors) {
+    const v = data.visitors;
+    const eng = v.averageEngagementTime != null ? Math.round(v.averageEngagementTime) + "s" : null;
+    parts.push(
+      '<tr><td style="padding:0 30px;"><div style="border-top:1px solid ', accent, '; margin:0;"></div></td></tr>',
+      '<tr><td style="padding:20px 30px 8px;"><h2 style="color:', primary, '; margin:0; font-size:18px;">Visitors</h2></td></tr>',
+      '<tr><td style="padding:0 30px 20px;">',
+      '<table width="100%" cellpadding="0" cellspacing="0">',
+      '<tr>',
+      metricCell("Users", v.users, muted, primary, accent, warmBg),
+      metricCell("Page Views", v.pageViews, muted, primary, accent, warmBg),
+      metricCell("Avg Engagement", eng, muted, primary, accent, warmBg),
+      '</tr>',
+      '<tr><td colspan="3" style="height:8px;"></td></tr>',
+      '<tr>',
+      topPageCell("Top Page", v.topPage, muted, primary, accent, warmBg),
+      '<td style="width:33.33%;"></td>',
+      '<td style="width:33.33%;"></td>',
+      '</tr>',
+      '</table>',
+      '</td></tr>',
+    );
+  }
+
+  // ── Section 4: Top Priorities ──────────────────────────────────
 
   parts.push(
     '<tr><td style="padding:0 30px;"><div style="border-top:1px solid ', accent, '; margin:0;"></div></td></tr>',
@@ -385,7 +495,7 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
 
   parts.push('</td></tr>');
 
-  // ── Section 3: Business Snapshot ──────────────────────────────
+  // ── Section 5: Business Snapshot ──────────────────────────────
 
   parts.push(
     '<tr><td style="padding:0 30px;"><div style="border-top:1px solid ', accent, '; margin:0;"></div></td></tr>',
@@ -424,7 +534,7 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
 
   parts.push('</table></td></tr>');
 
-  // ── Section 4: Progress ──────────────────────────────────────
+  // ── Section 6: Progress ──────────────────────────────────────
 
   const descFilled = p.total - p.missingShortDescriptions;
   const imagesFilled = p.total - needingImages;
@@ -441,7 +551,7 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
     '</td></tr>',
   );
 
-  // ── Section 5: Product Inventory ─────────────────────────────
+  // ── Section 7: Product Inventory ─────────────────────────────
 
   parts.push(
     '<tr><td style="padding:0 30px;"><div style="border-top:1px solid ', accent, '; margin:0;"></div></td></tr>',

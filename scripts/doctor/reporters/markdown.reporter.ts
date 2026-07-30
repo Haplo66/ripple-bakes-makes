@@ -63,6 +63,39 @@ const lines: string[] = [];
 
   lines.push("---");
   lines.push("");
+  lines.push("---");
+  lines.push("");
+  lines.push("## Visibility");
+  lines.push("");
+  if (report.visibility) {
+    lines.push("| Metric | Value |");
+    lines.push("|--------|-------|");
+    lines.push("| Search Impressions | " + (report.visibility.impressions != null ? report.visibility.impressions.toLocaleString() : "Unavailable") + " |");
+    lines.push("| Search Clicks | " + (report.visibility.clicks != null ? report.visibility.clicks.toLocaleString() : "Unavailable") + " |");
+    lines.push("| Average Position | " + (report.visibility.averagePosition != null ? report.visibility.averagePosition.toFixed(1) : "Unavailable") + " |");
+    lines.push("| Indexed Pages | " + (report.visibility.indexedPages != null ? report.visibility.indexedPages.toLocaleString() : "Unavailable") + " |");
+    lines.push("");
+  } else {
+    lines.push("Data unavailable. Set PUBLIC_GSC_SITE_URL and service account credentials.");
+  }
+  lines.push("");
+  lines.push("---");
+  lines.push("");
+  lines.push("## Visitors");
+  lines.push("");
+  if (report.visitors) {
+    lines.push("| Metric | Value |");
+    lines.push("|--------|-------|");
+    lines.push("| Users | " + (report.visitors.users != null ? report.visitors.users.toLocaleString() : "Unavailable") + " |");
+    lines.push("| Page Views | " + (report.visitors.pageViews != null ? report.visitors.pageViews.toLocaleString() : "Unavailable") + " |");
+    const eng = report.visitors.averageEngagementTime;
+    lines.push("| Avg Engagement Time | " + (eng != null ? Math.round(eng) + "s" : "Unavailable") + " |");
+    lines.push("| Top Page | " + (report.visitors.topPage ?? "Unavailable") + " |");
+    lines.push("");
+  } else {
+    lines.push("Data unavailable. Set PUBLIC_GA4_PROPERTY_ID and service account credentials.");
+  }
+  lines.push("");
   lines.push("## Business Health");
   lines.push("");
   lines.push("### Catalog Score");
