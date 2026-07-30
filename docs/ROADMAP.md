@@ -414,21 +414,38 @@ Includes:
 - `cleanup-assets.ts`: BA duplicate folder merge, Collection Images hierarchy restructure, missing folder creation
 - `asset-validator.ts`: Sheets-driven validation with JSON report
 
-### v1.18.2 — Google Insights Integration ✅
+### v1.18 — Doctor / Health Monitoring System ✅
 
 Includes:
-- Google Search Console visibility metrics (Impressions, Clicks, Average Position, Indexed Pages)
-- Google Analytics 4 visitor metrics (Users, Page Views, Average Engagement, Top Page)
-- Same Google service account authentication — no new credential setup
-- Missing analytics data displays as "Unavailable" — no health score impact
-- Visibility 4-card and Visitors 2-row sections in email report
-- Doctor remains useful without Google integrations
+- Doctor framework with modular check system
+- Website health validation (19 checks, file/asset/pipeline/configuration verification)
+- Business health scoring (catalog completeness, image coverage, form coverage)
+- Owner report generation (JSON, Markdown, owner format, HTML email)
+- Doctor dashboard page at `/doctor`
+- Email delivery workflow via Apps Script with HTML formatting
+- Doctor Config sheet controls
+- GitHub Actions automation
+- Google Search Console integration (impressions, clicks, position, indexed pages)
+- Google Analytics 4 integration (users, page views, engagement, top page)
+- 74 regression tests across scoring, business analysis, and registry modules
+- CI test isolation fix — importing scoring functions does not trigger Doctor runtime execution
+
+### v1.19 — Automated Testing Suite ✅
+
+Includes:
+- Node.js built-in test runner (`node:test` + `node:assert`) — zero dependencies
+- 233 tests across business logic (58), pipeline (101), and Doctor (74) modules
+- Test structure mirrors source under `tests/`
+- Inline data arrays — no IO, fully deterministic
+- Tests never write to `src/content/`, call Google APIs, or require `.env`
+- CI workflow (ci.yml): tests run on push (non-master) and PR — no secrets required
+- Deploy workflow: `npm run test` blocks deployment on failure
 
 ---
 
 ## Current Status
 
-**Version: v1.18.2**
+**Version: v1.19.5**
 
 ### What Works Today
 
@@ -471,17 +488,33 @@ Includes:
 - Mock submission for development (no endpoint configured)
 
 **Website**
-- 17 products across Bakery and Sewing managed through Google Sheets
+- 18 products across Bakery and Sewing managed through Google Sheets
 - 13 collections with dynamic pages for each
 - Cart and checkout pages with real order submission
 - Contact page with working inquiry form and backend integration
 - Static Astro site deployed on GitHub Pages
+
+**Doctor Health Monitoring**
+- Website health scoring (19 checks, 95/100)
+- Business health scoring (catalog completeness)
+- Owner-facing reports (Markdown, JSON, owner format)
+- Dashboard at /doctor
+- Email delivery of health reports
+- Google Search Console and Analytics 4 integration
+- Doctor Config sheet controls
+
+**Testing Suite**
+- 233 automated tests across business logic, pipeline, and Doctor modules
+- Node.js built-in test runner — zero additional dependencies
+- CI integration: tests run automatically on push and PR
+- Test failure blocks deployment
 
 **Publishing Workflow**
 - Owner can publish updates from the browser via GitHub Actions manual trigger
 - `npm run update` runs the full data import, validation, and build pipeline
 - `push` to `master` also runs the full pipeline
 - Failed updates stop before deployment — existing site remains live
+- CI validation gates deployment
 
 ### Owner Workflow
 
@@ -631,134 +664,83 @@ Assets/
 - Owner can add images without changing product data
 
 
-### v1.18 — Doctor System Foundation ✅
+### v1.18 — Website Health & Insights / Doctor Framework ✅ Complete
 
 **Goal:** Add a comprehensive health monitoring system that evaluates website technical health, business catalog completeness, and delivers owner-facing reports.
 
 **Completed capabilities:**
-- Doctor framework created
-- Website health validation checks (19 checks, 100/100 score)
-- Business health scoring (catalog completeness, 32/100)
-- Owner report generation (JSON, Markdown, owner format)
-- Doctor dashboard page at /doctor
-- Email delivery workflow via Apps Script
-- Separate Orders spreadsheet configuration support
+
+**v1.18.1 — Doctor Framework Foundation:**
+- Doctor framework with modular check system
+- Website health validation (19 checks)
+- Business health scoring (catalog completeness)
+- Owner report generation (JSON, Markdown, owner format, email)
+- Doctor dashboard page at `/doctor`
+- Email delivery workflow via Apps Script with full HTML formatting
 - Doctor Config sheet integration
-- GitHub Actions environment support
-- End-to-end report delivery verified
+- GitHub Actions automation
 
-**Current result:**
-The Doctor system can automatically evaluate website health and deliver reports to the owner. The infrastructure is working end-to-end.
+**v1.18.2 — Health Checks & Content Validation:**
+- File and directory existence verification
+- Product required field validation
+- Cross-dataset reference validation (products → collections, products → forms)
+- Active product image folder verification
+- Image reference resolution checking
+- Collection image presence checking
+- Unused asset folder detection
+- Pipeline script existence verification
+- Generated data file validity checking
+- Pipeline integration configuration checking
+- Build input readiness checking
+- Cross-dataset consistency checks
 
-**Why it matters:** The owner now has automated visibility into website and catalog health without manual inspection. Issues are caught before they affect customers.
+**v1.18.3 — Health Scoring & Recommendations:**
+- CalculateScore: weighted deductions (WARN=5, FAIL=15)
+- getStatus: GOOD/ATTENTION/CRITICAL thresholds
+- collectRecommendations: case-insensitive deduplication
+- buildHealthScore: unified score + status + recommendations
+- buildSummary: PASS/WARN/FAIL/INFO counts
+- Business health analysis (imageScore, analyzeProducts, computeMetrics, computeFormCoverage, calculateBusinessScore, generateRecommendations)
 
+**v1.18.4 — Google Insights Integration:**
+- Google Search Console: impressions, clicks, average position, indexed pages
+- Google Analytics 4: users, page views, average engagement, top page
+- Graceful degradation — missing data shows as "Unavailable"
+- No health score impact for unavailable external data
+- Visibility and Visitors sections in email report
 
-### v1.18.1 — Owner Health Report & Dashboard Polish ✅
+**Validation:**
+- 74 Doctor tests across registry, scoring, and business modules
+- CI test isolation: importing scoring functions no longer triggers Doctor runtime execution
+- `npm run doctor` delivers complete health report
+- End-to-end email delivery verified
 
-**Status:** Complete
+**Why it matters:** The owner now has automated visibility into website health, catalog completeness, search performance, and visitor activity — all delivered to their inbox without manual inspection.
 
-**Purpose:**
-Transform the initial Doctor report from a technical health output into an owner-friendly RIPPLE Control Center experience.
-
-**Completed capabilities:**
-
-**Email Report Improvements:**
-- Full HTML email format with inline CSS for Gmail compatibility
-- Apps Script `htmlBody` parameter integration for HTML rendering
-- Overall Health section (Website Health + Business Health score cards)
-- Top Priorities action cards with color-coded severity
-- Business Snapshot metric grid (Total Products, Collections, Avg Images/Product, Featured Products, Homepage Featured, Gallery Featured)
-- Collections count fixed — now correctly reads `collections.json.data` array
-- Forms metric removed — replaced by Avg Images/Product in main metrics
-- Progress section with progress bars and Active Products count display (18/18 format)
-- Product Inventory section split into Needs Attention (3-column card grid with compact issue labels) and Complete
-- 3-column card layout used only within Product Inventory — rest of email remains single-column
-- Description completion metric fixed — now reads actual `shortDescription` field from products.json
-- Footer with dashboard link and generation timestamp
-
-**Dashboard Alignment:**
-- Email and dashboard share same health scores, terminology, severity levels, and recommendations
-
-**Architecture:**
-- `htmlBody` sent alongside `body` in Apps Script payload
-- Email reporter at `scripts/doctor/reporters/email.reporter.ts`
-- All sections render inside a 600px centered table wrapper
-- Only Product Inventory uses multi-column layout (nested `<table>` grid)
-- No Doctor scoring logic, JSON formats, or dashboard code was modified
-
-**Why it matters:**
-The owner now receives a professional, actionable health report directly in their inbox with clear metrics, priorities, and product-level inventory details — no dashboard visit required for daily checks.
-
-
-### v1.18.2 — Google Insights Integration ✅ Complete
-
-**Goal:** Extend RIPPLE Doctor beyond internal website and business health checks by integrating external search and visitor data sources.
-
-**Completed capabilities:**
-
-**Google Search Console Integration:**
-- Search Impressions metric
-- Search Clicks metric
-- Average Position metric
-- Indexed Pages metric
-
-**Google Analytics 4 Integration:**
-- Users metric
-- Page Views metric
-- Average Engagement metric
-- Top Page metric
-
-**Implementation notes:**
-- Uses existing Google service account authentication pattern — no new credential setup
-- External APIs fail gracefully — when Google has no processed data, report displays "Unavailable"
-- Missing analytics data does not affect website health score
-- Doctor remains fully useful without Google integrations enabled
-
-**Email Report:**
-- Visibility section renders 4 KPI cards in a single row (Impressions, Search Clicks, Avg Position, Indexed Pages)
-- Visitors section renders Users, Page Views, Avg Engagement in one row, with Top Page on its own full-width row below
-- Layout changes are scoped to these two sections only — no other email sections modified
-- All cards use direct `<td>` background/border for equal-height rendering across rows
-- All metric values use consistent 18px bold font size
-
-**Design decisions:**
-- Analytics are informational, not health blockers
-- Missing external data does not reduce health score
-- Doctor remains useful without Google integrations
-- API calls happen during `npm run doctor` — no runtime dependencies
-- Credentials stored in environment variables (same pattern as existing Google service accounts)
-- Data is snapshotted at report time, not streamed live
-
-**What stayed the same:**
-- Doctor is read-only — no automatic repairs
-- Email report continues as primary delivery mechanism
-- Dashboard at `/doctor` displays all sections
-- Doctor Config sheet controls enable/disable
-- No paid services — all Google APIs are free-tier
-- Website Health (max 100) and Business Health (max 32) scores unchanged
-
-**Why it matters:** The owner now has automated visibility into website search performance and visitor activity without logging into Google Search Console or Analytics separately. Combined with the existing health checks, Doctor provides a complete picture of website and business health in one place.
-
-#### v1.19 — Testing Framework
-
-**Status:** Planned
+#### v1.19 — Testing Framework ✅ Complete
 
 **Goal:** Introduce a lightweight automated testing framework to protect RIPPLE business behavior, catch regressions, and make future features safer.
 
 **Implementation milestones:**
 
-- **v1.19.1 — Testing Foundation:** Establish test runner (`node:test`), create `tests/` structure and fixtures, add `npm run test` script, write first test for `purchase-state.ts`.
-- **v1.19.2 — Business Logic Tests:** Cover purchase-state, order, cart, format, products loader, collections loader.
-- **v1.19.3 — Pipeline Integration Tests:** Cover validators, normalizers, generators, csv-reader with fixture data.
-- **v1.19.4 — Doctor Regression Tests:** Cover scoring, business analysis, registry, and check execution.
-- **v1.19.5 — CI Integration:** Run tests automatically on push and PR via GitHub Actions.
+- **v1.19.1 — Testing Foundation:** Establish test runner (`node:test`), create `tests/` structure and fixtures, add `npm run test` script, write framework validation test.
+- **v1.19.2 — Business Logic Tests:** 58 tests covering purchase-state, order, cart, format, products loader, collections loader.
+- **v1.19.3 — Pipeline Integration Tests:** 101 tests covering validators, normalizers, generators.
+- **v1.19.4 — Doctor Regression Tests:** 74 tests covering scoring, business analysis, registry.
+- **v1.19.5 — CI Integration:** Tests run automatically on push and PR via GitHub Actions; deploy workflow blocks on test failure.
 
 **Key decisions:**
 - Node.js built-in test runner — zero additional dependencies
 - Tests mirror source structure under `tests/`
-- Fixtures are hand-crafted CSVs and JSONs in `tests/fixtures/`
+- Inline data arrays for unit tests — no IO, fully deterministic
 - Tests never write to `src/content/`, call Google APIs, or require `.env`
 - No mocking libraries — use existing DI patterns
+- CI workflow (ci.yml) requires no secrets
+
+**Validation:**
+- 233 tests passing across all modules
+- Build produces 40 pages cleanly
+- Doctor health check at 95/100
 
 **See:** [TESTING.md](./TESTING.md) for full architecture plan.
 
