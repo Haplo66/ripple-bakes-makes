@@ -739,15 +739,28 @@ The owner now receives a professional, actionable health report directly in thei
 
 **Why it matters:** The owner now has automated visibility into website search performance and visitor activity without logging into Google Search Console or Analytics separately. Combined with the existing health checks, Doctor provides a complete picture of website and business health in one place.
 
-#### v1.19 — Gallery Enhancements
+#### v1.19 — Testing Framework
 
-**Status:** Future
+**Status:** Planned
 
-**Potential improvements:**
-- Homepage gallery preview
-- Featured gallery images
-- Seasonal collections
-- Captions and stories
+**Goal:** Introduce a lightweight automated testing framework to protect RIPPLE business behavior, catch regressions, and make future features safer.
+
+**Implementation milestones:**
+
+- **v1.19.1 — Testing Foundation:** Establish test runner (`node:test`), create `tests/` structure and fixtures, add `npm run test` script, write first test for `purchase-state.ts`.
+- **v1.19.2 — Business Logic Tests:** Cover purchase-state, order, cart, format, products loader, collections loader.
+- **v1.19.3 — Pipeline Integration Tests:** Cover validators, normalizers, generators, csv-reader with fixture data.
+- **v1.19.4 — Doctor Regression Tests:** Cover scoring, business analysis, registry, and check execution.
+- **v1.19.5 — CI Integration:** Run tests automatically on push and PR via GitHub Actions.
+
+**Key decisions:**
+- Node.js built-in test runner — zero additional dependencies
+- Tests mirror source structure under `tests/`
+- Fixtures are hand-crafted CSVs and JSONs in `tests/fixtures/`
+- Tests never write to `src/content/`, call Google APIs, or require `.env`
+- No mocking libraries — use existing DI patterns
+
+**See:** [TESTING.md](./TESTING.md) for full architecture plan.
 
 ---
 

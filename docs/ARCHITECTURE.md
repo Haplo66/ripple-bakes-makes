@@ -331,8 +331,30 @@ The architecture leaves room for future additions at each layer:
 
 These should extend the relevant layer, not move business logic into Astro pages.
 
-## Related Documentation
+## Testing Architecture
 
+RIPPLE uses **Node.js built-in test runner** (`node:test` + `node:assert`) for lightweight, dependency-free testing.
+
+### Structure
+
+```
+tests/
+  fixtures/              CSV / JSON test data files
+  business/              Business logic tests (src/utils/*, src/data/*)
+  pipeline/              Pipeline stage tests (scripts/pipeline/*)
+  doctor/                Doctor framework tests (scripts/doctor/*)
+```
+
+### Principles
+
+- Test behavior, not implementation
+- No mock libraries — use dependency injection patterns already in the codebase
+- Fixtures are small, versioned, and never contain real customer data
+- Tests never write to `src/content/`, call Google APIs, or require `.env` configuration
+
+### Related Documentation
+
+- [TESTING.md](./TESTING.md): complete testing philosophy, plan, and milestones
 - [DATA_MODEL.md](./DATA_MODEL.md): complete domain model and relationships
 - [GOOGLE_SHEET_SCHEMA.md](./GOOGLE_SHEET_SCHEMA.md): worksheet columns and JSON mapping
 - [IMPORT_PIPELINE.md](./IMPORT_PIPELINE.md): import process internals and commands

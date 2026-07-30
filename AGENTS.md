@@ -47,6 +47,48 @@ Generates:
 - Owner JSON report (`scripts/doctor/reports/doctor-report-owner.json`)
 - Dashboard at `/doctor` (reads owner report at build time)
 
+## Testing — Safeguards
+
+Run: `npm run test`
+
+Tests use Node's built-in test runner (`node:test` + `node:assert`). No extra dependencies.
+
+### Rules
+
+- Test behavior, not implementation
+- Test RIPPLE code, not third-party libraries
+- Keep tests independent from the production pipeline
+- Every feature includes appropriate tests
+- Every bug fix adds regression coverage
+
+### DO NOT Test
+
+- Astro framework
+- TypeScript compiler
+- Node.js APIs
+- CSV libraries
+- Google APIs
+- Third-party packages
+
+### DO Test
+
+- Business rules (purchase-state, order, cart, format)
+- Pipeline behavior (validators, normalizers, generators, csv-reader)
+- Data loaders (products, collections, forms queries)
+- Doctor framework (scoring, business analysis, registry, checks)
+- Validation logic
+
+### Test Location
+
+All tests live in `tests/` mirroring the source structure:
+```
+tests/
+  business/        ← src/utils/* and src/data/*
+  pipeline/        ← scripts/pipeline/*
+  doctor/          ← scripts/doctor/*
+  fixtures/        ← test CSV and JSON data files
+```
+
 ### Email Automation
 
 The Doctor can send health reports by email via the Apps Script Web App (same endpoint used for orders and inquiries).
