@@ -42,6 +42,7 @@ jobs:
           GOOGLE_DRIVE_ROOT_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_ROOT_FOLDER_ID }}
           PUBLIC_SUBMISSION_ENDPOINT: ${{ secrets.PUBLIC_SUBMISSION_ENDPOINT }}
           PUBLIC_ORDER_TOKEN: ${{ secrets.PUBLIC_ORDER_TOKEN }}
+          PUBLIC_GA4_MEASUREMENT_ID: ${{ secrets.PUBLIC_GA4_MEASUREMENT_ID }}
         run: |
           node -e "
           var fs = require('fs');
@@ -54,6 +55,7 @@ jobs:
             'GOOGLE_DRIVE_ROOT_FOLDER_ID=\"' + (e.GOOGLE_DRIVE_ROOT_FOLDER_ID || '') + '\"',
             'PUBLIC_SUBMISSION_ENDPOINT=\"' + (e.PUBLIC_SUBMISSION_ENDPOINT || '') + '\"',
             'PUBLIC_ORDER_TOKEN=\"' + (e.PUBLIC_ORDER_TOKEN || '') + '\"',
+            'PUBLIC_GA4_MEASUREMENT_ID=\"' + (e.PUBLIC_GA4_MEASUREMENT_ID || '') + '\"',
           ];
           fs.writeFileSync('.env', lines.join('\n') + '\n');
           "
