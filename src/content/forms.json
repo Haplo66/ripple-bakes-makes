@@ -1,200 +1,14 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-29T00:00:51.763Z",
+    "generatedAt": "2026-07-30T14:54:18.046Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
   "data": [
     {
-      "id": "BK-CHALLAH",
-      "name": "Challah Bread Order",
-      "fields": [
-        {
-          "id": "size",
-          "label": "Size",
-          "type": "select",
-          "required": true,
-          "options": [
-            {
-              "value": "regular",
-              "label": "Regular"
-            },
-            {
-              "value": "large",
-              "label": "Large"
-            }
-          ]
-        },
-        {
-          "id": "slicing",
-          "label": "Slicing",
-          "type": "select",
-          "required": true,
-          "options": [
-            {
-              "value": "unsliced",
-              "label": "Unsliced"
-            },
-            {
-              "value": "sliced",
-              "label": "Sliced"
-            },
-            {
-              "value": "half",
-              "label": "Half"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "BK-GARLICBUNS",
-      "name": "Garlic Buns Order",
-      "fields": [
-        {
-          "id": "pack-size",
-          "label": "Pack Size",
-          "type": "select",
-          "required": true,
-          "options": [
-            {
-              "value": "6-pack",
-              "label": "6-pack"
-            },
-            {
-              "value": "12-pack",
-              "label": "12-pack"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "BK-POCKETS",
-      "name": "Filled Pocket Order",
-      "fields": [
-        {
-          "id": "filling",
-          "label": "Filling",
-          "type": "select",
-          "required": true,
-          "options": [
-            {
-              "value": "cheese",
-              "label": "Cheese"
-            },
-            {
-              "value": "tuna",
-              "label": "Tuna"
-            },
-            {
-              "value": "beef",
-              "label": "Beef"
-            },
-            {
-              "value": "spinach",
-              "label": "Spinach"
-            },
-            {
-              "value": "mushroom",
-              "label": "Mushroom"
-            }
-          ]
-        },
-        {
-          "id": "pack-size",
-          "label": "Pack Size",
-          "type": "select",
-          "required": true,
-          "options": [
-            {
-              "value": "single",
-              "label": "Single"
-            },
-            {
-              "value": "half-dozen",
-              "label": "Half Dozen"
-            },
-            {
-              "value": "dozen",
-              "label": "Dozen"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "BK-ROLLS",
-      "name": "Rolls Order",
-      "fields": [
-        {
-          "id": "pack-size",
-          "label": "Pack Size",
-          "type": "select",
-          "required": true,
-          "options": [
-            {
-              "value": "6-pack",
-              "label": "6-pack"
-            },
-            {
-              "value": "12-pack",
-              "label": "12-pack"
-            },
-            {
-              "value": "24-pack",
-              "label": "24-pack"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "BK-SOURBEAD",
-      "name": "Sourdough Bread Order",
-      "fields": [
-        {
-          "id": "size",
-          "label": "Size",
-          "type": "select",
-          "required": true,
-          "options": [
-            {
-              "value": "regular",
-              "label": "Regular"
-            },
-            {
-              "value": "large",
-              "label": "Large"
-            }
-          ]
-        },
-        {
-          "id": "slicing",
-          "label": "Slicing",
-          "type": "select",
-          "required": true,
-          "options": [
-            {
-              "value": "unsliced",
-              "label": "Unsliced"
-            },
-            {
-              "value": "sliced",
-              "label": "Sliced"
-            },
-            {
-              "value": "half",
-              "label": "Half"
-            }
-          ]
-        }
-      ]
-    },
-    {
       "id": "SW-BEANIE",
-      "name": "Beanie Hats Order",
+      "name": "Beanie Hats",
       "fields": [
         {
           "id": "color-a",
@@ -211,22 +25,78 @@
               "label": "White"
             },
             {
-              "value": "navy",
-              "label": "Navy"
+              "value": "blue",
+              "label": "Blue"
             },
             {
-              "value": "olive",
-              "label": "Olive"
+              "value": "red",
+              "label": "Red"
             },
             {
-              "value": "burgundy",
-              "label": "Burgundy"
+              "value": "other",
+              "label": "Other"
             }
           ]
         },
         {
           "id": "color-b",
           "label": "Color B",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "black",
+              "label": "Black"
+            },
+            {
+              "value": "white",
+              "label": "White"
+            },
+            {
+              "value": "blue",
+              "label": "Blue"
+            },
+            {
+              "value": "red",
+              "label": "Red"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SW-BLANKETS",
+      "name": "Baby Blankets",
+      "fields": [
+        {
+          "id": "accessories",
+          "label": "Accessories",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "hat",
+              "label": "Hat"
+            },
+            {
+              "value": "elephant",
+              "label": "Elephant"
+            }
+          ]
+        },
+        {
+          "id": "name",
+          "label": "Name",
+          "type": "text",
+          "required": false
+        },
+        {
+          "id": "color",
+          "label": "Color",
           "type": "select",
           "required": false,
           "options": [
@@ -239,126 +109,16 @@
               "label": "White"
             },
             {
-              "value": "navy",
-              "label": "Navy"
+              "value": "blue",
+              "label": "Blue"
             },
             {
-              "value": "olive",
-              "label": "Olive"
+              "value": "red",
+              "label": "Red"
             },
             {
-              "value": "burgundy",
-              "label": "Burgundy"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "SW-BLANKETS",
-      "name": "Baby Blanket Order",
-      "fields": [
-        {
-          "id": "color",
-          "label": "Color",
-          "type": "select",
-          "required": true,
-          "options": [
-            {
-              "value": "cream",
-              "label": "Cream"
-            },
-            {
-              "value": "sage",
-              "label": "Sage"
-            },
-            {
-              "value": "rose",
-              "label": "Rose"
-            },
-            {
-              "value": "navy",
-              "label": "Navy"
-            },
-            {
-              "value": "charcoal",
-              "label": "Charcoal"
-            }
-          ]
-        },
-        {
-          "id": "size",
-          "label": "Size",
-          "type": "select",
-          "required": true,
-          "options": [
-            {
-              "value": "baby",
-              "label": "Baby"
-            },
-            {
-              "value": "crib",
-              "label": "Crib"
-            },
-            {
-              "value": "toddler",
-              "label": "Toddler"
-            }
-          ]
-        },
-        {
-          "id": "personalization",
-          "label": "Personalization",
-          "type": "text",
-          "required": false
-        }
-      ]
-    },
-    {
-      "id": "SW-BOWLCOZY",
-      "name": "Bowl Cozy Order",
-      "fields": [
-        {
-          "id": "size",
-          "label": "Size",
-          "type": "select",
-          "required": true,
-          "options": [
-            {
-              "value": "standard",
-              "label": "Standard"
-            },
-            {
-              "value": "large",
-              "label": "Large"
-            }
-          ]
-        },
-        {
-          "id": "color",
-          "label": "Color",
-          "type": "select",
-          "required": true,
-          "options": [
-            {
-              "value": "cream",
-              "label": "Cream"
-            },
-            {
-              "value": "sage",
-              "label": "Sage"
-            },
-            {
-              "value": "rose",
-              "label": "Rose"
-            },
-            {
-              "value": "navy",
-              "label": "Navy"
-            },
-            {
-              "value": "charcoal",
-              "label": "Charcoal"
+              "value": "other",
+              "label": "Other"
             }
           ]
         }
@@ -366,7 +126,7 @@
     },
     {
       "id": "SW-BUCKET",
-      "name": "Bucket Hat Order",
+      "name": "Bucket Hats",
       "fields": [
         {
           "id": "side-a-color",
@@ -383,16 +143,16 @@
               "label": "White"
             },
             {
-              "value": "navy",
-              "label": "Navy"
+              "value": "blue",
+              "label": "Blue"
             },
             {
-              "value": "olive",
-              "label": "Olive"
+              "value": "red",
+              "label": "Red"
             },
             {
-              "value": "burgundy",
-              "label": "Burgundy"
+              "value": "other",
+              "label": "Other"
             }
           ]
         },
@@ -400,7 +160,7 @@
           "id": "side-b-color",
           "label": "Side B Color",
           "type": "select",
-          "required": false,
+          "required": true,
           "options": [
             {
               "value": "black",
@@ -411,66 +171,12 @@
               "label": "White"
             },
             {
-              "value": "navy",
-              "label": "Navy"
+              "value": "blue",
+              "label": "Blue"
             },
             {
-              "value": "olive",
-              "label": "Olive"
-            },
-            {
-              "value": "burgundy",
-              "label": "Burgundy"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "SW-RICEPACKS",
-      "name": "Rice Pack Order",
-      "fields": [
-        {
-          "id": "size",
-          "label": "Size",
-          "type": "select",
-          "required": true,
-          "options": [
-            {
-              "value": "standard",
-              "label": "Standard"
-            },
-            {
-              "value": "large",
-              "label": "Large"
-            },
-            {
-              "value": "shoulder",
-              "label": "Shoulder"
-            }
-          ]
-        },
-        {
-          "id": "fabric-color",
-          "label": "Fabric Color",
-          "type": "select",
-          "required": true,
-          "options": [
-            {
-              "value": "cream",
-              "label": "Cream"
-            },
-            {
-              "value": "sage",
-              "label": "Sage"
-            },
-            {
-              "value": "navy",
-              "label": "Navy"
-            },
-            {
-              "value": "blush",
-              "label": "Blush"
+              "value": "red",
+              "label": "Red"
             },
             {
               "value": "other",
@@ -482,43 +188,31 @@
     },
     {
       "id": "SW-SHIRT",
-      "name": "Custom Shirt Order",
+      "name": "Custom Shirts",
       "fields": [
         {
           "id": "shirt-size",
-          "label": "Shirt Size",
+          "label": "Shirt size",
           "type": "select",
           "required": true,
           "options": [
             {
-              "value": "xs",
-              "label": "XS"
+              "value": "small",
+              "label": "Small"
             },
             {
-              "value": "s",
-              "label": "S"
+              "value": "medium",
+              "label": "Medium"
             },
             {
-              "value": "m",
-              "label": "M"
-            },
-            {
-              "value": "l",
-              "label": "L"
-            },
-            {
-              "value": "xl",
-              "label": "XL"
-            },
-            {
-              "value": "xxl",
-              "label": "XXL"
+              "value": "large",
+              "label": "Large"
             }
           ]
         },
         {
           "id": "shirt-color",
-          "label": "Shirt Color",
+          "label": "Shirt color",
           "type": "select",
           "required": true,
           "options": [
@@ -531,16 +225,12 @@
               "label": "White"
             },
             {
-              "value": "navy",
-              "label": "Navy"
+              "value": "blue",
+              "label": "Blue"
             },
             {
-              "value": "sage",
-              "label": "Sage"
-            },
-            {
-              "value": "dusty-rose",
-              "label": "Dusty Rose"
+              "value": "red",
+              "label": "Red"
             },
             {
               "value": "other",
@@ -552,23 +242,19 @@
           "id": "theme",
           "label": "Theme",
           "type": "select",
-          "required": false,
+          "required": true,
           "options": [
             {
-              "value": "floral",
-              "label": "Floral"
+              "value": "minecraft",
+              "label": "Minecraft"
             },
             {
-              "value": "birthday",
-              "label": "Birthday"
+              "value": "dragons",
+              "label": "Dragons"
             },
             {
-              "value": "seasonal",
-              "label": "Seasonal"
-            },
-            {
-              "value": "geometric",
-              "label": "Geometric"
+              "value": "dogs",
+              "label": "Dogs"
             },
             {
               "value": "other",
@@ -577,90 +263,10 @@
           ]
         },
         {
-          "id": "personalization",
-          "label": "Personalization",
+          "id": "nametext",
+          "label": "Name\\Text",
           "type": "text",
-          "required": false
-        }
-      ]
-    },
-    {
-      "id": "SW-TOWEL",
-      "name": "Towel Hanger Order",
-      "fields": [
-        {
-          "id": "color",
-          "label": "Color",
-          "type": "select",
-          "required": true,
-          "options": [
-            {
-              "value": "cream",
-              "label": "Cream"
-            },
-            {
-              "value": "sage",
-              "label": "Sage"
-            },
-            {
-              "value": "rose",
-              "label": "Rose"
-            },
-            {
-              "value": "navy",
-              "label": "Navy"
-            },
-            {
-              "value": "charcoal",
-              "label": "Charcoal"
-            }
-          ]
-        },
-        {
-          "id": "personalization",
-          "label": "Personalization",
-          "type": "text",
-          "required": false
-        }
-      ]
-    },
-    {
-      "id": "SW-TOYS",
-      "name": "Soft Toy Order",
-      "fields": [
-        {
-          "id": "color",
-          "label": "Color",
-          "type": "select",
-          "required": true,
-          "options": [
-            {
-              "value": "cream",
-              "label": "Cream"
-            },
-            {
-              "value": "sage",
-              "label": "Sage"
-            },
-            {
-              "value": "rose",
-              "label": "Rose"
-            },
-            {
-              "value": "navy",
-              "label": "Navy"
-            },
-            {
-              "value": "charcoal",
-              "label": "Charcoal"
-            }
-          ]
-        },
-        {
-          "id": "personalization",
-          "label": "Personalization",
-          "type": "text",
-          "required": false
+          "required": true
         }
       ]
     }
