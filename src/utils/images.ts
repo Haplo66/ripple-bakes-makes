@@ -6,7 +6,7 @@
 
 import type { Product } from '../types/product';
 import type { Collection } from '../types/collection';
-import { sitePath } from './paths';
+import { sitePath } from './paths.ts';
 
 const buildImageUrl = (path: string): string => sitePath(`images/${path}`);
 

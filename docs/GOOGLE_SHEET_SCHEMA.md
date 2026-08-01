@@ -72,7 +72,7 @@ Columns:
 | `status` | Optional | `Active` | `status`, loader `active` | `Active` renders publicly. |
 | `displayOrder` | Optional | `3` | `displayOrder` | Numeric sort value. |
 | `imageTone` | Optional | `cream` | `imageTone` | Placeholder tone. |
-| `galleryCaptions` | Optional | `["A soft finish"]` | `galleryCaptions`, loader `galleryImages` | Must be valid JSON array. |
+| `galleryCaptions` | Optional | `["A soft finish"]` | `galleryCaptions`, loader `galleryImages` | Must be valid JSON array. Used for the collection detail page. The gallery page does not require captions — it reuses existing product copy. |
 | `popularIdeas` | Optional | `["Birthday cake"]` | `popularIdeas` | Must be valid JSON array. |
 | `customizationNote` | Optional | `Share your date...` | `customizationNote` | Inquiry guidance. |
 
@@ -113,7 +113,7 @@ Columns:
 | `active` | Optional | `true` | `active` | Publishing flag. `true` publishes the product to customer-facing pages; `false` hides it. Independent of `status` — a product can be `active: true` with a `Not Active` status (visible, not orderable). |
 | `featured` | Optional | `true` | `featured` | Controls highlighting in featured sections. Does not affect homepage. |
 | `homepageFeatured` / `Homepage Featured` | Optional | `true` | `homepageFeatured` | Controls spotlight placement on the homepage. Independent of `featured`. |
-| `galleryFeatured` / `Gallery Featured` | Optional | `true` | `galleryFeatured` | Controls whether the product appears in the gallery page. Defaults to `true`. Set `FALSE` to exclude from gallery. |
+| `galleryFeatured` / `Gallery Featured` | Optional | `true` | `galleryFeatured` | Controls whether the product appears in the gallery page. Defaults to `true`. Set `FALSE` to exclude from gallery. The gallery card and lightbox reuse the product's Name, Description, and Short Description for storytelling — no separate captions column is needed. |
 | `formId` / `Form ID` | Optional | `birthday-cake-form` | `formId` | Must match a form ID. Products without a form can still be ordered (no customization form is rendered). |
 | `imageFolder` | Optional | `bakery/cakes/birthday-cake` | `imageFolder` | Image organization hint (overridden by image resolver). |
 | `imageTone` | Optional | `cream` | `imageTone` | Placeholder tone. |

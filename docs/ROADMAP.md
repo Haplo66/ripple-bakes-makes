@@ -485,11 +485,25 @@ Includes:
 - Purchase-state handling for inactive products — inactive status products can never be added to cart or ordered
 - Automated tests
 
+### v1.20.3 — Gallery & Storytelling Enhancement
+
+**Status: In Progress**
+
+**Completed:**
+- Gallery cards keep an image-first design with no text overlaid on images
+- Cards show Product Name, a short product story, and a View Product link below the image
+- Image popup / lightbox preserved and enhanced with Product Name, story, and a View Product link (no text over the image)
+- Gallery captions reuse existing product information — no duplicate descriptions
+- Story source priority: Product Description → Short Description → Product Name fallback
+- Gallery images resolve to products by Product Name (no owner-managed IDs) — Product Name → Product ID → product page link → product description
+- Owner continues to manage business concepts (Product Name, Collection, Category) in Google Sheets; technical identifiers stay internal
+- Automated tests for gallery story resolution and product linking
+
 ---
 
 ## Current Status
 
-**Version: v1.20.2**
+**Version: v1.20.3**
 
 ### What Works Today
 
@@ -522,6 +536,14 @@ Includes:
 - Fallback hierarchy: product → collection → business area → default placeholder
 - Backward compatible — flat/code-based legacy paths still resolved as fallbacks
 - MD5 checksums prevent redundant downloads — unchanged files are skipped
+
+**Gallery & Storytelling**
+- Gallery cards show the image first with no text overlay, then Product Name, a short product story, and a View Product link
+- Product stories reuse existing product copy (Product Description → Short Description → Product Name) — no duplicate captions
+- Gallery images link to products by Product Name resolution (Product Name → Product ID → product page), keeping technical IDs internal
+- Lightbox popup shows the larger image plus Product Name, story, and a View Product link
+- Collection items link to their collection page; personal items display title only
+- `galleryFeatured` controls which products appear in the gallery (defaults to `true`)
 
 **Featured Logic**
 - `homepageFeatured` controls which products appear on the homepage
@@ -795,6 +817,30 @@ Assets/
 
 ---
 
+## v1.20 — Website Polish & Customer Experience
+
+Status: 🚧 In Progress
+
+### Overview
+
+A customer experience refinement milestone focused on improving website clarity, trust, and ease of use.
+
+This milestone improves how customers discover products, understand availability, place orders, and connect with RIPPLE creations while keeping the owner workflow simple and Google Sheets as the source of truth.
+
+Delivered improvements include:
+
+- Improved checkout review experience and validation
+- Clear product availability and fulfillment messaging
+- Better handling of unavailable products with Coming Soon states
+- Gallery storytelling and product discovery improvements
+- Continued separation between owner workflow and technical implementation details
+
+v1.20.1 — Checkout & Forms
+v1.20.2 — Customer Experience Follow-up
+v1.20.3 — Gallery & Storytelling Enhancement
+
+---
+
 ## Development Principles
 
 - **Static Astro architecture.** No backend, no database servers, no runtime dependencies.
@@ -826,13 +872,6 @@ Do not add implementation history, debugging notes, terminal output, bug fixes, 
 **Goal:** Transform RIPPLE from a functional product website into a complete small business operating system.
 
 ### 1. Website Experience Improvements
-
-**Gallery & Portfolio Experience:**
-- Category-based gallery browsing
-- Bakery and Sewing gallery sections
-- Image captions/storytelling
-- Lightbox viewing
-- Sheet-driven gallery management
 
 **Business Area Page Improvements:**
 - Stronger bakery and sewing landing pages
@@ -941,12 +980,8 @@ Possible future sections:
 - test if replacing pictures - it will update in website
 - wording and pages improvements
   - our story page + images
-  - consider removing collection feature items 
-  - ask about buttons - if from sawing need to set dropdown to sewing
   - hero picture area
   - images getting cut (sizing issue?)
   - home page first sentence - wording and font
-- add links to product in gallery, + Image captions/storytelling
 - Give every collection its own short introduction instead of jumping straight into products.
 - when in cart, maybe ability to edit product, do it will go back to product page and "update" button will appear?
-- 

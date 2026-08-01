@@ -5,9 +5,9 @@
  */
 
 import type { Product } from '../types/product';
-import { collections } from '../data/collections';
+import { collections } from '../data/collections.ts';
 
-const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const basePath = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '');
 
 export const sitePath = (path = ''): string => {
   const normalizedPath = path.replace(/^\/+/, '');

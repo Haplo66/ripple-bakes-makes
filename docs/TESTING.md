@@ -36,7 +36,7 @@
 | Cart operations | `src/utils/cart.ts` | Medium |
 | Format helpers | `src/utils/format.ts` | Medium |
 | Image path resolution | `src/utils/images.ts` | Medium |
-| Gallery item assembly | `src/utils/gallery.ts` | Low |
+| Gallery item assembly | `src/utils/gallery.ts` | Medium |
 | URL path construction | `src/utils/paths.ts` | Low |
 | Submission provider selection | `src/utils/submission.ts` | Low |
 

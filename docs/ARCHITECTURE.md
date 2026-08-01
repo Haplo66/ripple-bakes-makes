@@ -289,6 +289,28 @@ Field responsibilities along this flow:
 - **`status`** controls ordering state. It decides whether the product can be ordered (`Active`) or is visible but not orderable (`Not Active`, shown as Coming Soon).
 - **`availability`** controls customer-facing messaging. It communicates fulfillment expectations (e.g. Made to Order, In Stock, Seasonal, Coming Soon) and never affects ordering.
 
+### Gallery Storytelling & Product Linking
+
+The gallery connects creations with their products while keeping technical identifiers hidden from the owner.
+
+```text
+Owner selects Product Name (in Sheets)
+      ↓
+System resolves Product Name → Product ID
+      ↓
+Product page link
+      ↓
+Product description (story)
+```
+
+How it works:
+
+- The owner manages business concepts — **Product Name**, **Collection**, **Category** — in Google Sheets. Product IDs, asset references, and file mappings stay internal.
+- `galleryFeatured` decides which products appear in the gallery (defaults to `true`; set `FALSE` to exclude).
+- `src/utils/gallery.ts` assembles `GalleryItem` records at build time. Product items resolve to their product page via `getProductPath`, collection items to their collection page, and personal items carry no link.
+- Story copy is **never duplicated**. `galleryStory` reuses existing product copy with the priority **Product Description → Short Description → Product Name**.
+- Cards render the image with no overlay text; Product Name, story, and a View Product / View Collection link sit below the image. The lightbox shows the larger image plus the same title, story, and link beneath it.
+
 ## Data Loaders
 
 The website imports JSON only through loader modules:

@@ -7,6 +7,7 @@
 - [Collections](#collections)
 - [Products](#products)
 - [Forms](#forms)
+- [Gallery](#gallery)
 - [Relationships](#relationships)
 - [Related Documentation](#related-documentation)
 
@@ -220,6 +221,28 @@ Supported field types:
 - `phone`
 
 Future field types may include file upload, image upload, color picker, and richer option pricing. These should extend `src/types/form.ts` and `FormField.astro`.
+
+## Gallery
+
+The gallery page (`src/pages/gallery.astro`) is assembled at build time by `src/utils/gallery.ts`, merging three sources into `GalleryItem` records:
+
+- product items — every gallery-featured product's primary image
+- collection items — each collection's primary image
+- personal items — manually uploaded gallery-only images (`public/images/gallery/personal/`)
+
+Properties:
+
+| Property | Type | Notes |
+| --- | --- | --- |
+| `image` | string | Resolved image URL. |
+| `title` | string | Product, collection, or personal title. |
+| `description` | string (optional) | Short story. Never authored separately — reused via `galleryStory` with priority Product Description → Short Description → Product Name. |
+| `href` | string (optional) | Product or collection page link. Product items resolve by Product Name to the product ID internally, so the owner never manages IDs. |
+| `cta` | string (optional) | `View Product` for product items, `View Collection` for collection items. |
+| `businessArea` | `bakery`, `sewing`, or `null` | Drives the filter bar and area label. `null` for personal items. |
+| `sourceType` | `product`, `collection`, or `personal` | Source of the gallery item. |
+
+Gallery cards show the image without overlay text; the title, story, and CTA render below the image. The lightbox shows the larger image plus the same title, story, and CTA beneath it.
 
 ## Relationships
 
