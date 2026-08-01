@@ -265,6 +265,30 @@ scripts/doctor/doctor.ts (entry point)
 
 Products without a numeric price display as **Coming Soon** and cannot be added to the cart. Products with `price: 0` are purchasable. Products with an inactive status (e.g. `Not Active`) stay visible but display as Coming Soon and cannot be ordered. Products hidden from all listings are controlled only by the `active` flag.
 
+### Product State Flow
+
+A product's state flows from the spreadsheet source through the pipeline into the customer UI:
+
+```text
+Google Sheets
+      ↓
+Pipeline normalization
+      ↓
+products.json
+      ↓
+Product model
+      ↓
+Purchase state
+      ↓
+Customer UI
+```
+
+Field responsibilities along this flow:
+
+- **`active`** controls visibility. It decides whether the product is published on customer-facing pages at all.
+- **`status`** controls ordering state. It decides whether the product can be ordered (`Active`) or is visible but not orderable (`Not Active`, shown as Coming Soon).
+- **`availability`** controls customer-facing messaging. It communicates fulfillment expectations (e.g. Made to Order, In Stock, Seasonal, Coming Soon) and never affects ordering.
+
 ## Data Loaders
 
 The website imports JSON only through loader modules:

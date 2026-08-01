@@ -98,6 +98,9 @@ Properties:
 | `imageTone` | tone string | Optional | `cream` | Placeholder visual treatment when no image is found. |
 | `price` | number | Optional | `45` | Numeric price. `null` or missing renders the product as Coming Soon. `0` is valid and purchasable. |
 | `priceLabel` | string | Optional | `From $45` | Display-only pricing copy. |
+| `availability` | string | Optional | `Made to Order` | Customer-facing fulfillment wording shown on the product page. Never derived from `status`. |
+| `preparationTime` | string | Optional | `2–3 Business Days` | Estimated preparation time shown on the product page. |
+| `fulfillment` | string | Optional | `Pickup or Shipping` | Fulfillment option used to generate customer-facing copy. Accepts `Pickup Only`, `Shipping Available`, or `Pickup or Shipping`. |
 | `status` | product status | Optional | `available` | Ordering control. Loader maps source labels like `Not Active` to `inactive`. Inactive products stay visible but display as Coming Soon and cannot be ordered. |
 | `active` | boolean | Optional | `true` | Publishing flag. Controls public listing — `false` hides the product from all listings. Independent of `status`. |
 | `featured` | boolean | Optional | `true` | Controls highlighting in featured sections. Does not affect product existence or homepage display. |
@@ -106,6 +109,36 @@ Properties:
 | `displayOrder` | number | Recommended | `1` | Sort order within a group. |
 | `formId` | string | Optional | `birthday-cake-form` | References a form definition. Products without a form can still be ordered via cart (no customization form is rendered). |
 | `customization` | object | Optional | `{}` | Reserved for richer product customization metadata. |
+
+### Field Responsibilities
+
+The product model separates three concerns so each field has a single, clear responsibility:
+
+**`active`** — Publishing visibility control
+
+```ts
+active: true
+```
+
+Behavior:
+- Product exists on the website.
+- Product can be included in customer-facing pages.
+
+**`status`** — Customer purchase availability
+
+Values: `Active`, `Not Active`
+
+Behavior:
+- `Active` — Product can be ordered.
+- `Not Active` — Product remains visible, cannot be ordered, and shows the Coming Soon state.
+
+**`availability`** — Customer-facing fulfillment information
+
+Examples: `Made to Order`, `In Stock`, `Seasonal`, `Coming Soon`
+
+Used for:
+- Product information display
+- Customer expectations
 
 Products connect to:
 

@@ -479,6 +479,10 @@ Includes:
 - Fulfillment values generate customer-friendly copy (Pickup Only / Shipping Available / Pickup or Shipping)
 - Preferred Contact Method is now optional on the checkout form
 - Checkout review shows "Not specified" when no contact preference is chosen
+- Availability / Status separation — `availability` is customer-facing fulfillment information while `status` controls ordering
+- Coming Soon experience for unavailable products — inactive products remain visible and display a Coming Soon badge
+- Customer-facing product messaging — "This product is currently unavailable." message shown for non-orderable products
+- Purchase-state handling for inactive products — inactive status products can never be added to cart or ordered
 - Automated tests
 
 ---
