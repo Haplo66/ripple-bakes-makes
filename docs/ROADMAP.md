@@ -900,3 +900,10 @@ Possible future sections:
   - hero picture area
   - images getting cut (sizing issue?)
   - home page first sentence - wording and font
+- order form and iquery 
+  - validate phone number vs char
+  - pickup time not required
+- add comment - for order prep time
+- in checkout - show selected items and total price
+- comment for shipment (additional cost) - for sewing only
+- 
