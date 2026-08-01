@@ -13,7 +13,7 @@ export interface SheetsReadResult {
   records: CsvRecord[];
 }
 
-const HEADER_MAP: Record<DatasetName, Record<string, string>> = {
+export const HEADER_MAP: Record<DatasetName, Record<string, string>> = {
   collections: {
     'Business Area': 'businessArea',
     'Collection ID': 'id',
@@ -31,6 +31,10 @@ const HEADER_MAP: Record<DatasetName, Record<string, string>> = {
     'Featured': 'featured',
     'Homepage Featured': 'homepageFeatured',
     'Gallery Featured': 'galleryFeatured',
+    'Status': 'status',
+    'Availability': 'availability',
+    'Preparation Time': 'preparationTime',
+    'Fulfillment': 'fulfillment',
   },
   forms: {
     'Form ID': 'formId',
@@ -43,8 +47,10 @@ const HEADER_MAP: Record<DatasetName, Record<string, string>> = {
 
 };
 
-const normalizeHeader = (header: string, dataset: DatasetName): string =>
-  HEADER_MAP[dataset][header] || header;
+export const normalizeHeader = (
+  header: string,
+  dataset: DatasetName,
+): string => HEADER_MAP[dataset][header] || header;
 
 const rowToRecord = (
   headers: string[],

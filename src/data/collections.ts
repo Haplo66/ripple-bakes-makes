@@ -31,7 +31,10 @@ type CollectionRecord = Omit<
   customizationNote?: string;
 };
 
-const businessAreaMap: Record<CollectionRecord['businessArea'], CollectionCategory> = {
+const businessAreaMap: Record<
+  CollectionCategory | 'Bakery' | 'Sewing',
+  CollectionCategory
+> = {
   Bakery: 'bakery',
   Sewing: 'sewing',
   bakery: 'bakery',
@@ -66,7 +69,7 @@ export const toCollection = (record: CollectionRecord): Collection => {
 /** Collection data loaded from JSON to support future spreadsheet-backed imports. */
 const rawCollectionRecords = Array.isArray(collectionRecords)
   ? collectionRecords
-  : (collectionRecords as GeneratedData<CollectionRecord>).data;
+  : (collectionRecords as unknown as GeneratedData<CollectionRecord>).data;
 
 export const collections: readonly Collection[] = (rawCollectionRecords as CollectionRecord[])
   .map(toCollection);

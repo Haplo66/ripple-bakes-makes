@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-30T15:28:03.731Z",
+    "generatedAt": "2026-08-01T16:52:56.870Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -25,7 +25,10 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 25,
+      "price": 20,
+      "availability": "Made to Order",
+      "preparationTime": "2–3 Business Days",
+      "fulfillment": "Pickup Only",
       "imageFolder": "products/Bakery/Challah Bread/Challah Bread",
       "primaryImage": "main-challah-bread.jpg"
     },
@@ -48,7 +51,10 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 25,
+      "price": 20,
+      "availability": "Made to Order",
+      "preparationTime": "1–2 Business Days",
+      "fulfillment": "Pickup Only",
       "imageFolder": "products/Bakery/Challah Bread/Mini Challah Bread",
       "primaryImage": "main-mini-challah-bread.jpg"
     },
@@ -72,6 +78,9 @@
       "active": true,
       "displayOrder": 0,
       "price": 40,
+      "availability": "Made to Order",
+      "preparationTime": "Next Day",
+      "fulfillment": "Pickup Only",
       "imageFolder": "products/Bakery/Filled Pockets/Cheese Filled Pocket",
       "primaryImage": "main-cheese-filled-pocket.jpg"
     },
@@ -95,6 +104,9 @@
       "active": true,
       "displayOrder": 0,
       "price": 40,
+      "availability": "Made to Order",
+      "preparationTime": "Next Day",
+      "fulfillment": "Pickup Only",
       "imageFolder": "products/Bakery/Filled Pockets/Tuna Filled Pocket",
       "primaryImage": "main-tuna-filled-pocket.jpg"
     },
@@ -118,6 +130,9 @@
       "active": true,
       "displayOrder": 0,
       "price": 40,
+      "availability": "Made to Order",
+      "preparationTime": "Next Day",
+      "fulfillment": "Pickup Only",
       "imageFolder": "collections/Bakery/Filled Pockets",
       "primaryImage": "main-filled-pockets.jpg"
     },
@@ -141,7 +156,10 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 35,
+      "price": 25,
+      "availability": "Made to Order",
+      "preparationTime": "1–2 Business Days",
+      "fulfillment": "Pickup Only",
       "imageFolder": "products/Bakery/Garlic Buns/Garlic Buns",
       "primaryImage": "main-garlic-buns.jpg"
     },
@@ -164,7 +182,10 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 30,
+      "price": 20,
+      "availability": "Made to Order",
+      "preparationTime": "1–2 Business Days",
+      "fulfillment": "Pickup Only",
       "imageFolder": "products/Bakery/Rolls/Rolls",
       "primaryImage": "main-rolls.jpg"
     },
@@ -187,7 +208,10 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 30,
+      "price": 25,
+      "availability": "Made to Order",
+      "preparationTime": "2–3 Business Days",
+      "fulfillment": "Pickup Only",
       "imageFolder": "products/Bakery/Sourdough Bread/Classic Sourdough Loaf",
       "primaryImage": "main-classic-sourdough-loaf.jpg"
     },
@@ -210,7 +234,10 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 30,
+      "price": 25,
+      "availability": "Made to Order",
+      "preparationTime": "2–3 Business Days",
+      "fulfillment": "Pickup Only",
       "imageFolder": "collections/Bakery/Sourdough Bread",
       "primaryImage": "main-sourdough-bread.jpg"
     },
@@ -221,7 +248,7 @@
       "slug": "custom-baby-blanket",
       "name": "Custom Baby Blanket",
       "shortDescription": "Personalized Baby Blanket",
-      "status": "Active",
+      "status": "Not Active",
       "featured": true,
       "homepageFeatured": true,
       "galleryFeatured": true,
@@ -238,6 +265,9 @@
       "active": true,
       "displayOrder": 0,
       "price": 75,
+      "availability": "Made to Order",
+      "preparationTime": "3–5 Business Days",
+      "fulfillment": "Pickup or Shipping",
       "imageFolder": "products/Sewing/Baby Blankets/Custom Baby Blanket",
       "primaryImage": "main-custom-baby-blanket.jpg"
     },
@@ -263,6 +293,9 @@
       "active": true,
       "displayOrder": 0,
       "price": 20,
+      "availability": "Seasonal",
+      "preparationTime": "3–5 Business Days",
+      "fulfillment": "Pickup or Shipping",
       "imageFolder": "products/Sewing/Bowl Cozy/Bowl Cozy",
       "primaryImage": "main-bowl-cozy.jpg"
     },
@@ -300,7 +333,10 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 55,
+      "price": 60,
+      "availability": "Made to Order",
+      "preparationTime": "3–5 Business Days",
+      "fulfillment": "Pickup or Shipping",
       "imageFolder": "products/Sewing/Custom Shirts/Custom Design Shirt",
       "primaryImage": "main-custom-design-shirt.jpg"
     },
@@ -327,6 +363,9 @@
       "active": true,
       "displayOrder": 0,
       "price": 30,
+      "availability": "Made to Order",
+      "preparationTime": "3–5 Business Days",
+      "fulfillment": "Pickup or Shipping",
       "imageFolder": "business-areas/Sewing",
       "primaryImage": "main-sewing.jpg"
     },
@@ -353,6 +392,9 @@
       "active": true,
       "displayOrder": 0,
       "price": 30,
+      "availability": "Made to Order",
+      "preparationTime": "3–5 Business Days",
+      "fulfillment": "Pickup or Shipping",
       "imageFolder": "business-areas/Sewing",
       "primaryImage": "main-sewing.jpg"
     },
@@ -379,6 +421,9 @@
       "active": true,
       "displayOrder": 0,
       "price": 25,
+      "availability": "Made to Order",
+      "preparationTime": "3–5 Business Days",
+      "fulfillment": "Pickup or Shipping",
       "imageFolder": "products/Sewing/Rice Heating Packs/Rice Pack",
       "primaryImage": "main-rice-pack.jpg"
     },
@@ -403,7 +448,10 @@
       "imageTone": "cream",
       "active": true,
       "displayOrder": 0,
-      "price": 40,
+      "price": 50,
+      "availability": "Made to Order",
+      "preparationTime": "3–5 Business Days",
+      "fulfillment": "Pickup or Shipping",
       "imageFolder": "products/Sewing/Rice Heating Packs/Shoulder Rice Pack",
       "primaryImage": "main-shoulder-rice-pack.jpg"
     },
@@ -429,6 +477,9 @@
       "active": true,
       "displayOrder": 0,
       "price": 25,
+      "availability": "Made to Order",
+      "preparationTime": "3–5 Business Days",
+      "fulfillment": "Pickup or Shipping",
       "imageFolder": "products/Sewing/Soft Toys/Soft Toy",
       "primaryImage": "main-soft-toy.jpg"
     },
@@ -442,7 +493,7 @@
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
-      "galleryFeatured": true,
+      "galleryFeatured": false,
       "formId": "SW-TOWEL",
       "image": "main-towel-hanger.jpg",
       "images": [
@@ -456,6 +507,9 @@
       "active": true,
       "displayOrder": 0,
       "price": 25,
+      "availability": "Seasonal",
+      "preparationTime": "3–5 Business Days",
+      "fulfillment": "Pickup or Shipping",
       "imageFolder": "products/Sewing/Towels/Towel Hanger",
       "primaryImage": "main-towel-hanger.jpg"
     }

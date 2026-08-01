@@ -98,8 +98,8 @@ Properties:
 | `imageTone` | tone string | Optional | `cream` | Placeholder visual treatment when no image is found. |
 | `price` | number | Optional | `45` | Numeric price. `null` or missing renders the product as Coming Soon. `0` is valid and purchasable. |
 | `priceLabel` | string | Optional | `From $45` | Display-only pricing copy. |
-| `status` | product status | Optional | `available` | Loader maps source labels like `Active` to runtime values. |
-| `active` | boolean | Optional | `true` | Controls public listing. Inactive products are hidden from all listings. |
+| `status` | product status | Optional | `available` | Ordering control. Loader maps source labels like `Not Active` to `inactive`. Inactive products stay visible but display as Coming Soon and cannot be ordered. |
+| `active` | boolean | Optional | `true` | Publishing flag. Controls public listing — `false` hides the product from all listings. Independent of `status`. |
 | `featured` | boolean | Optional | `true` | Controls highlighting in featured sections. Does not affect product existence or homepage display. |
 | `homepageFeatured` | boolean | Optional | `true` | Controls spotlight placement on the homepage. Independent of `featured`. |
 | `galleryFeatured` | boolean | Optional | `true` | Controls whether the product appears in the gallery page. Defaults to `true`. Set `false` to exclude from gallery. |
@@ -115,10 +115,11 @@ Products connect to:
 
 ### Purchase State
 
-Product availability is determined by the `active` flag and the `price` field:
+Product availability is determined by the `active` flag, the `status`, and the `price` field:
 
 | Condition | State |
 |-----------|-------|
+| `status: inactive` | **coming-soon** — displayed on the site with a "Coming Soon" label and unavailable message, cannot be ordered even with a price |
 | `active: true` and `price` is a valid finite number (including `0`) | **purchasable** — can be added to cart and ordered |
 | `active: true` and `price` is `null`, `undefined`, or non-finite | **coming-soon** — displayed on the site with a "Coming Soon" label, cannot be ordered |
 | `active: false` | **unavailable** — hidden from all listings |

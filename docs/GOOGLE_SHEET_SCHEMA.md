@@ -109,8 +109,8 @@ Columns:
 | `description` | Optional | `Our signature birthday cake...` | `description` | Detail copy. |
 | `price` | Optional | `45` | `price` | Numeric price. Empty or missing displays the product as Coming Soon. `0` is valid and purchasable. |
 | `priceLabel` | Optional | `From $45` | `priceLabel` | Display-only pricing text. |
-| `status` | Optional | `Active` | `status` | Loader maps to runtime status. |
-| `active` | Optional | `true` | `active` | Controls public listing. |
+| `status` | Optional | `Active` | `status` | Ordering control. `Active` products are fully orderable. `Not Active` (or `Inactive`, `Hidden`) products stay visible on the site but display as Coming Soon and cannot be ordered. The `Availability` column is independent and never derived from this. |
+| `active` | Optional | `true` | `active` | Publishing flag. `true` publishes the product to customer-facing pages; `false` hides it. Independent of `status` — a product can be `active: true` with a `Not Active` status (visible, not orderable). |
 | `featured` | Optional | `true` | `featured` | Controls highlighting in featured sections. Does not affect homepage. |
 | `homepageFeatured` / `Homepage Featured` | Optional | `true` | `homepageFeatured` | Controls spotlight placement on the homepage. Independent of `featured`. |
 | `galleryFeatured` / `Gallery Featured` | Optional | `true` | `galleryFeatured` | Controls whether the product appears in the gallery page. Defaults to `true`. Set `FALSE` to exclude from gallery. |
@@ -118,12 +118,15 @@ Columns:
 | `imageFolder` | Optional | `bakery/cakes/birthday-cake` | `imageFolder` | Image organization hint (overridden by image resolver). |
 | `imageTone` | Optional | `cream` | `imageTone` | Placeholder tone. |
 | `displayOrder` | Optional | `1` | `displayOrder` | Numeric sort value. |
+| `Availability` / `availability` | Optional | `Made to Order` | `availability` | Customer-facing availability wording shown on the product page. Never derived from Status. Empty hides the Availability row. |
+| `Preparation Time` / `preparationTime` | Optional | `2–3 Business Days` | `preparationTime` | Estimated preparation time displayed on the product page. Empty hides the Preparation Time row. |
+| `Fulfillment` / `fulfillment` | Optional | `Pickup or Shipping` | `fulfillment` | Fulfillment option used to generate customer-facing copy. Accepts `Pickup Only`, `Shipping Available`, or `Pickup or Shipping`. Empty hides the Fulfillment row. |
 
 Example row:
 
 ```csv
-id,businessArea,collection,category,slug,name,subtitle,shortDescription,description,price,priceLabel,status,active,featured,homepageFeatured,galleryFeatured,formId,imageTone,displayOrder
-bakery-cakes-birthday-cake,bakery,bakery-cakes,cake,birthday-cake,Birthday Cake,Classic layers made to celebrate.,Customizable layer cake.,Our signature birthday cake.,45,From $45,Active,true,true,true,true,birthday-cake-form,cream,1
+id,businessArea,collection,category,slug,name,subtitle,shortDescription,description,price,priceLabel,status,active,featured,homepageFeatured,galleryFeatured,formId,imageTone,displayOrder,availability,preparationTime,fulfillment
+bakery-cakes-birthday-cake,bakery,bakery-cakes,cake,birthday-cake,Birthday Cake,Classic layers made to celebrate.,Customizable layer cake.,Our signature birthday cake.,45,From $45,Active,true,true,true,true,birthday-cake-form,cream,1,Made to Order,2–3 Business Days,Pickup or Shipping
 ```
 
 ## Forms Worksheet

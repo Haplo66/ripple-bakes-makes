@@ -441,11 +441,51 @@ Includes:
 - CI workflow (ci.yml): tests run on push (non-master) and PR — no secrets required
 - Deploy workflow: `npm run test` blocks deployment on failure
 
+### v1.20.0 — Maintenance
+
+**Status: Completed**
+
+**Completed:**
+- Resolve Astro type checking issues
+- Restore clean development checks
+- `npx astro check` passes with 0 errors and 0 warnings across all Astro and TypeScript files
+- Added explicit element types, safe null handling, and type guards to untyped client scripts in `.astro` components
+- Fixed TypeScript diagnostics in Doctor reporters, Drive importer scripts, pipeline utilities, and test files
+
+### v1.20.1 — Customer Order Experience Polish
+
+**Status: Completed**
+
+**Completed:**
+- Phone validation utility
+- Checkout phone validation
+- Inquiry phone validation
+- Optional pickup time
+- Checkout review step
+- Order item summary
+- Customer recap
+- Order total confirmation
+- Cart preservation on submission failure
+- Automated tests
+- Documentation updates
+
+### v1.20.2 — Customer Experience Follow-up
+
+**Status: Completed**
+
+**Completed:**
+- Product pages display Availability, Preparation Time, and Fulfillment
+- New `availability`, `preparationTime`, and `fulfillment` columns flow from Google Sheets through the import pipeline to the product page
+- Fulfillment values generate customer-friendly copy (Pickup Only / Shipping Available / Pickup or Shipping)
+- Preferred Contact Method is now optional on the checkout form
+- Checkout review shows "Not specified" when no contact preference is chosen
+- Automated tests
+
 ---
 
 ## Current Status
 
-**Version: v1.19.5**
+**Version: v1.20.2**
 
 ### What Works Today
 
@@ -455,9 +495,14 @@ Includes:
 - `npm run update` synchronises both sources and rebuilds the website in a single command
 - Data quality warnings catch missing fields before they reach production
 - Forms sheet uses row-per-field structure for simpler management
+- Product pages show Availability, Preparation Time, and Fulfillment copy from the Products sheet
 
 **Ordering Workflow**
 - Customers can browse, customize, add to cart, and submit orders
+- Phone numbers validated on the order and inquiry forms (international numbers supported)
+- Preferred Contact Method is optional — customers can order without choosing a contact preference
+- Preferred Pickup Date is optional — customers can order without choosing a date
+- Checkout review step shows every item (quantity, options, unit price, line total) and a prominent Order Total before submission
 - Orders are sent to Google Apps Script which writes to Google Sheets
 - Owner receives email notification for every new order with pricing details
 - Order status managed directly in Google Sheets (Received → Confirmed → Preparing → Ready → Completed)
@@ -783,7 +828,6 @@ Do not add implementation history, debugging notes, terminal output, bug fixes, 
 - Bakery and Sewing gallery sections
 - Image captions/storytelling
 - Lightbox viewing
-- Featured gallery items
 - Sheet-driven gallery management
 
 **Business Area Page Improvements:**
@@ -796,7 +840,6 @@ Do not add implementation history, debugging notes, terminal output, bug fixes, 
 - Better descriptions
 - Preparation/customization details
 - Lead times
-- Pickup information
 - Care instructions
 - Bakery ingredients/allergen information
 - Sewing material/care information
@@ -891,7 +934,6 @@ Possible future sections:
 
 
 ### **DEVELOPER NOTES - DO NOT REMOVE**
-- build automated test suite (both code review, and scraping)
 - test if replacing pictures - it will update in website
 - wording and pages improvements
   - our story page + images
@@ -900,10 +942,7 @@ Possible future sections:
   - hero picture area
   - images getting cut (sizing issue?)
   - home page first sentence - wording and font
-- order form and iquery 
-  - validate phone number vs char
-  - pickup time not required
-- add comment - for order prep time
-- in checkout - show selected items and total price
-- comment for shipment (additional cost) - for sewing only
+- add links to product in gallery, + Image captions/storytelling
+- Give every collection its own short introduction instead of jumping straight into products.
+- when in cart, maybe ability to edit product, do it will go back to product page and "update" button will appear?
 - 

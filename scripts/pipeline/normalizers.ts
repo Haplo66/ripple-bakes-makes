@@ -117,6 +117,9 @@ export const normalizeProducts = (records: CsvRecord[]) =>
     displayOrder: parseNumber(values.displayOrder),
     price: values.price?.trim() ? parseNumber(values.price) : undefined,
     priceLabel: values.priceLabel,
+    availability: parseNullableString(values.availability ?? '') ?? undefined,
+    preparationTime: parseNullableString(values.preparationTime ?? '') ?? undefined,
+    fulfillment: parseNullableString(values.fulfillment ?? '') ?? undefined,
   }));
 
 export const normalizeProductOptions = (records: CsvRecord[]) =>

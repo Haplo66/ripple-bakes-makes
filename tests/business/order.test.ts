@@ -6,7 +6,7 @@
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { createOrderFromCart, sanitizeValue } from '../../src/utils/order.ts';
+import { createOrderFromCart, getCartTotal, getOrderTotal, sanitizeValue } from '../../src/utils/order.ts';
 
 describe('createOrderFromCart', () => {
   it('creates correct Order structure from a valid cart', () => {
@@ -229,6 +229,60 @@ describe('createOrderFromCart', () => {
 
     const order = createOrderFromCart(cart);
     assert.strictEqual(order.items[0].notes, undefined);
+  });
+});
+
+describe('getCartTotal', () => {
+  it('sums unit price times quantity across items', () => {
+    const cart = {
+      items: [
+        { id: 'item-1', productId: 'p1', collectionId: 'c1', productTitle: 'One', quantity: 2, price: 12, configuration: {} },
+        { id: 'item-2', productId: 'p2', collectionId: 'c2', productTitle: 'Two', quantity: 3, price: 6, configuration: {} },
+      ],
+    };
+
+    assert.strictEqual(getCartTotal(cart), 42);
+  });
+
+  it('returns zero for an empty cart', () => {
+    assert.strictEqual(getCartTotal({ items: [] }), 0);
+  });
+
+  it('ignores items without a finite price', () => {
+    const cart = {
+      items: [
+        { id: 'item-1', productId: 'p1', collectionId: 'c1', productTitle: 'One', quantity: 2, price: null, configuration: {} },
+        { id: 'item-2', productId: 'p2', collectionId: 'c2', productTitle: 'Two', quantity: 1, price: 10, configuration: {} },
+      ],
+    };
+
+    assert.strictEqual(getCartTotal(cart), 10);
+  });
+});
+
+describe('getOrderTotal', () => {
+  it('sums the line totals of an order', () => {
+    const order = {
+      items: [
+        { productId: 'p1', collectionId: 'c1', productTitle: 'One', quantity: 2, price: 12, totalPrice: 24, configuration: {} },
+        { productId: 'p2', collectionId: 'c2', productTitle: 'Two', quantity: 1, price: 18, totalPrice: 18, configuration: {} },
+      ],
+      createdAt: new Date().toISOString(),
+    };
+
+    assert.strictEqual(getOrderTotal(order), 42);
+  });
+
+  it('matches the cart total used to build the order', () => {
+    const cart = {
+      items: [
+        { id: 'item-1', productId: 'p1', collectionId: 'c1', productTitle: 'One', quantity: 2, price: 12, configuration: {} },
+        { id: 'item-2', productId: 'p2', collectionId: 'c2', productTitle: 'Two', quantity: 3, price: 6, configuration: {} },
+      ],
+    };
+
+    const order = createOrderFromCart(cart);
+    assert.strictEqual(getOrderTotal(order), getCartTotal(cart));
   });
 });
 

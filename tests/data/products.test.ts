@@ -32,6 +32,9 @@ interface ProductRecord {
   price?: number;
   priceLabel?: string;
   title?: string;
+  availability?: string;
+  preparationTime?: string;
+  fulfillment?: string;
 }
 
 describe('toProduct', () => {
@@ -39,7 +42,7 @@ describe('toProduct', () => {
 
   before(async () => {
     const mod = await import('../../src/data/products.ts');
-    toProduct = mod.toProduct as (record: ProductRecord) => Record<string, unknown>;
+    toProduct = mod.toProduct as unknown as (record: ProductRecord) => Record<string, unknown>;
   });
 
   it('maps businessArea correctly for bakery', () => {
@@ -93,6 +96,28 @@ describe('toProduct', () => {
       featured: false, homepageFeatured: false, galleryFeatured: true,
       formId: '', image: null, primaryImage: '', images: [], imageFolder: '',
       active: undefined as unknown as boolean, displayOrder: 1,
+    });
+    assert.strictEqual(result.active, true);
+  });
+
+  it('maps a "Not Active" status to inactive', () => {
+    const result = toProduct({
+      id: 'test', businessArea: 'bakery', collection: 'test', slug: 'test',
+      name: 'Test', shortDescription: 'desc', status: 'Not Active',
+      featured: false, homepageFeatured: false, galleryFeatured: true,
+      formId: '', image: null, primaryImage: '', images: [], imageFolder: '',
+      active: true, displayOrder: 1,
+    });
+    assert.strictEqual(result.status, 'inactive');
+  });
+
+  it('keeps a "Not Active" product published when active is true', () => {
+    const result = toProduct({
+      id: 'test', businessArea: 'bakery', collection: 'test', slug: 'test',
+      name: 'Test', shortDescription: 'desc', status: 'Not Active',
+      featured: false, homepageFeatured: false, galleryFeatured: true,
+      formId: '', image: null, primaryImage: '', images: [], imageFolder: '',
+      active: true, displayOrder: 1,
     });
     assert.strictEqual(result.active, true);
   });
@@ -229,6 +254,49 @@ describe('toProduct', () => {
     });
     assert.strictEqual(result.status, 'out-of-stock');
   });
+
+  it('passes through availability, preparationTime, and fulfillment', () => {
+    const result = toProduct({
+      id: 'test', businessArea: 'bakery', collection: 'test', slug: 'test',
+      name: 'Test', shortDescription: 'desc', status: 'Active',
+      featured: false, homepageFeatured: false, galleryFeatured: true,
+      formId: '', image: null, primaryImage: '', images: [], imageFolder: '',
+      active: true, displayOrder: 1,
+      availability: 'Made to Order', preparationTime: '2–3 Business Days',
+      fulfillment: 'Pickup or Shipping',
+    });
+    assert.strictEqual(result.availability, 'Made to Order');
+    assert.strictEqual(result.preparationTime, '2–3 Business Days');
+    assert.strictEqual(result.fulfillment, 'Pickup or Shipping');
+  });
+
+  it('defaults availability, preparationTime, and fulfillment to undefined when not provided', () => {
+    const result = toProduct({
+      id: 'test', businessArea: 'bakery', collection: 'test', slug: 'test',
+      name: 'Test', shortDescription: 'desc', status: 'Active',
+      featured: false, homepageFeatured: false, galleryFeatured: true,
+      formId: '', image: null, primaryImage: '', images: [], imageFolder: '',
+      active: true, displayOrder: 1,
+    });
+    assert.strictEqual(result.availability, undefined);
+    assert.strictEqual(result.preparationTime, undefined);
+    assert.strictEqual(result.fulfillment, undefined);
+  });
+
+  it('trims whitespace from availability, preparationTime, and fulfillment', () => {
+    const result = toProduct({
+      id: 'test', businessArea: 'bakery', collection: 'test', slug: 'test',
+      name: 'Test', shortDescription: 'desc', status: 'Active',
+      featured: false, homepageFeatured: false, galleryFeatured: true,
+      formId: '', image: null, primaryImage: '', images: [], imageFolder: '',
+      active: true, displayOrder: 1,
+      availability: '  In Stock  ', preparationTime: ' 1–2 Business Days ',
+      fulfillment: ' Pickup Only ',
+    });
+    assert.strictEqual(result.availability, 'In Stock');
+    assert.strictEqual(result.preparationTime, '1–2 Business Days');
+    assert.strictEqual(result.fulfillment, 'Pickup Only');
+  });
 });
 
 describe('product queries', () => {
@@ -242,13 +310,13 @@ describe('product queries', () => {
 
   before(async () => {
     const mod = await import('../../src/data/products.ts');
-    getAllProducts = mod.getAllProducts as () => Record<string, unknown>[];
-    getProductsByCollection = mod.getProductsByCollection as (id: string) => Record<string, unknown>[];
-    getFeaturedProducts = mod.getFeaturedProducts as (area?: string) => Record<string, unknown>[];
-    getHomepageFeatured = mod.getHomepageFeatured as () => Record<string, unknown>[];
+    getAllProducts = mod.getAllProducts as unknown as () => Record<string, unknown>[];
+    getProductsByCollection = mod.getProductsByCollection as unknown as (id: string) => Record<string, unknown>[];
+    getFeaturedProducts = mod.getFeaturedProducts as unknown as (area?: string) => Record<string, unknown>[];
+    getHomepageFeatured = mod.getHomepageFeatured as unknown as () => Record<string, unknown>[];
     getProductById = mod.getProductById as (id: string) => Record<string, unknown> | undefined;
-    getAllProductsForPaths = mod.getAllProductsForPaths as () => Record<string, unknown>[];
-    getProductsByBusinessArea = mod.getProductsByBusinessArea as (area: string) => Record<string, unknown>[];
+    getAllProductsForPaths = mod.getAllProductsForPaths as unknown as () => Record<string, unknown>[];
+    getProductsByBusinessArea = mod.getProductsByBusinessArea as unknown as (area: string) => Record<string, unknown>[];
   });
 
   it('getAllProducts returns only active products', () => {

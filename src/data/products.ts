@@ -33,6 +33,9 @@ interface ProductRecord {
   price?: number | null;
   priceLabel?: string;
   title?: string;
+  availability?: string;
+  preparationTime?: string;
+  fulfillment?: string;
 }
 
 const businessAreaMap: Record<string, CollectionCategory> = {
@@ -45,10 +48,14 @@ const statusMap: Record<string, Product['status']> = {
   Seasonal: 'seasonal',
   'Out of Stock': 'out-of-stock',
   Preorder: 'preorder',
+  'Not Active': 'inactive',
+  Inactive: 'inactive',
+  Hidden: 'inactive',
   available: 'available',
   seasonal: 'seasonal',
   'out-of-stock': 'out-of-stock',
   preorder: 'preorder',
+  inactive: 'inactive',
 };
 
 export const toProduct = (record: ProductRecord): Product => {
@@ -80,6 +87,9 @@ export const toProduct = (record: ProductRecord): Product => {
     formId: record.formId,
     price: record.price,
     priceLabel: record.priceLabel,
+    availability: record.availability?.trim() || undefined,
+    preparationTime: record.preparationTime?.trim() || undefined,
+    fulfillment: record.fulfillment?.trim() || undefined,
   };
 };
 

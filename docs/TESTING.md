@@ -216,6 +216,18 @@ Tests run directly with Node's built-in test runner: `node --experimental-strip-
 
 No build step, no config file, no test framework installation.
 
+## Development Checks
+
+Before merging, run all three gates locally:
+
+```bash
+npm run test         # 253 unit/integration tests (business, pipeline, doctor, data)
+npm run build        # production static build (40 pages)
+npx astro check      # Astro + TypeScript diagnostics — passes with 0 errors, 0 warnings
+```
+
+`npx astro check` is a local developer gate (not part of CI). It keeps Astro component scripts, data loaders, pipeline scripts, and test files free of TypeScript errors and unused-symbol warnings. Fix any new diagnostics before committing.
+
 ---
 
 ## Implementation Milestones
@@ -293,3 +305,25 @@ No build step, no config file, no test framework installation.
 |----------|---------|-------|---------|
 | `deploy.yml` | push to master, schedule, manual | ci → test → update → deploy | Yes |
 | `ci.yml` | push (non-master), pull_request | ci → test → build | No |
+
+### v1.20.1 — Customer Order Experience Tests ✅
+
+**Goal:** Cover the new form validation and checkout review behavior.
+
+**Scope:**
+- `phone.ts` — `isValidPhone` accepts valid US/international formats, rejects obviously invalid values, empty, and overlong values
+- `order.ts` — `getCartTotal` and `getOrderTotal` match the submitted order total (sum of `price × quantity`)
+
+**Outcome:** Phone validation and checkout total calculation are regression-proofed.
+
+### v1.20.0 — Type Checking Cleanup ✅
+
+**Goal:** Restore clean development checks.
+
+**Scope:**
+- `npx astro check` now reports 0 errors and 0 warnings across all files
+- Added explicit element types (`HTMLFormElement`, `HTMLElement`, `HTMLInputElement`, `HTMLTemplateElement`, etc.) and null guards to untyped client scripts in `.astro` components
+- Fixed diagnostics in Doctor reporters, Drive importer scripts, pipeline utilities, and test files without changing application behavior
+- Documented the three local dev gates (tests, build, astro check)
+
+**Outcome:** `npm run test` (253 tests) and `npm run build` (40 pages) continue to pass while `npx astro check` is clean.

@@ -11,6 +11,7 @@ import { sitePath } from '../../../utils/paths';
 import { getProductPrimaryImage, getProductImages } from '../../../utils/images';
 import { formatPrice } from '../../../utils/format';
 import { getPurchaseState } from '../../../utils/purchase-state';
+import { getFulfillmentText } from '../../../utils/fulfillment';
 import type { PurchaseState } from '../../../utils/purchase-state';
 import type { Product } from '../../../types/product';
 import type { Form } from '../../../types/form';
@@ -62,9 +63,15 @@ const statusLabels: Record<string, string> = {
   seasonal: 'Seasonal',
   'out-of-stock': 'Out of Stock',
   preorder: 'Preorder',
+  inactive: 'Coming Soon',
 };
 
 const statusLabel = statusLabels[product.status] || product.status;
+
+const availability = product.availability?.trim() || '';
+const preparationTime = product.preparationTime?.trim() || '';
+const fulfillmentLines = getFulfillmentText(product.fulfillment);
+const hasFulfillmentInfo = !!(availability || preparationTime || fulfillmentLines);
 
 const businessAreaTitle =
   product.businessArea === 'bakery'
@@ -158,17 +165,47 @@ const customizationForm: Form | undefined = purchaseState === 'purchasable' && p
             </p>
           </div>
 
-          <div class="product-detail__meta">
-            <div class="meta-item">
-              <span class="meta-label">
-                Availability Status
-              </span>
+          {hasFulfillmentInfo && (
+            <div class="product-detail__meta">
+              {availability && (
+                <div class="meta-item">
+                  <span class="meta-label">
+                    Availability
+                  </span>
 
-              <span class="meta-value">
-                {statusLabel}
-              </span>
+                  <span class="meta-value">
+                    {availability}
+                  </span>
+                </div>
+              )}
+
+              {preparationTime && (
+                <div class="meta-item">
+                  <span class="meta-label">
+                    Preparation Time
+                  </span>
+
+                  <span class="meta-value">
+                    Estimated preparation time: {preparationTime}
+                  </span>
+                </div>
+              )}
+
+              {fulfillmentLines && (
+                <div class="meta-item meta-item--stack">
+                  <span class="meta-label">
+                    Fulfillment
+                  </span>
+
+                  <span class="meta-value meta-value--stack">
+                    {fulfillmentLines.map((line) => (
+                      <span>{line}</span>
+                    ))}
+                  </span>
+                </div>
+              )}
             </div>
-          </div>
+          )}
 
           {
             purchaseState === 'purchasable' ? (
@@ -179,7 +216,7 @@ const customizationForm: Form | undefined = purchaseState === 'purchasable' && p
                   collectionId: product.collectionId,
                   productId: product.id,
                   productTitle: product.title,
-                  price: product.price,
+                  price: product.price ?? undefined,
                 }}
               />
             ) : (
@@ -188,7 +225,11 @@ const customizationForm: Form | undefined = purchaseState === 'purchasable' && p
                   {purchaseState === 'coming-soon' ? 'Coming Soon' : 'Currently Unavailable'}
                 </p>
                 {purchaseState === 'coming-soon' && (
-                  <p class="purchase-state__message">Contact us for availability.</p>
+                  <p class="purchase-state__message">
+                    {product.status === 'inactive'
+                      ? 'This product is currently unavailable.'
+                      : 'Contact us for availability.'}
+                  </p>
                 )}
               </div>
             )
@@ -277,12 +318,25 @@ const customizationForm: Form | undefined = purchaseState === 'purchasable' && p
     gap: 0.4rem;
   }
 
+  .meta-item--stack {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
   .meta-label {
     color: var(--muted);
   }
 
   .meta-value {
     font-weight: 600;
+  }
+
+  .meta-value--stack {
+    display: flex;
+    flex-direction: column;
+    font-weight: 500;
+    gap: 0.15rem;
   }
 
   .breadcrumb {
@@ -330,6 +384,11 @@ const customizationForm: Form | undefined = purchaseState === 'purchasable' && p
 
   .status-badge--preorder {
     background: var(--cocoa);
+    color: #fff;
+  }
+
+  .status-badge--inactive {
+    background: #b7b0a4;
     color: #fff;
   }
 

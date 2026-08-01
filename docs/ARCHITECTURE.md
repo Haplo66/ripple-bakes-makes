@@ -263,7 +263,7 @@ scripts/doctor/doctor.ts (entry point)
 
 **Provider selection:** `PUBLIC_SUBMISSION_ENDPOINT` is shared by both flows. When set, the Apps Script provider is active and handles both orders and inquiries. Without it, the mock provider handles submissions locally (no data written to Sheets).
 
-Products without a numeric price display as **Coming Soon** and cannot be added to the cart. Products with `price: 0` are purchasable. Inactive products are hidden from listings.
+Products without a numeric price display as **Coming Soon** and cannot be added to the cart. Products with `price: 0` are purchasable. Products with an inactive status (e.g. `Not Active`) stay visible but display as Coming Soon and cannot be ordered. Products hidden from all listings are controlled only by the `active` flag.
 
 ## Data Loaders
 

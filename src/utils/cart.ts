@@ -134,7 +134,13 @@ export const saveCart = (cart: Cart): Cart => {
 export const addToCart = (item: CartItemInput): Cart => {
   const product = getProductById(item.productId);
 
-  if (!product || !product.active || product.price == null || !Number.isFinite(product.price)) {
+  if (
+    !product ||
+    !product.active ||
+    product.status === 'inactive' ||
+    product.price == null ||
+    !Number.isFinite(product.price)
+  ) {
     return getCart();
   }
 

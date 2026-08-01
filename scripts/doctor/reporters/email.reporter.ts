@@ -329,7 +329,7 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
 
   // ── Build HTML ────────────────────────────────────────────────
 
-  const h = (...parts: string[]) => parts.join("");
+  const h = (...parts: (string | number)[]) => parts.join("");
 
   function cardCell(score: number, max: number, label: string, color: string, explanation: string, halfWidth: boolean): string {
     const w = halfWidth ? '50%' : '50%';
@@ -701,6 +701,10 @@ async function emailReport(config: DoctorConfig | null): Promise<void> {
   const data = JSON.parse(
     fs.readFileSync(ownerPath, "utf-8"),
   ) as OwnerReportData;
+
+  if (!config) {
+    return;
+  }
 
   try {
     await sendEmail(data, config);
