@@ -422,6 +422,24 @@ describe('normalizeCollections', () => {
     assert.strictEqual(result[0].businessArea, 'bakery');
   });
 
+  it('normalizes code to uppercase and trims whitespace', () => {
+    const records: CsvRecord[] = [
+      makeRecord(2, { id: 'c1', businessArea: 'bakery', name: 'Cakes', code: '  fp ' }),
+    ];
+    const warnings: PipelineWarning[] = [];
+    const result = normalizeCollections(records, 'collections.csv', warnings);
+    assert.strictEqual(result[0].code, 'FP');
+  });
+
+  it('defaults code to empty string when blank', () => {
+    const records: CsvRecord[] = [
+      makeRecord(2, { id: 'c1', businessArea: 'bakery', name: 'Cakes', code: '' }),
+    ];
+    const warnings: PipelineWarning[] = [];
+    const result = normalizeCollections(records, 'collections.csv', warnings);
+    assert.strictEqual(result[0].code, '');
+  });
+
   it('defaults slug to slugified name when slug is empty', () => {
     const records: CsvRecord[] = [
       makeRecord(2, { id: 'c1', businessArea: 'bakery', name: 'Sourdough Breads', slug: '' }),

@@ -501,9 +501,28 @@ Includes:
 
 ---
 
+### v1.20.4 — Automatic Product ID Generation
+
+**Status: Complete**
+
+**Completed:**
+- The owner no longer fills in Product IDs when adding products — the pipeline auto-generates them as `{Business}-{Collection}-{Number}` (e.g. `BK-CA-001`)
+- New `scripts/pipeline/product-ids.ts` resolves a collection's 2-letter code from the Collections sheet, then computes the next free sequence number across all products
+- New `scripts/pipeline/sheets-writer.ts` writes generated IDs back to the Products worksheet so Google Sheets stays the source of truth
+- `Collection Code` column added to the Collections schema (recommended; code is derived from existing product IDs when blank)
+- Product ID is no longer a required field — validation now requires only `businessArea`, `collection`, and `name`
+- Existing Product IDs are never modified or reused; un-generatable rows are skipped with a clear warning
+- Added tests for generation, sequencing, reuse protection, code fallback, and failure warnings
+- `--preview` mode reads live data and reports exactly which IDs would be written, without touching the sheet or files
+- Verified end-to-end: `Product ID` column added to the live Products sheet, 20 generated IDs written back, all 20 match the website's internal IDs, and `npm run update` (Drive + Sheets + build) completes with 42 pages
+
+**Why it mattered:** Product IDs are a technical detail. Automating them removes a source of owner error and keeps internal references (image folders, collection codes) consistent without manual spreadsheet bookkeeping.
+
+---
+
 ## Current Status
 
-**Version: v1.20.3**
+**Version: v1.20.4**
 
 ### What Works Today
 
@@ -512,6 +531,7 @@ Includes:
 - Google Drive manages all business assets: product images, collection images, business area images, homepage images, logo, and favicon
 - `npm run update` synchronises both sources and rebuilds the website in a single command
 - Data quality warnings catch missing fields before they reach production
+- Product IDs are auto-generated for new products (`{Business}-{Collection}-{Number}`) and written back to the sheet — no manual ID bookkeeping
 - Forms sheet uses row-per-field structure for simpler management
 - Product pages show Availability, Preparation Time, and Fulfillment copy from the Products sheet
 
@@ -559,7 +579,7 @@ Includes:
 - Mock submission for development (no endpoint configured)
 
 **Website**
-- 18 products across Bakery and Sewing managed through Google Sheets
+- 20 products across Bakery and Sewing managed through Google Sheets
 - 13 collections with dynamic pages for each
 - Cart and checkout pages with real order submission
 - Contact page with working inquiry form and backend integration
@@ -575,7 +595,7 @@ Includes:
 - Doctor Config sheet controls
 
 **Testing Suite**
-- 233 automated tests across business logic, pipeline, and Doctor modules
+- 314 automated tests across business logic, pipeline, and Doctor modules
 - Node.js built-in test runner — zero additional dependencies
 - CI integration: tests run automatically on push and PR
 - Test failure blocks deployment
@@ -838,6 +858,7 @@ Delivered improvements include:
 v1.20.1 — Checkout & Forms
 v1.20.2 — Customer Experience Follow-up
 v1.20.3 — Gallery & Storytelling Enhancement
+v1.20.4 — Automatic Product ID Generation
 
 ---
 

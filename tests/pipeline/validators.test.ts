@@ -26,16 +26,14 @@ describe('validateRecords — products', () => {
     assert.strictEqual(warnings.length, 0);
   });
 
-  it('filters records missing id', () => {
+  it('passes records without a Product ID', () => {
     const records: CsvRecord[] = [
       makeRecord(2, { id: '', businessArea: 'bakery', collection: 'cakes', name: 'Cake' }),
     ];
     const warnings: PipelineWarning[] = [];
     const result = validateRecords('products', 'products.csv', records, warnings);
-    assert.strictEqual(result.length, 0);
-    assert.strictEqual(warnings.length, 1);
-    assert.strictEqual(warnings[0].column, 'id');
-    assert.strictEqual(warnings[0].rowNumber, 2);
+    assert.strictEqual(result.length, 1);
+    assert.strictEqual(warnings.length, 0);
   });
 
   it('filters records missing businessArea', () => {
@@ -78,7 +76,7 @@ describe('validateRecords — products', () => {
     const warnings: PipelineWarning[] = [];
     const result = validateRecords('products', 'products.csv', records, warnings);
     assert.strictEqual(result.length, 0);
-    assert.strictEqual(warnings.length, 4);
+    assert.strictEqual(warnings.length, 3);
   });
 
   it('mixed valid and invalid records', () => {
@@ -88,9 +86,10 @@ describe('validateRecords — products', () => {
     ];
     const warnings: PipelineWarning[] = [];
     const result = validateRecords('products', 'products.csv', records, warnings);
-    assert.strictEqual(result.length, 1);
+    assert.strictEqual(result.length, 2);
     assert.strictEqual(result[0].values.id, 'valid');
-    assert.strictEqual(warnings.length, 1);
+    assert.strictEqual(result[1].values.id, '');
+    assert.strictEqual(warnings.length, 0);
   });
 });
 
@@ -229,14 +228,14 @@ describe('validateRecords — forms', () => {
 describe('validateRecords — warning structure', () => {
   it('includes file, rowNumber, column, and reason', () => {
     const records: CsvRecord[] = [
-      makeRecord(5, { id: '', businessArea: 'bakery', collection: 'cakes', name: 'Cake' }),
+      makeRecord(5, { id: 'p1', businessArea: '', collection: 'cakes', name: 'Cake' }),
     ];
     const warnings: PipelineWarning[] = [];
     validateRecords('products', 'products.csv', records, warnings);
     assert.strictEqual(warnings.length, 1);
     assert.strictEqual(warnings[0].file, 'products.csv');
     assert.strictEqual(warnings[0].rowNumber, 5);
-    assert.strictEqual(warnings[0].column, 'id');
+    assert.strictEqual(warnings[0].column, 'businessArea');
     assert.strictEqual(warnings[0].reason, 'Required field is missing.');
   });
 });

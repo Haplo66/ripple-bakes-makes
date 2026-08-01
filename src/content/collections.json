@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-08-01T16:52:56.868Z",
+    "generatedAt": "2026-08-01T21:28:49.323Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -9,6 +9,7 @@
     {
       "id": "baby-blankets",
       "businessArea": "sewing",
+      "code": "BB",
       "slug": "baby-blankets",
       "name": "Baby Blankets",
       "imageFolder": "collections/Sewing/Baby Blankets",
@@ -27,6 +28,7 @@
     {
       "id": "beanie-hats",
       "businessArea": "sewing",
+      "code": "HW",
       "slug": "beanie-hats",
       "name": "Beanie Hats",
       "heroImage": null,
@@ -42,6 +44,7 @@
     {
       "id": "bowl-cozy",
       "businessArea": "sewing",
+      "code": "BC",
       "slug": "bowl-cozy",
       "name": "Bowl Cozy",
       "imageFolder": "collections/Sewing/Bowl Cozy",
@@ -60,6 +63,7 @@
     {
       "id": "bucket-hats",
       "businessArea": "sewing",
+      "code": "HS",
       "slug": "bucket-hats",
       "name": "Bucket Hats",
       "heroImage": null,
@@ -75,6 +79,7 @@
     {
       "id": "challah-bread",
       "businessArea": "bakery",
+      "code": "CH",
       "slug": "challah-bread",
       "name": "Challah Bread",
       "imageFolder": "collections/Bakery/Challah Bread",
@@ -93,6 +98,7 @@
     {
       "id": "custom-shirts",
       "businessArea": "sewing",
+      "code": "CS",
       "slug": "custom-shirts",
       "name": "Custom Shirts",
       "imageFolder": "collections/Sewing/Custom Shirts",
@@ -111,6 +117,7 @@
     {
       "id": "filled-pockets",
       "businessArea": "bakery",
+      "code": "FP",
       "slug": "filled-pockets",
       "name": "Filled Pockets",
       "imageFolder": "collections/Bakery/Filled Pockets",
@@ -129,6 +136,7 @@
     {
       "id": "garlic-buns",
       "businessArea": "bakery",
+      "code": "GB",
       "slug": "garlic-buns",
       "name": "Garlic Buns",
       "imageFolder": "collections/Bakery/Garlic Buns",
@@ -147,6 +155,7 @@
     {
       "id": "rice-packs",
       "businessArea": "sewing",
+      "code": "RP",
       "slug": "rice-packs",
       "name": "Rice Packs",
       "heroImage": null,
@@ -162,6 +171,7 @@
     {
       "id": "rolls",
       "businessArea": "bakery",
+      "code": "RL",
       "slug": "rolls",
       "name": "Rolls",
       "imageFolder": "collections/Bakery/Rolls",
@@ -180,6 +190,7 @@
     {
       "id": "soft-toys",
       "businessArea": "sewing",
+      "code": "ST",
       "slug": "soft-toys",
       "name": "Soft Toys",
       "imageFolder": "collections/Sewing/Soft Toys",
@@ -198,6 +209,7 @@
     {
       "id": "sourdough-bread",
       "businessArea": "bakery",
+      "code": "SB",
       "slug": "sourdough-bread",
       "name": "Sourdough Bread",
       "imageFolder": "collections/Bakery/Sourdough Bread",
@@ -216,6 +228,7 @@
     {
       "id": "towel-hangers",
       "businessArea": "sewing",
+      "code": "TW",
       "slug": "towel-hangers",
       "name": "Towel Hangers",
       "heroImage": null,

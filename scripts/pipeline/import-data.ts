@@ -22,12 +22,16 @@ import {
   normalizeForms,
   normalizeProducts,
 } from './normalizers.ts';
+import { assignProductIds, type CollectionCodeRecord } from './product-ids.ts';
+import { writeGeneratedProductIds } from './sheets-writer.ts';
 import type { DatasetName, PipelineWarning } from './types.ts';
 import { validateRecords } from './validators.ts';
 import { createReader } from './reader.ts';
 
 const warnings: PipelineWarning[] = [];
 const generatedFiles: string[] = [];
+
+const PREVIEW = process.argv.includes('--preview');
 
 const reader = createReader();
 
@@ -42,6 +46,73 @@ const readValidRecords = async (dataset: DatasetName) => {
   };
 };
 
+/**
+ * Reads products, auto-generates Product IDs for rows with a blank ID, and
+ * persists the generated IDs back to Google Sheets (Sheets mode only) so the
+ * sheet remains the source of truth.
+ *
+ * In preview mode (`--preview`) the pipeline reads the same data but never
+ * writes: generated IDs are reported as a table, the sheet is left untouched,
+ * and no JSON files are emitted.
+ */
+const readValidProducts = async (
+  collections: CollectionCodeRecord[],
+) => {
+  const label = process.env.SHEETS_ENABLED === 'true' ? 'Google Sheets: products' : IMPORT_FILES.products;
+  logReadStart(label);
+  const result = await reader.read('products', warnings);
+
+  const { generated } = assignProductIds(result.records, collections, label, warnings);
+
+  if (generated.length > 0) {
+    const header = PREVIEW
+      ? 'Preview — Product ID(s) that WILL be generated:'
+      : 'Generated Product ID(s):';
+    console.log(`${header} (${generated.length})`);
+
+    const rowByNumber = new Map(result.records.map((record) => [record.rowNumber, record]));
+    const table = generated
+      .map(({ rowNumber, id }) => {
+        const record = rowByNumber.get(rowNumber);
+        const name = record?.values.name?.trim() || '—';
+        const collection = record?.values.collection?.trim() || '—';
+        return `  row ${String(rowNumber).padStart(3)} | ${id} | ${name} | ${collection}`;
+      })
+      .join('\n');
+    console.log(table);
+    console.log('');
+
+    if (PREVIEW) {
+      console.log('  Preview only — nothing written. Re-run without --preview to apply.');
+      console.log('');
+    } else if (process.env.SHEETS_ENABLED === 'true') {
+      const written = await writeGeneratedProductIds(generated);
+      console.log(`✓ ${written} Product ID(s) written back to Google Sheets`);
+      console.log('');
+    }
+  }
+
+  const validated = validateRecords('products', label, result.records, warnings);
+
+  const withId = validated.filter((record) => {
+    if (record.values.id?.trim()) {
+      return true;
+    }
+    warnings.push({
+      file: label,
+      rowNumber: record.rowNumber,
+      column: 'id',
+      reason: 'Product ID could not be generated; row skipped.',
+    });
+    return false;
+  });
+
+  return {
+    found: result.found,
+    records: withId,
+  };
+};
+
 const run = async (): Promise<void> => {
   logHeader(PIPELINE_NAME, PIPELINE_VERSION);
 
@@ -51,7 +122,7 @@ const run = async (): Promise<void> => {
   );
   logDatasetResult('collections', collections.length);
 
-  const productInput = await readValidRecords('products');
+  const productInput = await readValidProducts(collections);
   const normalizedProducts = normalizeProducts(productInput.records);
 
   const slugToCode: Record<string, string> = {};
@@ -144,6 +215,13 @@ const run = async (): Promise<void> => {
     normalizeForms(formInput.records, IMPORT_FILES.forms, warnings),
   );
   logDatasetResult('forms', forms.length);
+
+  if (PREVIEW) {
+    console.log('Preview mode — no JSON files written, no spreadsheet changes.');
+    console.log('');
+    logWarnings(warnings);
+    return;
+  }
 
   if (collectionInput.found) {
     writeGeneratedJson(OUTPUT_FILES.collections, collections);

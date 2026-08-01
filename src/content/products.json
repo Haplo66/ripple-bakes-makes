@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-08-01T16:52:56.870Z",
+    "generatedAt": "2026-08-01T21:28:49.324Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -459,19 +459,43 @@
       "id": "SW-ST-001",
       "businessArea": "sewing",
       "collection": "soft-toys",
-      "slug": "soft-toy",
-      "name": "Soft Toy",
+      "slug": "snake",
+      "name": "Snake",
       "shortDescription": "",
       "status": "Active",
       "featured": false,
       "homepageFeatured": false,
       "galleryFeatured": true,
       "formId": "SW-TOYS",
-      "image": "main-soft-toy.jpg",
+      "image": "main-soft-toys.jpg",
       "images": [
-        "main-soft-toy.jpg",
-        "gallery-01.jpg",
-        "gallery-02.jpg"
+        "main-soft-toys.jpg"
+      ],
+      "imageTone": "cream",
+      "active": true,
+      "displayOrder": 0,
+      "price": 35,
+      "availability": "Made to Order",
+      "preparationTime": "3–5 Business Days",
+      "fulfillment": "Pickup or Shipping",
+      "imageFolder": "collections/Sewing/Soft Toys",
+      "primaryImage": "main-soft-toys.jpg"
+    },
+    {
+      "id": "SW-ST-002",
+      "businessArea": "sewing",
+      "collection": "soft-toys",
+      "slug": "dog",
+      "name": "Dog",
+      "shortDescription": "",
+      "status": "Active",
+      "featured": false,
+      "homepageFeatured": false,
+      "galleryFeatured": true,
+      "formId": "SW-TOYS",
+      "image": "main-soft-toys.jpg",
+      "images": [
+        "main-soft-toys.jpg"
       ],
       "imageTone": "cream",
       "active": true,
@@ -480,8 +504,34 @@
       "availability": "Made to Order",
       "preparationTime": "3–5 Business Days",
       "fulfillment": "Pickup or Shipping",
-      "imageFolder": "products/Sewing/Soft Toys/Soft Toy",
-      "primaryImage": "main-soft-toy.jpg"
+      "imageFolder": "collections/Sewing/Soft Toys",
+      "primaryImage": "main-soft-toys.jpg"
+    },
+    {
+      "id": "SW-ST-003",
+      "businessArea": "sewing",
+      "collection": "soft-toys",
+      "slug": "animal-lovie",
+      "name": "Animal Lovie",
+      "shortDescription": "",
+      "status": "Active",
+      "featured": false,
+      "homepageFeatured": false,
+      "galleryFeatured": true,
+      "formId": "SW-TOYS",
+      "image": "main-soft-toys.jpg",
+      "images": [
+        "main-soft-toys.jpg"
+      ],
+      "imageTone": "cream",
+      "active": true,
+      "displayOrder": 0,
+      "price": 25,
+      "availability": "Made to Order",
+      "preparationTime": "3–5 Business Days",
+      "fulfillment": "Pickup or Shipping",
+      "imageFolder": "collections/Sewing/Soft Toys",
+      "primaryImage": "main-soft-toys.jpg"
     },
     {
       "id": "SW-TW-001",

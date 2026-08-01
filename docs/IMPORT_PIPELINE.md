@@ -25,7 +25,8 @@ scripts/pipeline/
   reader.ts               Input adapter factory (CSV or Google Sheets)
   csv-reader.ts           CSV file reader
   sheets-reader.ts        Google Sheets API reader
-  sheets-auth.ts          Sheets API authentication
+  sheets-auth.ts          Sheets API authentication (read-only)
+  sheets-writer.ts        Sheets write-back for generated Product IDs
   drive-auth.ts           Drive API authentication
   drive-write-auth.ts     Drive write-scoped authentication
   drive-product-image-importer.ts  Drive → local asset sync (products, collections, etc.)
@@ -33,6 +34,7 @@ scripts/pipeline/
   drive-fix-image-extensions.ts    Repair missing file extensions
   validators.ts           Required-field validation
   normalizers.ts          Data normalization and type mapping
+  product-ids.ts          Auto-generation of blank Product IDs
   generators.ts           JSON output generation
   image-scanner.ts        Dynamic filesystem image discovery
   image-resolver.ts       Image fallback hierarchy resolution
@@ -80,19 +82,22 @@ Required columns:
 Supported columns:
 
 ```text
-id,businessArea,slug,name,subtitle,shortDescription,description,imageFolder,heroImage,featured,status,displayOrder,imageTone,galleryCaptions,popularIdeas,customizationNote
+id,businessArea,code,slug,name,subtitle,shortDescription,description,imageFolder,heroImage,featured,status,displayOrder,imageTone,galleryCaptions,popularIdeas,customizationNote
 ```
 
 `galleryCaptions` and `popularIdeas` should be JSON arrays.
+
+`code` (Collection Code) is a 2-letter code used to auto-generate Product IDs (e.g. `BK-CA-001`). It is recommended for every collection. When blank, the pipeline derives the code from an existing product ID in the same collection.
 
 ### `products.csv`
 
 Required columns:
 
-- `id`
 - `businessArea`
 - `collection`
 - `name`
+
+The `id` column is **optional**. Blank Product IDs are auto-generated (see below).
 
 Supported columns:
 
@@ -105,6 +110,20 @@ Additional notes:
 - `galleryFeatured` controls gallery page visibility. Defaults to `true`. Set `false` to exclude a product from the gallery without affecting its product page.
 - `price` is a numeric value. When empty, the product displays as Coming Soon.
 - `imageFolder` and `image` fields are overridden at build time by the image resolver.
+
+### Auto-generated Product IDs
+
+The Product ID column is **system-managed** — the owner does not create or maintain IDs. During import, any row with a blank `id` gets a generated ID in the `{BA}-{Collection Code}-{NNN}` family (e.g. `BK-CA-001`):
+
+1. The collection's 2-letter `code` is looked up from the Collections dataset.
+2. If the collection has no code, the code is derived from an existing product ID in the same collection (e.g. `SW-ST-002` → `ST`).
+3. The next free sequence number is computed across all products.
+4. In Sheets mode (`SHEETS_ENABLED=true`), the generated ID is written back to the Products worksheet so the sheet stays the source of truth. In CSV mode, the ID stays in memory for this run only.
+5. If no code can be determined, a warning is emitted and the row is skipped.
+
+Existing Product IDs are never modified or reused, and no other sheet columns are touched by the write-back.
+
+Note: the Products worksheet must have a `Product ID` header column for write-back to work. If the column is missing, the pipeline reports `Product ID column not found` and the generated IDs are used in-memory for the current run only.
 
 ### `forms.csv`
 
@@ -148,7 +167,7 @@ Required fields per dataset:
 | Dataset | Required Fields |
 |---------|----------------|
 | collections | `id`, `businessArea`, `name` |
-| products | `id`, `businessArea`, `collection`, `name` |
+| products | `businessArea`, `collection`, `name` (`id` is optional and auto-generated) |
 | forms (row-per-field) | `formId`, `fieldName`, `fieldType` |
 | forms (JSON fields column) | `id`, `name` |
 

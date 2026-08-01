@@ -67,6 +67,7 @@ export const normalizeCollections = (
   records.map(({ rowNumber, values }) => ({
     id: normalizeId(values.id),
     businessArea: values.businessArea.toLowerCase(),
+    code: values.code?.trim().toUpperCase() || '',
     slug: values.slug || slugify(values.name),
     name: values.name,
     subtitle: values.subtitle,

@@ -8,7 +8,7 @@ import type { CsvRecord, DatasetName, PipelineWarning } from './types.ts';
 
 const requiredFields: Record<DatasetName, string[]> = {
   collections: ['id', 'businessArea', 'name'],
-  products: ['id', 'businessArea', 'collection', 'name'],
+  products: ['businessArea', 'collection', 'name'],
   forms: ['formId', 'fieldName', 'fieldType'],
 };
 

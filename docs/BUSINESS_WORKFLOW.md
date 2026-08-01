@@ -111,6 +111,16 @@ Neither flag controls whether a product is listed on the site — only `active` 
 
 Fill in a new row in the **Products** tab with the product details.
 
+You do **not** need to fill in the **Product ID** column — it is system-managed. The
+system generates it automatically as `{Business}-{Collection}-{Number}` (for example
+`BK-CA-001`) and writes it back into the spreadsheet. Leave the cell blank and the
+pipeline fills it in. Existing Product IDs are never changed or reused, and no other
+columns are touched.
+
+For a new product in a **brand-new collection**, add the collection's 2-letter
+**Collection Code** to the **Collections** tab first (for example `CA` for Cakes),
+so the system can build the Product ID.
+
 ### 2. Add images in Google Drive
 
 Create a folder inside `Assets/Product Images/` following the business area and collection hierarchy — the product name matching the product you added.
@@ -158,6 +168,9 @@ These messages do not stop the update. They let you know something might need at
 
 | Warning | What it means |
 |---------|---------------|
+| *Cannot auto-generate Product ID: unknown Business Area* | The product's Business Area is not `bakery` or `sewing`. Check the spreadsheet. |
+| *Cannot auto-generate Product ID: collection has no code* | The product's collection is brand new and has no 2-letter Collection Code in the Collections tab. Add the code and re-run the update. |
+| *Product ID could not be generated; row skipped* | The product was skipped because its ID could not be created. Fix the warnings above and re-run the update. |
 | *Product is using default image* | No product image was found. A placeholder will be shown on the website. Add images to the product folder in Drive. |
 | *Missing description* | The product has no description in the spreadsheet. Add one so customers know what it is. |
 | *Form ID is missing* | The product does not have an order form assigned. Customers will still be able to order it, but no customization form will be shown. |

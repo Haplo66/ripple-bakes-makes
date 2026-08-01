@@ -61,6 +61,7 @@ Columns:
 | --- | --- | --- | --- | --- |
 | `id` / `Collection ID` | Yes | `bakery-cakes` | `id` | Stable unique collection ID. |
 | `businessArea` / `Business Area` | Yes | `bakery` | `businessArea`, loader `category` | Use `bakery` or `sewing`. |
+| `code` / `Collection Code` | Recommended | `CA` | `code` | 2-letter code used to auto-generate Product IDs (e.g. `BK-CA-001`). Blank when the collection has no products yet. When blank, the pipeline derives the code from an existing product ID in the same collection. |
 | `slug` | Optional but needed for routes | `cakes` | `slug` | URL segment. |
 | `name` / `Collection Name` | Yes | `Cakes` | `name`, loader `title` | Human-readable name. |
 | `subtitle` | Optional | `Made for celebrations.` | `subtitle` | Short headline support. |
@@ -79,8 +80,8 @@ Columns:
 Example row:
 
 ```csv
-id,businessArea,slug,name,subtitle,shortDescription,description,imageFolder,heroImage,featured,status,displayOrder,imageTone,galleryCaptions,popularIdeas,customizationNote
-bakery-cakes,bakery,cakes,Cakes,Made for celebrations.,Thoughtful celebration cakes with beautiful unfussy finishes.,Celebration cakes should feel special.,bakery/cakes,,true,Active,3,cream,"[""A soft simple finish""]","[""Birthday cake""]",Share your date and serving size.
+id,businessArea,code,slug,name,subtitle,shortDescription,description,imageFolder,heroImage,featured,status,displayOrder,imageTone,galleryCaptions,popularIdeas,customizationNote
+bakery-cakes,bakery,CA,cakes,Cakes,Made for celebrations.,Thoughtful celebration cakes with beautiful unfussy finishes.,Celebration cakes should feel special.,bakery/cakes,,true,Active,3,cream,"[""A soft simple finish""]","[""Birthday cake""]",Share your date and serving size.
 ```
 
 ## Products Worksheet
@@ -89,16 +90,17 @@ bakery-cakes,bakery,cakes,Cakes,Made for celebrations.,Thoughtful celebration ca
 
 Required columns:
 
-- `id`
 - `businessArea`
 - `collection`
 - `name`
+
+The `id` / `Product ID` column is **system-managed**. The owner does not create or maintain Product IDs. When a product's cell is blank, the pipeline auto-generates an ID in the `{BA}-{Collection Code}-{NNN}` family (e.g. `BK-CA-001`), derives the next free sequence number, and writes it back to the sheet so the sheet remains the source of truth. Existing IDs are never modified or reused. For a new product in a brand-new collection, add the collection's 2-letter `code` to the Collections sheet first.
 
 Columns:
 
 | Column | Required | Example | Maps To | Notes |
 | --- | --- | --- | --- | --- |
-| `id` / `Product ID` | Yes | `bakery-cakes-birthday-cake` | `id` | Stable unique product ID. |
+| `id` / `Product ID` | System-managed | `BK-CA-001` | `id` | Internal, system-managed unique product ID. Blank cells are auto-generated as `{BA}-{Collection Code}-{NNN}` and written back to the sheet. Never edited by the owner. |
 | `businessArea` / `Business Area` | Yes | `bakery` | `businessArea` | Use `bakery` or `sewing`. |
 | `collection` / `Collection` | Yes | `bakery-cakes` | `collection`, loader `collectionId` | Must match a collection ID. |
 | `category` | Optional | `cake` | `category` | Product type. |
@@ -126,7 +128,7 @@ Example row:
 
 ```csv
 id,businessArea,collection,category,slug,name,subtitle,shortDescription,description,price,priceLabel,status,active,featured,homepageFeatured,galleryFeatured,formId,imageTone,displayOrder,availability,preparationTime,fulfillment
-bakery-cakes-birthday-cake,bakery,bakery-cakes,cake,birthday-cake,Birthday Cake,Classic layers made to celebrate.,Customizable layer cake.,Our signature birthday cake.,45,From $45,Active,true,true,true,true,birthday-cake-form,cream,1,Made to Order,2–3 Business Days,Pickup or Shipping
+BK-CA-001,bakery,bakery-cakes,cake,birthday-cake,Birthday Cake,Classic layers made to celebrate.,Customizable layer cake.,Our signature birthday cake.,45,From $45,Active,true,true,true,true,birthday-cake-form,cream,1,Made to Order,2–3 Business Days,Pickup or Shipping
 ```
 
 ## Forms Worksheet

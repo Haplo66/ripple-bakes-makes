@@ -44,6 +44,7 @@ describe('normalizeHeader', () => {
   it('maps headers for collections and forms datasets', () => {
     assert.strictEqual(normalizeHeader('Collection ID', 'collections'), 'id');
     assert.strictEqual(normalizeHeader('Collection Name', 'collections'), 'name');
+    assert.strictEqual(normalizeHeader('Collection Code', 'collections'), 'code');
     assert.strictEqual(normalizeHeader('Field Name', 'forms'), 'fieldName');
     assert.strictEqual(normalizeHeader('Field Type', 'forms'), 'fieldType');
   });
