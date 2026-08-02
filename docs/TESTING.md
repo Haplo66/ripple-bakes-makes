@@ -47,6 +47,7 @@
 | Required field validation | `scripts/pipeline/validators.ts` | High |
 | Data normalization | `scripts/pipeline/normalizers.ts` | High |
 | Product ID auto-generation | `scripts/pipeline/product-ids.ts` | High |
+| Product folder discovery | `scripts/pipeline/product-folder-classifier.ts` | High |
 | JSON generation wrapper | `scripts/pipeline/generators.ts` | Medium |
 | CSV parsing | `scripts/pipeline/csv-reader.ts` | Medium |
 | Pipeline orchestration | `scripts/pipeline/import-data.ts` | Medium |
@@ -222,8 +223,8 @@ No build step, no config file, no test framework installation.
 Before merging, run all three gates locally:
 
 ```bash
-npm run test         # 314 unit/integration tests (business, pipeline, doctor, data)
-npm run build        # production static build (40 pages)
+npm run test         # 325 unit/integration tests (business, pipeline, doctor, data)
+npm run build        # production static build (42 pages)
 npx astro check      # Astro + TypeScript diagnostics — passes with 0 errors, 0 warnings
 ```
 

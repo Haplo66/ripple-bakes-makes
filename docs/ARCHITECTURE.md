@@ -102,6 +102,8 @@ flowchart LR
 
 The image resolver uses a fallback hierarchy: product folder (`products/{BA}/{Collection}/{Product}/`) → collection folder (`collections/{BA}/{Collection}/`) → business-area folder (`business-areas/{BA}/`) → default placeholder warning. The resolver supports both the current multi-level hierarchy and legacy flat/code-based paths as fallbacks.
 
+**Product folder discovery is catalog-driven.** The Drive asset importer discovers product folders by matching each Drive leaf folder against the current product catalog (`src/content/products.json`) — by product **name** or **Product ID**. The asset manifest (`data/manifest/images.json`) is used only as a checksum cache to skip unchanged files; it is never required for discovery, so new product folders import immediately. Drive folders that no longer match a current product are skipped with a warning (never deleted), and stale manifest entries are reported by the Doctor so orphan folders can be reviewed.
+
 Pipeline output is deterministic except for `_metadata.generatedAt`, which records the import timestamp. See [IMPORT_PIPELINE.md](./IMPORT_PIPELINE.md) for operational details and [GOOGLE_SHEET_SCHEMA.md](./GOOGLE_SHEET_SCHEMA.md) for the sheet schema.
 
 ## Build Pipeline

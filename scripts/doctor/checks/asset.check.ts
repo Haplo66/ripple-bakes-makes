@@ -248,6 +248,69 @@ const assetUnused: DoctorCheck = {
   },
 };
 
-const assetChecks: DoctorCheck[] = [assetProductFolders, assetProductImages, assetProductRefs, assetCollectionImages, assetUnused];
+const assetManifestStale: DoctorCheck = {
+  id: "ASSET-006",
+  category: "Asset Health",
+  run(): DoctorResult {
+    const manifest = readJson<{ products: { code: string; folder: string }[] }>(path.resolve("data/manifest/images.json"));
+    const products = readJson<{ data: ProductRecord[] }>(path.resolve("src/content/products.json"));
+    if (!manifest || !products) {
+      return { id: "ASSET-006", category: "Asset Health", status: "INFO", summary: "Asset manifest or product catalog not available; skipping stale-manifest check.", recommendation: "Run the image import and data pipeline first." };
+    }
+    const nameByCode = new Map<string, string>();
+    for (const p of products.data) {
+      if (p.id) nameByCode.set(p.id, p.name || "");
+    }
+    const stale: string[] = [];
+    for (const entry of manifest.products) {
+      const expected = nameByCode.get(entry.code);
+      if (expected === undefined) {
+        stale.push(entry.code + " (\"" + entry.folder + "\") has no matching product in the catalog.");
+      } else if (expected !== entry.folder) {
+        stale.push(entry.code + " manifest folder \"" + entry.folder + "\" does not match the current product name \"" + expected + "\".");
+      }
+    }
+    if (stale.length === 0) {
+      return { id: "ASSET-006", category: "Asset Health", status: "PASS", summary: "Asset manifest matches the current product catalog." };
+    }
+    return {
+      id: "ASSET-006", category: "Asset Health", status: "WARN",
+      summary: stale.length + " stale manifest entry(ies) detected.",
+      details: stale,
+      recommendation: "Rename or remove the corresponding Drive folders so they match current product names; stale entries may keep orphan images on disk.",
+    };
+  },
+};
+
+const assetMissingProductFolders: DoctorCheck = {
+  id: "ASSET-007",
+  category: "Asset Health",
+  run(): DoctorResult {
+    const products = readJson<{ data: ProductRecord[] }>(path.resolve("src/content/products.json"));
+    if (!products) {
+      return { id: "ASSET-007", category: "Asset Health", status: "FAIL", summary: "Cannot check product folders; products.json missing.", recommendation: "Run the data pipeline first." };
+    }
+    const shared: string[] = [];
+    for (const p of products.data) {
+      if (p.active === false) continue;
+      if (!p.imageFolder) continue;
+      const folderKey = p.imageFolder.replace(/\\/g, "/");
+      if (!folderKey.startsWith("products/")) {
+        shared.push(p.id + " (" + (p.name || "unknown") + ") uses shared folder: public/images/" + folderKey);
+      }
+    }
+    if (shared.length === 0) {
+      return { id: "ASSET-007", category: "Asset Health", status: "PASS", summary: "All active products have a dedicated product image folder." };
+    }
+    return {
+      id: "ASSET-007", category: "Asset Health", status: "WARN",
+      summary: shared.length + " active product(s) use a shared image folder instead of a dedicated product folder.",
+      details: shared,
+      recommendation: "Add a dedicated product folder under public/images/products/{Business Area}/{Collection}/{Product Name} so each product can have its own imagery.",
+    };
+  },
+};
+
+const assetChecks: DoctorCheck[] = [assetProductFolders, assetProductImages, assetProductRefs, assetCollectionImages, assetUnused, assetManifestStale, assetMissingProductFolders];
 
 export default assetChecks;

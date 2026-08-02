@@ -138,6 +138,7 @@ Assets/
 ```
 
 - The folder hierarchy is Business Area → Collection → Product Name
+- The folder name must match the product's name in the spreadsheet exactly — the system finds product folders by matching the current product list
 - The system discovers images by scanning the folder structure — no codes or IDs needed
 - Image files starting with `main-` are used as the primary product photo
 
@@ -172,6 +173,7 @@ These messages do not stop the update. They let you know something might need at
 | *Cannot auto-generate Product ID: collection has no code* | The product's collection is brand new and has no 2-letter Collection Code in the Collections tab. Add the code and re-run the update. |
 | *Product ID could not be generated; row skipped* | The product was skipped because its ID could not be created. Fix the warnings above and re-run the update. |
 | *Product is using default image* | No product image was found. A placeholder will be shown on the website. Add images to the product folder in Drive. |
+| *Skipping "…" (no matching product in catalog)* | A folder under Product Images does not match any product name in the spreadsheet (for example, after a product was renamed or removed). It is skipped — nothing is deleted. Rename the folder to match, or remove it if it is no longer needed. |
 | *Missing description* | The product has no description in the spreadsheet. Add one so customers know what it is. |
 | *Form ID is missing* | The product does not have an order form assigned. Customers will still be able to order it, but no customization form will be shown. |
 | *Product has no price* | The product will display as "Coming Soon" on the website. Add a price to make it orderable. |

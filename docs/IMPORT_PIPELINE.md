@@ -35,6 +35,7 @@ scripts/pipeline/
   validators.ts           Required-field validation
   normalizers.ts          Data normalization and type mapping
   product-ids.ts          Auto-generation of blank Product IDs
+  product-folder-classifier.ts  Catalog-driven product folder discovery
   generators.ts           JSON output generation
   image-scanner.ts        Dynamic filesystem image discovery
   image-resolver.ts       Image fallback hierarchy resolution
@@ -68,6 +69,15 @@ The GitHub Actions workflow sets `SHEETS_ENABLED=true` and reads data directly f
 7. **Build website** — runs `astro build`
 
 Missing CSV files (when using CSV mode) are reported as warnings. The pipeline continues processing any files that are present.
+
+### Product Folder Discovery
+
+Product image folders under Drive `Assets/Product Images/` are discovered from the **current product catalog** (`src/content/products.json`), not from a fixed asset manifest.
+
+- A Drive leaf folder is imported when its name matches a current product **name** or **Product ID**.
+- The asset manifest (`data/manifest/images.json`) is used only as a **checksum cache** to skip unchanged files — it is never required for discovery. New product folders import without a manifest entry.
+- Drive folders that do not match any current product (for example, after a product was renamed or removed) are **skipped with a warning** and never deleted automatically.
+- Stale manifest entries (products removed or renamed since the manifest was generated) are reported as warnings so orphan folders can be reviewed.
 
 ## CSV Schemas
 
