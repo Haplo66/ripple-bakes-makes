@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-08-01T21:34:15.361Z",
+    "generatedAt": "2026-08-02T00:28:01.390Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -467,9 +467,9 @@
       "homepageFeatured": false,
       "galleryFeatured": true,
       "formId": "SW-TOYS",
-      "image": "main-soft-toys.jpg",
+      "image": "main-snake.jpg",
       "images": [
-        "main-soft-toys.jpg"
+        "main-snake.jpg"
       ],
       "imageTone": "cream",
       "active": true,
@@ -478,8 +478,8 @@
       "availability": "Made to Order",
       "preparationTime": "3–5 Business Days",
       "fulfillment": "Pickup or Shipping",
-      "imageFolder": "collections/Sewing/Soft Toys",
-      "primaryImage": "main-soft-toys.jpg"
+      "imageFolder": "products/Sewing/Soft Toys/Snake",
+      "primaryImage": "main-snake.jpg"
     },
     {
       "id": "SW-ST-002",
@@ -493,9 +493,9 @@
       "homepageFeatured": false,
       "galleryFeatured": true,
       "formId": "SW-TOYS",
-      "image": "main-soft-toys.jpg",
+      "image": "main-dogs.jpg",
       "images": [
-        "main-soft-toys.jpg"
+        "main-dogs.jpg"
       ],
       "imageTone": "cream",
       "active": true,
@@ -504,8 +504,8 @@
       "availability": "Made to Order",
       "preparationTime": "3–5 Business Days",
       "fulfillment": "Pickup or Shipping",
-      "imageFolder": "collections/Sewing/Soft Toys",
-      "primaryImage": "main-soft-toys.jpg"
+      "imageFolder": "products/Sewing/Soft Toys/Dog",
+      "primaryImage": "main-dogs.jpg"
     },
     {
       "id": "SW-ST-003",
@@ -519,9 +519,9 @@
       "homepageFeatured": false,
       "galleryFeatured": true,
       "formId": "SW-TOYS",
-      "image": "main-soft-toys.jpg",
+      "image": "main-fox.jpg",
       "images": [
-        "main-soft-toys.jpg"
+        "main-fox.jpg"
       ],
       "imageTone": "cream",
       "active": true,
@@ -530,8 +530,8 @@
       "availability": "Made to Order",
       "preparationTime": "3–5 Business Days",
       "fulfillment": "Pickup or Shipping",
-      "imageFolder": "collections/Sewing/Soft Toys",
-      "primaryImage": "main-soft-toys.jpg"
+      "imageFolder": "products/Sewing/Soft Toys/Animal Lovie",
+      "primaryImage": "main-fox.jpg"
     },
     {
       "id": "SW-TW-001",
