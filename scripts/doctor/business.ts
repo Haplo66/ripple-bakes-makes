@@ -81,7 +81,7 @@ type RecommendEntry = {
   text: string;
 };
 
-type BusinessHealthResult = {
+export type BusinessHealthResult = {
   score: number;
   maxScore: number;
   status: "GOOD" | "ATTENTION" | "CRITICAL";
@@ -278,5 +278,47 @@ function buildBusinessHealth(): BusinessHealthResult {
   };
 }
 
-export type { BusinessHealthResult, ProductAnalysis, BusinessMetrics, FormCoverage, RecommendEntry };
-export { buildBusinessHealth };
+type BusinessHealthByArea = Record<string, BusinessHealthResult>;
+
+export function buildBusinessHealthByArea(): BusinessHealthByArea {
+  const products = readJson<{ data: ProductRecord[] }>(path.resolve("src/content/products.json"));
+  const collections = readJson<{ data: CollectionRecord[] }>(path.resolve("src/content/collections.json"));
+  const forms = readJson<{ data: FormRecord[] }>(path.resolve("src/content/forms.json"));
+
+  const validCollectionIds = new Set((collections?.data || []).map((c) => c.id));
+  const validFormIds = new Set((forms?.data || []).map((f) => f.id));
+  const allProducts = products?.data || [];
+
+  const byArea = new Map<string, ProductRecord[]>();
+  for (const p of allProducts) {
+    const area = p.businessArea || "unknown";
+    if (!byArea.has(area)) {
+      byArea.set(area, []);
+    }
+    byArea.get(area)!.push(p);
+  }
+
+  const result: BusinessHealthByArea = {};
+  for (const [area, areaProducts] of byArea) {
+    const analysis = analyzeProducts(areaProducts, validCollectionIds, validFormIds);
+    const metrics = computeMetrics(analysis);
+    const formCoverage = computeFormCoverage(areaProducts, validFormIds);
+    const score = calculateBusinessScore(analysis, metrics, formCoverage);
+    const status = getStatus(score);
+    const recommendations = generateRecommendations(analysis, metrics, formCoverage);
+
+    result[area] = {
+      score,
+      maxScore: 100,
+      status,
+      metrics,
+      productAnalysis: analysis,
+      formCoverage,
+      recommendations,
+    };
+  }
+
+  return result;
+}
+
+export type { BusinessHealthByArea };

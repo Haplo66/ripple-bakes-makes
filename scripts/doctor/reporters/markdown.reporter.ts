@@ -5,12 +5,12 @@
  */
 
 import type { DoctorResult, DoctorReport } from "../types.ts";
-import type { BusinessHealthResult } from "../business.ts";
+import type { BusinessHealthByArea, BusinessHealthResult } from "../business.ts";
 import * as fs from "node:fs";
 import * as path from "node:path";
 
 function markdownReport(report: DoctorReport): void {
-  const bh = report.businessHealth as unknown as BusinessHealthResult;
+  const bh = report.businessHealth as unknown as BusinessHealthByArea;
   const reportsDir = path.resolve("scripts/doctor/reports");
   fs.mkdirSync(reportsDir, { recursive: true });
   const filePath = path.join(reportsDir, "doctor-report.md");
@@ -102,83 +102,85 @@ const lines: string[] = [];
     lines.push("Data unavailable. Set PUBLIC_GA4_PROPERTY_ID and service account credentials.");
   }
   lines.push("");
-  lines.push("## Business Health");
-  lines.push("");
-  lines.push("### Catalog Score");
-  lines.push("");
-  lines.push("Score: " + bh.score + "/" + bh.maxScore);
-  lines.push("Status: " + bh.status);
+  lines.push("## Business Health by Area");
   lines.push("");
 
-  const m = bh.metrics;
-  lines.push("### Product Inventory");
-  lines.push("");
-  lines.push("| Product | Images | Form | Price | Short | Description | Featured | Home | Gallery |");
-  lines.push("|---------|--------|------|-------|-------|-------------|----------|------|---------|");
-  for (const p of bh.productAnalysis) {
-    const icon = p.imageScore === "FAIL" ? "FAIL" : p.imageScore === "WARN" ? "WARN" : "OK";
-    const form = p.hasValidFormId === null ? "\u2014" : p.hasValidFormId ? "OK" : "MISS";
-    const price = p.hasPrice ? "OK" : "MISS";
-    const short = p.hasShortDescription ? "OK" : "MISS";
-    const desc = p.hasDescription ? "OK" : "MISS";
-    const feat = p.isFeatured ? "OK" : "";
-    const home = p.isHomepageFeatured ? "OK" : "";
-    const gal = p.isGalleryFeatured ? "OK" : "";
-    lines.push("| " + p.name + " | " + p.imageCount + " " + icon + " | " + form + " | " + price + " | " + short + " | " + desc + " | " + feat + " | " + home + " | " + gal + " |");
-  }
-  lines.push("");
-
-  lines.push("### Images");
-  lines.push("");
-  lines.push("- Total product images: " + m.totalImages);
-  lines.push("- Average images/product: " + m.averageImagesPerProduct);
-  lines.push("- Products without images: " + m.productsWithNoImages);
-  lines.push("- Products needing more images: " + m.productsWithOneImage);
-  lines.push("");
-
-  lines.push("### Forms");
-  lines.push("");
-  lines.push("- Products requiring forms: " + bh.formCoverage.productsWithForms);
-  lines.push("- Valid form IDs: " + bh.formCoverage.uniqueFormIds);
-  lines.push("- Valid forms: " + bh.formCoverage.valid);
-  if (bh.formCoverage.missing > 0) {
-    lines.push("- Missing: " + bh.formCoverage.missing);
-    lines.push("  - " + bh.formCoverage.missingIds.join(", "));
-  }
-  lines.push("");
-
-  lines.push("### Business Metrics");
-  lines.push("");
-  lines.push("| Metric | Value |");
-  lines.push("|--------|-------|");
-  lines.push("| Total Products | " + m.totalProducts + " |");
-  lines.push("| Active Products | " + m.activeProducts + " |");
-  lines.push("| Featured Products | " + m.featuredProducts + " |");
-  lines.push("| Homepage Featured | " + m.homepageFeatured + " |");
-  lines.push("| Gallery Featured | " + m.galleryFeatured + " |");
-  lines.push("| Average Images/Product | " + m.averageImagesPerProduct + " |");
-  lines.push("| Missing Short Descriptions | " + m.missingShortDescriptions + " |");
-  lines.push("| Missing Descriptions | " + m.missingDescriptions + " |");
-  lines.push("");
-
-  if (bh.recommendations.length > 0) {
-    lines.push("### Recommendations");
+  const areas = Object.keys(bh).sort();
+  for (const area of areas) {
+    const areaBh = bh[area];
+    const areaLabel = area === "bakery" ? "Bakery" : area === "sewing" ? "Sewing" : area;
+    lines.push("### " + areaLabel);
     lines.push("");
-    const high = bh.recommendations.filter(r => r.priority === "HIGH");
-    const med = bh.recommendations.filter(r => r.priority === "MEDIUM");
-    if (high.length > 0) {
-      lines.push("**HIGH PRIORITY**");
-      for (const r of high) {
-        lines.push("- " + r.text);
+    lines.push("Score: " + areaBh.score + "/" + areaBh.maxScore);
+    lines.push("Status: " + areaBh.status);
+    lines.push("");
+
+    const m = areaBh.metrics;
+    lines.push("| Metric | Value |");
+    lines.push("|--------|-------|");
+    lines.push("| Total Products | " + m.totalProducts + " |");
+    lines.push("| Active Products | " + m.activeProducts + " |");
+    lines.push("| Featured Products | " + m.featuredProducts + " |");
+    lines.push("| Homepage Featured | " + m.homepageFeatured + " |");
+    lines.push("| Gallery Featured | " + m.galleryFeatured + " |");
+    lines.push("| Total Images | " + m.totalImages + " |");
+    lines.push("| Average Images/Product | " + m.averageImagesPerProduct + " |");
+    lines.push("| Products without images | " + m.productsWithNoImages + " |");
+    lines.push("| Products needing more images | " + m.productsWithOneImage + " |");
+    lines.push("| Missing Short Descriptions | " + m.missingShortDescriptions + " |");
+    lines.push("| Missing Descriptions | " + m.missingDescriptions + " |");
+    lines.push("| Missing Prices | " + m.missingPrices + " |");
+    lines.push("");
+
+    if (areaBh.productAnalysis.length > 0) {
+      lines.push("#### Product Inventory");
+      lines.push("");
+      lines.push("| Product | Images | Form | Price | Short | Description | Featured | Home | Gallery |");
+      lines.push("|---------|--------|------|-------|-------|-------------|----------|------|---------|");
+      for (const p of areaBh.productAnalysis) {
+        const icon = p.imageScore === "FAIL" ? "FAIL" : p.imageScore === "WARN" ? "WARN" : "OK";
+        const form = p.hasValidFormId === null ? "\u2014" : p.hasValidFormId ? "OK" : "MISS";
+        const price = p.hasPrice ? "OK" : "MISS";
+        const short = p.hasShortDescription ? "OK" : "MISS";
+        const desc = p.hasDescription ? "OK" : "MISS";
+        const feat = p.isFeatured ? "OK" : "";
+        const home = p.isHomepageFeatured ? "OK" : "";
+        const gal = p.isGalleryFeatured ? "OK" : "";
+        lines.push("| " + p.name + " | " + p.imageCount + " " + icon + " | " + form + " | " + price + " | " + short + " | " + desc + " | " + feat + " | " + home + " | " + gal + " |");
       }
       lines.push("");
     }
-    if (med.length > 0) {
-      lines.push("**MEDIUM PRIORITY**");
-      for (const r of med) {
-        lines.push("- " + r.text);
-      }
+
+    lines.push("#### Forms");
+    lines.push("");
+    lines.push("- Products requiring forms: " + areaBh.formCoverage.productsWithForms);
+    lines.push("- Valid form IDs: " + areaBh.formCoverage.uniqueFormIds);
+    lines.push("- Valid forms: " + areaBh.formCoverage.valid);
+    if (areaBh.formCoverage.missing > 0) {
+      lines.push("- Missing: " + areaBh.formCoverage.missing);
+      lines.push("  - " + areaBh.formCoverage.missingIds.join(", "));
+    }
+    lines.push("");
+
+    if (areaBh.recommendations.length > 0) {
+      lines.push("#### Recommendations");
       lines.push("");
+      const high = areaBh.recommendations.filter(r => r.priority === "HIGH");
+      const med = areaBh.recommendations.filter(r => r.priority === "MEDIUM");
+      if (high.length > 0) {
+        lines.push("**HIGH PRIORITY**");
+        for (const r of high) {
+          lines.push("- " + r.text);
+        }
+        lines.push("");
+      }
+      if (med.length > 0) {
+        lines.push("**MEDIUM PRIORITY**");
+        for (const r of med) {
+          lines.push("- " + r.text);
+        }
+        lines.push("");
+      }
     }
   }
 

@@ -6,9 +6,10 @@
 
 import { google } from 'googleapis';
 
-const SCOPES = ['https://www.googleapis.com/auth/drive.readonly'];
+const READ_SCOPES = ['https://www.googleapis.com/auth/drive.readonly'];
+const WRITE_SCOPES = ['https://www.googleapis.com/auth/drive'];
 
-export async function authenticateDrive() {
+export async function authenticateDrive(write = false) {
   const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
   const privateKey = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
 
@@ -29,7 +30,7 @@ export async function authenticateDrive() {
   const auth = new google.auth.JWT({
     email: clientEmail,
     key: privateKey,
-    scopes: SCOPES,
+    scopes: write ? WRITE_SCOPES : READ_SCOPES,
   });
 
   const drive = google.drive({ version: 'v3', auth });

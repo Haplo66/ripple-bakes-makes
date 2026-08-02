@@ -4,7 +4,7 @@
  *
  */
 
-import { authenticateDriveWithWrite } from './drive-write-auth.ts';
+import { authenticateDrive } from './drive-auth.ts';
 import type { drive_v3 } from 'googleapis';
 
 const PRODUCT_ID_PATTERN = /^[A-Z]{2}-[A-Z]{2}-\d{3}$/;
@@ -376,7 +376,7 @@ async function run(): Promise<void> {
 
   let drive: drive_v3.Drive;
   try {
-    drive = await authenticateDriveWithWrite();
+    drive = await authenticateDrive(true);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.error(`Authentication failed: ${message}`);
