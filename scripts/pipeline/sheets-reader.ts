@@ -25,6 +25,7 @@ export const HEADER_MAP: Record<DatasetName, Record<string, string>> = {
     'Business Area': 'businessArea',
     'Product Name': 'name',
     'Short Description': 'shortDescription',
+    'Description': 'description',
     'Collection': 'collection',
     'Form ID': 'formId',
     'Image Folder': 'imageFolder',
