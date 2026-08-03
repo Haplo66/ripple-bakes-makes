@@ -43,6 +43,18 @@ const sanitizeValue = (
 const isValidPrice = (price: unknown): price is number =>
   typeof price === 'number' && Number.isFinite(price);
 
+/** Computes the total price of a cart, matching the order line totals. */
+export const getCartTotal = (cart: Cart): number =>
+  cart.items.reduce(
+    (sum, item) =>
+      sum + (isValidPrice(item.price) ? (item.price as number) * item.quantity : 0),
+    0,
+  );
+
+/** Computes the total price of an order from its line totals. */
+export const getOrderTotal = (order: Order): number =>
+  order.items.reduce((sum, item) => sum + item.totalPrice, 0);
+
 /** Converts the current cart into a checkout-ready order payload. */
 export const createOrderFromCart = (cart: Cart): Order => {
   const invalidItem = cart.items.find((item) => !isValidPrice(item.price));

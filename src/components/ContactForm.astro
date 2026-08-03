@@ -10,7 +10,15 @@
     </label>
     <label>
       <span class="label-text">Phone <span>(optional)</span></span>
-      <input type="tel" name="phone" autocomplete="tel" placeholder="(000) 000-0000" />
+      <input
+        type="tel"
+        name="phone"
+        autocomplete="tel"
+        inputmode="tel"
+        pattern="^\+?[\d\s().-]+$"
+        title="Enter a valid phone number, e.g. 555-123-4567 or +1 555 123 4567."
+        placeholder="(000) 000-0000"
+      />
     </label>
     <label>
       <span class="label-text">Preferred contact</span>
@@ -56,18 +64,29 @@
 </form>
 
 <script>
+  import { isValidPhone, PHONE_VALIDATION_MESSAGE } from '../utils/phone';
+
   const FORM_ENDPOINT = import.meta.env?.PUBLIC_SUBMISSION_ENDPOINT || '';
   const FORM_TOKEN = import.meta.env?.PUBLIC_ORDER_TOKEN || '';
 
-  const form = document.querySelector('[data-contact-form]');
-  const feedback = document.querySelector('[data-form-feedback]');
-  const submitText = document.querySelector('[data-submit-text]');
-  const submitLoading = document.querySelector('[data-submit-loading]');
-  const confirmation = document.querySelector('[data-form-confirmation]');
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  const feedback = document.querySelector<HTMLElement>('[data-form-feedback]');
+  const submitText = document.querySelector<HTMLElement>('[data-submit-text]');
+  const submitLoading = document.querySelector<HTMLElement>('[data-submit-loading]');
+  const confirmation = document.querySelector<HTMLElement>('[data-form-confirmation]');
+  const phoneInput = form?.querySelector<HTMLInputElement>('[name="phone"]');
 
   if (!form) throw new Error('Contact form not found');
 
-  const showFeedback = (message) => {
+  const validatePhoneInput = () => {
+    if (!phoneInput) return;
+    const value = phoneInput.value.trim();
+    phoneInput.setCustomValidity(
+      value === '' || isValidPhone(value) ? '' : PHONE_VALIDATION_MESSAGE,
+    );
+  };
+
+  const showFeedback = (message: string) => {
     if (!feedback) return;
     feedback.textContent = message;
     feedback.hidden = false;
@@ -79,17 +98,21 @@
     feedback.hidden = true;
   };
 
-  const setSubmitting = (submitting) => {
+  const setSubmitting = (submitting: boolean) => {
     if (!submitText || !submitLoading) return;
     submitText.hidden = submitting;
     submitLoading.hidden = !submitting;
   };
+
+  phoneInput?.addEventListener('input', validatePhoneInput);
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     hideFeedback();
 
     if (confirmation) confirmation.hidden = true;
+
+    validatePhoneInput();
 
     if (!form.reportValidity()) return;
 

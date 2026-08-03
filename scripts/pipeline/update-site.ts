@@ -17,7 +17,11 @@ function runScript(name: string, args: string[] = []): void {
   const script = join(SCRIPTS, name);
   const quotedNode = NODE.includes(' ') ? `"${NODE}"` : NODE;
   const cmd = [quotedNode, `--env-file="${ENV_FILE}"`, '--experimental-strip-types', `"${script}"`, ...args].join(' ');
-  execSync(cmd, { stdio: 'inherit', cwd: PROJECT_ROOT, shell: true });
+  execSync(cmd, {
+    stdio: 'inherit',
+    cwd: PROJECT_ROOT,
+    shell: process.platform === 'win32' ? process.env.ComSpec || 'cmd.exe' : '/bin/sh',
+  });
 }
 
 function validateEnv(): void {

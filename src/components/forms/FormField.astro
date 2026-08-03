@@ -8,7 +8,14 @@ interface Props {
 const { field } = Astro.props;
 const fieldId = `field-${field.id}`;
 const hasOptions = Boolean(field.options?.length);
-const inputType = field.type === 'phone' ? 'tel' : field.type;
+const inputType = (field.type === 'phone' ? 'tel' : field.type) as
+  | 'text'
+  | 'number'
+  | 'date'
+  | 'email'
+  | 'tel'
+  | 'radio'
+  | 'checkbox';
 const showOther = field.type === 'select' && field.options?.some((o) => /other/i.test(o.label));
 const otherInputName = field.id + '-other';
 const otherPlaceholder = 'Enter your ' + field.label.toLowerCase();

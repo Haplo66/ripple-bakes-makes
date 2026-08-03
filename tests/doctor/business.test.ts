@@ -173,7 +173,7 @@ describe('analyzeProducts', () => {
     const products = [
       { id: 'p1', name: 'P1', active: true, images: ['a.jpg', 'b.jpg'], businessArea: 'bakery', collection: 'coll-1' },
       { id: 'p2', name: 'P2', active: true, images: ['a.jpg'], businessArea: 'bakery', collection: 'coll-1' },
-      { id: 'p3', name: 'P3', active: true, active: true, businessArea: 'bakery', collection: 'coll-1' },
+      { id: 'p3', name: 'P3', active: true, businessArea: 'bakery', collection: 'coll-1' },
     ];
     const result = analyzeProducts(products as never, defaultCollectionIds, defaultFormIds);
     assert.strictEqual(result[0].imageScore, 'PASS');

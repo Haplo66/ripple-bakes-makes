@@ -5,10 +5,10 @@
  */
 
 import type { DoctorResult, DoctorReport } from "../types.ts";
-import type { BusinessHealthResult } from "../business.ts";
+import type { BusinessHealthByArea, BusinessHealthResult } from "../business.ts";
 
 function consoleReport(report: DoctorReport): void {
-  const bh = report.businessHealth as unknown as BusinessHealthResult;
+  const bh = report.businessHealth as unknown as BusinessHealthByArea;
 
   console.log("\nRIPPLE Doctor\n");
 
@@ -52,58 +52,38 @@ function consoleReport(report: DoctorReport): void {
 
   console.log("");
   console.log("====================");
-  console.log("Business Health");
+  console.log("Business Health by Area");
   console.log("====================");
   console.log("");
-  console.log("Catalog Score:");
-  console.log("  " + bh.score + "/" + bh.maxScore);
-  console.log("Status: " + bh.status);
-  console.log("");
 
-  const m = bh.metrics;
-  console.log("Products: " + m.totalProducts);
-  console.log("Collections: " + (report.results.find(r => r.id === "DATA-002")?.summary.match(/\d+/) || ["?"])[0]);
-  console.log("Forms: " + (report.results.find(r => r.id === "DATA-003")?.summary.match(/\d+/) || ["?"])[0]);
-  console.log("");
+  const areas = Object.keys(bh).sort();
+  for (const area of areas) {
+    const areaBh = bh[area];
+    const areaLabel = area === "bakery" ? "Bakery" : area === "sewing" ? "Sewing" : area;
+    console.log(areaLabel);
+    console.log("");
+    console.log("  Catalog Score: " + areaBh.score + "/" + areaBh.maxScore);
+    console.log("  Status: " + areaBh.status);
+    console.log("");
 
-  console.log("Product Inventory");
-  console.log("");
+    const m = areaBh.metrics;
+    console.log("  Products: " + m.totalProducts);
+    console.log("  Total Images: " + m.totalImages);
+    console.log("  Average Images/Product: " + m.averageImagesPerProduct);
+    console.log("  Products without images: " + m.productsWithNoImages);
+    console.log("  Missing Short Descriptions: " + m.missingShortDescriptions);
+    console.log("  Missing Descriptions: " + m.missingDescriptions);
+    console.log("  Missing Prices: " + m.missingPrices);
+    console.log("");
 
-  const header = "| Product | Images | Form | Price | Short | Description | Featured | Home | Gallery |";
-  const sep = "|---------|--------|------|-------|-------|-------------|----------|------|---------|";
-  console.log(header);
-  console.log(sep);
-  for (const p of bh.productAnalysis) {
-    const icon = p.imageScore === "FAIL" ? "\u2717" : p.imageScore === "WARN" ? "\u26A0" : "\u2713";
-    const form = p.hasValidFormId === null ? "\u2014" : p.hasValidFormId ? "\u2713" : "\u2717";
-    const price = p.hasPrice ? "\u2713" : "\u2717";
-    const short = p.hasShortDescription ? "\u2713" : "\u2717";
-    const desc = p.hasDescription ? "\u2713" : "\u2717";
-    const feat = p.isFeatured ? "\u2713" : "\u2717";
-    const home = p.isHomepageFeatured ? "\u2713" : "\u2717";
-    const gal = p.isGalleryFeatured ? "\u2713" : "\u2717";
-    console.log("| " + p.name + " | " + p.imageCount + " " + icon + " | " + form + " | " + price + " | " + short + " | " + desc + " | " + feat + " | " + home + " | " + gal + " |");
+    if (areaBh.recommendations.length > 0) {
+      console.log("  Recommendations:");
+      for (const rec of areaBh.recommendations) {
+        console.log("    - [" + rec.priority + "] " + rec.text);
+      }
+      console.log("");
+    }
   }
-  console.log("");
-
-  console.log("Images");
-  console.log("");
-  console.log("Total product images: " + m.totalImages);
-  console.log("Average images/product: " + m.averageImagesPerProduct);
-  console.log("Products without images: " + m.productsWithNoImages);
-  console.log("Products needing more images: " + m.productsWithOneImage);
-  console.log("");
-
-  console.log("Forms");
-  console.log("");
-  console.log("Products requiring forms: " + bh.formCoverage.productsWithForms);
-  console.log("Valid form IDs: " + bh.formCoverage.uniqueFormIds);
-  console.log("Valid forms: " + bh.formCoverage.valid);
-  if (bh.formCoverage.missing > 0) {
-    console.log("Missing: " + bh.formCoverage.missing);
-    console.log("  " + bh.formCoverage.missingIds.join(", "));
-  }
-  console.log("");
 
   if (report.visibility) {
     console.log("====================");
@@ -128,39 +108,6 @@ function consoleReport(report: DoctorReport): void {
     console.log("Avg Engagement Time: " + (eng != null ? Math.round(eng) + "s" : "Unavailable"));
     console.log("Top Page: " + (report.visitors.topPage ?? "Unavailable"));
     console.log("");
-  }
-
-  console.log("Business Metrics");
-  console.log("");
-  console.log("Total Products: " + m.totalProducts);
-  console.log("Active Products: " + m.activeProducts);
-  console.log("Featured Products: " + m.featuredProducts);
-  console.log("Homepage Featured: " + m.homepageFeatured);
-  console.log("Gallery Featured: " + m.galleryFeatured);
-  console.log("Average Images/Product: " + m.averageImagesPerProduct);
-  console.log("Missing Short Descriptions: " + m.missingShortDescriptions);
-  console.log("Missing Descriptions: " + m.missingDescriptions);
-  console.log("");
-
-  if (bh.recommendations.length > 0) {
-    console.log("Recommendations");
-    console.log("");
-    const high = bh.recommendations.filter(r => r.priority === "HIGH");
-    const med = bh.recommendations.filter(r => r.priority === "MEDIUM");
-    if (high.length > 0) {
-      console.log("HIGH PRIORITY");
-      for (const r of high) {
-        console.log("  - " + r.text);
-      }
-      console.log("");
-    }
-    if (med.length > 0) {
-      console.log("MEDIUM PRIORITY");
-      for (const r of med) {
-        console.log("  - " + r.text);
-      }
-      console.log("");
-    }
   }
 }
 

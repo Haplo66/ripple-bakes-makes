@@ -24,6 +24,7 @@ export const productStatusLabels: Record<string, string> = {
   seasonal: 'Seasonal',
   'out-of-stock': 'Out of Stock',
   preorder: 'Preorder',
+  inactive: 'Coming Soon',
 };
 
 export const formatProductStatus = (status: string): string =>

@@ -41,13 +41,13 @@ const mainImage = primaryImage || (hasImages ? images[0] : null);
 </div>
 
 <script>
-  const mainImg = document.querySelector('[data-gallery-main] .product-gallery__main-img');
+  const mainImg = document.querySelector<HTMLImageElement>('[data-gallery-main] .product-gallery__main-img');
   const thumbEls = document.querySelectorAll('[data-thumb]');
 
   if (mainImg && thumbEls.length > 0) {
     thumbEls.forEach((thumb) => {
       thumb.addEventListener('click', () => {
-        const thumbImg = thumb.querySelector('.product-gallery__thumb-img');
+        const thumbImg = thumb.querySelector<HTMLImageElement>('.product-gallery__thumb-img');
         if (thumbImg) {
           mainImg.src = thumbImg.src;
           mainImg.srcset = thumbImg.srcset || '';

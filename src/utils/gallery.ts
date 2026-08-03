@@ -4,18 +4,32 @@
  *
  */
 
-import { getAllProducts } from '../data/products';
-import { getAllCollections } from '../data/collections';
-import { getProductPrimaryImage, getCollectionPrimaryImage } from './images';
-import { sitePath } from './paths';
+import { getAllProducts } from '../data/products.ts';
+import { getAllCollections } from '../data/collections.ts';
+import { getProductPrimaryImage, getCollectionPrimaryImage } from './images.ts';
+import { sitePath, getProductPath, collectionPath } from './paths.ts';
 import galleryAssets from '../content/gallery-assets.json' with { type: 'json' };
 
 export interface GalleryItem {
   image: string;
   title: string;
+  description?: string;
+  href?: string;
+  cta?: string;
   businessArea: 'bakery' | 'sewing' | null;
   sourceType: 'product' | 'collection' | 'personal';
 }
+
+/**
+ * Reuses existing product/collection copy for the gallery story,
+ * falling back through description, short description, then the name.
+ * Avoids duplicate caption content — Sheets remains the source of truth.
+ */
+export const galleryStory = (
+  description: string | undefined,
+  shortDescription: string | undefined,
+  fallback: string,
+): string => (description ?? '').trim() || (shortDescription ?? '').trim() || fallback;
 
 function isDistinctImage(url: string, seen: Set<string>): boolean {
   if (seen.has(url)) return false;
@@ -33,6 +47,9 @@ export function getProductGalleryItems(): GalleryItem[] {
     items.push({
       image,
       title: product.title,
+      description: galleryStory(product.description, product.shortDescription, product.title),
+      href: getProductPath(product),
+      cta: 'View Product',
       businessArea: product.businessArea,
       sourceType: 'product',
     });
@@ -51,6 +68,9 @@ export function getCollectionGalleryItems(): GalleryItem[] {
     items.push({
       image,
       title: collection.title,
+      description: galleryStory(collection.description, collection.shortDescription, collection.title),
+      href: collectionPath(collection.category, collection.slug),
+      cta: 'View Collection',
       businessArea: collection.category,
       sourceType: 'collection',
     });

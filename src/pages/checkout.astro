@@ -37,12 +37,20 @@ import { sitePath } from '../utils/paths';
 
             <label>
               Phone
-              <input type="tel" name="phone" autocomplete="tel" required />
+              <input
+                type="tel"
+                name="phone"
+                autocomplete="tel"
+                inputmode="tel"
+                pattern="^\+?[\d\s().-]+$"
+                title="Enter a valid phone number, e.g. 555-123-4567 or +1 555 123 4567."
+                required
+              />
             </label>
 
             <label>
-              Preferred Contact Method
-              <select name="preferredContactMethod" required>
+              Preferred Contact Method <span class="optional">(optional)</span>
+              <select name="preferredContactMethod">
                 <option value="">Select one</option>
                 <option value="email">Email</option>
                 <option value="phone">Phone</option>
@@ -51,8 +59,8 @@ import { sitePath } from '../utils/paths';
             </label>
 
             <label>
-              Preferred Pickup Date
-              <input type="date" name="preferredPickupDate" required />
+              Preferred Pickup Date <span class="optional">(optional)</span>
+              <input type="date" name="preferredPickupDate" />
             </label>
 
             <label class="checkout-fields__wide">
@@ -64,12 +72,8 @@ import { sitePath } from '../utils/paths';
           <p class="checkout-message" data-checkout-error hidden></p>
 
           <button class="button button--honey checkout-submit" type="submit">
-            <span data-submit-text>Prepare order</span>
-            <span data-submit-loading hidden>Submitting...</span>
-          </button>
-
-          <button class="checkout-retry" type="button" data-checkout-retry hidden>
-            Try again
+            Review order
+            <span class="arrow" aria-hidden="true">→</span>
           </button>
         </div>
       </form>
@@ -84,7 +88,48 @@ import { sitePath } from '../utils/paths';
         </div>
 
         <div class="order-summary__items" data-checkout-summary></div>
+
+        <div class="order-summary__total" data-checkout-total hidden>
+          <span>Order Total</span>
+          <strong data-checkout-total-price></strong>
+        </div>
       </aside>
+
+      <section class="checkout-review" data-checkout-review hidden>
+        <div class="checkout-review__heading">
+          <span class="eyebrow">Review your order</span>
+          <h2>Everything look right?</h2>
+          <p>Check your items, customizations, and total before submitting.</p>
+        </div>
+
+        <div class="checkout-review__items" data-checkout-review-items></div>
+
+        <div class="checkout-review__customer-wrap">
+          <h3>Your details</h3>
+          <dl class="checkout-review__customer" data-checkout-review-customer></dl>
+        </div>
+
+        <div class="checkout-review__total">
+          <span>Order Total</span>
+          <strong data-checkout-review-total></strong>
+        </div>
+
+        <p class="checkout-message" data-checkout-review-error hidden></p>
+
+        <div class="checkout-review__actions">
+          <button class="button button--light" type="button" data-checkout-back>
+            Back to edit
+          </button>
+          <button class="button button--honey" type="button" data-checkout-confirm>
+            <span data-confirm-text>Confirm order</span>
+            <span data-confirm-loading hidden>Submitting...</span>
+          </button>
+        </div>
+
+        <button class="checkout-retry" type="button" data-checkout-retry hidden>
+          Try again
+        </button>
+      </section>
 
       <section class="checkout-confirmation" data-checkout-confirmation hidden>
         <span class="eyebrow">Prepared</span>
@@ -116,42 +161,88 @@ import { sitePath } from '../utils/paths';
 
       <dl class="summary-item__configuration" data-checkout-item-configuration></dl>
       <p class="summary-item__notes" data-checkout-item-notes></p>
+      <p class="summary-item__unit-price" data-checkout-item-unit-price></p>
+      <p class="summary-item__line-total" data-checkout-item-line-total></p>
     </article>
   </template>
 </MainLayout>
 
 <script>
+  import type { Cart, CartItem } from '../types/cart';
+  import type { OrderCustomer } from '../types/order';
   import { clearCart, getCart } from '../utils/cart';
-  import { formatLabel, formatValue } from '../utils/format';
-  import { createOrderFromCart, sanitizeValue } from '../utils/order';
+  import { formatLabel, formatPrice, formatValue } from '../utils/format';
+  import { createOrderFromCart, getCartTotal, sanitizeValue } from '../utils/order';
+  import { isValidPhone, PHONE_VALIDATION_MESSAGE } from '../utils/phone';
   import { submitOrder } from '../utils/submission';
 
-  const checkoutReady = document.querySelector('[data-checkout-ready]');
-  const checkoutForm = document.querySelector('[data-checkout-form]');
-  const emptyState = document.querySelector('[data-checkout-empty]');
-  const summaryList = document.querySelector('[data-checkout-summary]');
-  const totalCount = document.querySelector('[data-checkout-total-count]');
-  const totalLabel = document.querySelector('[data-checkout-total-label]');
-  const template = document.querySelector('#checkout-item-template');
-  const checkoutError = document.querySelector('[data-checkout-error]');
-  const confirmation = document.querySelector('[data-checkout-confirmation]');
-  const resultTitle = document.querySelector('[data-checkout-result-title]');
-  const resultMessage = document.querySelector('[data-checkout-result-message]');
-  const resultReference = document.querySelector('[data-checkout-result-reference]');
-  const submitButton = document.querySelector('.checkout-submit');
-  const submitText = document.querySelector('[data-submit-text]');
-  const submitLoading = document.querySelector('[data-submit-loading]');
-  const retryButton = document.querySelector('[data-checkout-retry]');
+  const checkoutReady = document.querySelector<HTMLElement>('[data-checkout-ready]');
+  const checkoutForm = document.querySelector<HTMLFormElement>('[data-checkout-form]');
+  const emptyState = document.querySelector<HTMLElement>('[data-checkout-empty]');
+  const orderSummary = document.querySelector<HTMLElement>('.order-summary');
+  const summaryList = document.querySelector<HTMLElement>('[data-checkout-summary]');
+  const totalCount = document.querySelector<HTMLElement>('[data-checkout-total-count]');
+  const totalLabel = document.querySelector<HTMLElement>('[data-checkout-total-label]');
+  const totalPrice = document.querySelector<HTMLElement>('[data-checkout-total-price]');
+  const totalBlock = document.querySelector<HTMLElement>('[data-checkout-total]');
+  const template = document.querySelector<HTMLTemplateElement>('#checkout-item-template');
+  const checkoutError = document.querySelector<HTMLElement>('[data-checkout-error]');
+  const reviewSection = document.querySelector<HTMLElement>('[data-checkout-review]');
+  const reviewItems = document.querySelector<HTMLElement>('[data-checkout-review-items]');
+  const reviewCustomer = document.querySelector<HTMLElement>('[data-checkout-review-customer]');
+  const reviewTotal = document.querySelector<HTMLElement>('[data-checkout-review-total]');
+  const reviewError = document.querySelector<HTMLElement>('[data-checkout-review-error]');
+  const confirmButton = document.querySelector<HTMLButtonElement>('[data-checkout-confirm]');
+  const confirmText = document.querySelector<HTMLElement>('[data-confirm-text]');
+  const confirmLoading = document.querySelector<HTMLElement>('[data-confirm-loading]');
+  const backButton = document.querySelector<HTMLElement>('[data-checkout-back]');
+  const retryButton = document.querySelector<HTMLElement>('[data-checkout-retry]');
+  const confirmation = document.querySelector<HTMLElement>('[data-checkout-confirmation]');
+  const resultTitle = document.querySelector<HTMLElement>('[data-checkout-result-title]');
+  const resultMessage = document.querySelector<HTMLElement>('[data-checkout-result-message]');
+  const resultReference = document.querySelector<HTMLElement>('[data-checkout-result-reference]');
+  const phoneInput = checkoutForm?.querySelector<HTMLInputElement>('[name="phone"]');
 
-  const getFieldValue = (formData, fieldName) =>
+  const CONTACT_METHOD_LABELS = {
+    email: 'Email',
+    phone: 'Phone',
+    text: 'Text message',
+  };
+
+  const STEPS = { DETAILS: 'details', REVIEW: 'review', SUBMITTED: 'submitted' };
+  let currentStep = STEPS.DETAILS;
+
+  const getFieldValue = (formData: FormData, fieldName: string) =>
     String(formData.get(fieldName) || '').trim();
 
-  const clearSubmitFeedback = () => {
-    if (checkoutError) {
-      checkoutError.textContent = '';
-      checkoutError.hidden = true;
-    }
+  const buildCustomerFromForm = (): OrderCustomer => {
+    if (!checkoutForm) return {};
+    const formData = new FormData(checkoutForm);
+    return {
+      name: sanitizeValue(getFieldValue(formData, 'name')) as string,
+      email: sanitizeValue(getFieldValue(formData, 'email')) as string,
+      phone: sanitizeValue(getFieldValue(formData, 'phone')) as string,
+      preferredContactMethod: sanitizeValue(getFieldValue(formData, 'preferredContactMethod')) as string,
+      preferredPickupDate: sanitizeValue(getFieldValue(formData, 'preferredPickupDate')) as string,
+      additionalNotes: sanitizeValue(getFieldValue(formData, 'additionalNotes')) as string,
+    };
+  };
 
+  const setError = (element: HTMLElement | null, message: string) => {
+    if (!element) return;
+    element.textContent = message;
+    element.hidden = false;
+  };
+
+  const clearError = (element: HTMLElement | null) => {
+    if (!element) return;
+    element.textContent = '';
+    element.hidden = true;
+  };
+
+  const clearSubmitFeedback = () => {
+    clearError(checkoutError);
+    clearError(reviewError);
     if (confirmation) confirmation.hidden = true;
     if (resultTitle) resultTitle.textContent = 'Order placed';
     if (resultMessage) resultMessage.textContent = '';
@@ -162,11 +253,129 @@ import { sitePath } from '../utils/paths';
     if (retryButton) retryButton.hidden = true;
   };
 
-  const setSubmitting = (submitting) => {
-    if (!submitButton || !submitText || !submitLoading) return;
-    submitButton.disabled = submitting;
-    submitText.hidden = submitting;
-    submitLoading.hidden = !submitting;
+  const setConfirmSubmitting = (submitting: boolean) => {
+    if (!confirmButton || !confirmText || !confirmLoading) return;
+    confirmButton.disabled = submitting;
+    confirmText.hidden = submitting;
+    confirmLoading.hidden = !submitting;
+  };
+
+  const validatePhoneInput = () => {
+    if (!phoneInput) return;
+    const value = phoneInput.value.trim();
+    phoneInput.setCustomValidity(
+      value === '' || isValidPhone(value) ? '' : PHONE_VALIDATION_MESSAGE,
+    );
+  };
+
+  const showCheckoutStep = (step: string) => {
+    const showDetails = step === STEPS.DETAILS;
+    if (checkoutForm) checkoutForm.hidden = !showDetails;
+    if (orderSummary) orderSummary.hidden = !showDetails;
+    if (reviewSection) reviewSection.hidden = showDetails;
+    if (confirmation) confirmation.hidden = true;
+  };
+
+  const fillItem = (
+    fragment: DocumentFragment,
+    item: CartItem,
+    unitPrice: string | null,
+    lineTotal: string | null,
+  ) => {
+    const title = fragment.querySelector<HTMLElement>('[data-checkout-item-title]');
+    const quantity = fragment.querySelector<HTMLElement>('[data-checkout-item-quantity]');
+    const configuration = fragment.querySelector<HTMLElement>('[data-checkout-item-configuration]');
+    const notes = fragment.querySelector<HTMLElement>('[data-checkout-item-notes]');
+    const unitPriceEl = fragment.querySelector<HTMLElement>('[data-checkout-item-unit-price]');
+    const lineTotalEl = fragment.querySelector<HTMLElement>('[data-checkout-item-line-total]');
+
+    if (
+      !title ||
+      !quantity ||
+      !configuration ||
+      !notes ||
+      !unitPriceEl ||
+      !lineTotalEl
+    ) {
+      return;
+    }
+
+    title.textContent = item.productTitle;
+    quantity.textContent = String(item.quantity);
+    notes.textContent = item.notes ? `Notes: ${item.notes}` : '';
+    unitPriceEl.textContent = unitPrice ? `${unitPrice} each` : '';
+    lineTotalEl.textContent = lineTotal ? `Line total: ${lineTotal}` : '';
+
+    Object.entries(item.configuration).forEach(([key, value]) => {
+      const term = document.createElement('dt');
+      const description = document.createElement('dd');
+
+      term.textContent = formatLabel(key);
+      description.textContent = formatValue(value);
+      configuration.append(term, description);
+    });
+  };
+
+  const renderSummaryItems = (cart: Cart) => {
+    if (!summaryList || !template) return;
+
+    summaryList.textContent = '';
+    if (reviewItems) reviewItems.textContent = '';
+
+    const count = cart.items.reduce((total, item) => total + item.quantity, 0);
+    const total = getCartTotal(cart);
+    const totalText = formatPrice(total);
+
+    if (totalCount) totalCount.textContent = String(count);
+    if (totalLabel) totalLabel.textContent = count === 1 ? 'item' : 'items';
+    if (totalPrice) totalPrice.textContent = totalText;
+    if (reviewTotal) reviewTotal.textContent = totalText;
+
+    cart.items.forEach((item) => {
+      const lineTotal = (item.price ?? 0) * item.quantity;
+      const unitPrice = formatPrice(item.price);
+
+      const sidebarFragment = template.content.cloneNode(true) as DocumentFragment;
+      fillItem(sidebarFragment, item, unitPrice, formatPrice(lineTotal));
+      summaryList.append(sidebarFragment);
+
+      if (reviewItems) {
+        const reviewFragment = template.content.cloneNode(true) as DocumentFragment;
+        fillItem(reviewFragment, item, unitPrice, formatPrice(lineTotal));
+        reviewItems.append(reviewFragment);
+      }
+    });
+  };
+
+  const renderCustomerRecap = (customer: OrderCustomer) => {
+    if (!reviewCustomer || !customer) return;
+    reviewCustomer.textContent = '';
+
+    const contactMethod = customer.preferredContactMethod;
+
+    const rows: Array<[string, string]> = [
+      ['Name', customer.name || ''],
+      ['Email', customer.email || ''],
+      ['Phone', customer.phone || 'Not provided'],
+      [
+        'Preferred contact',
+        contactMethod
+          ? (CONTACT_METHOD_LABELS[contactMethod as keyof typeof CONTACT_METHOD_LABELS] ||
+              formatLabel(contactMethod))
+          : 'Not specified',
+      ],
+      ['Pickup date', customer.preferredPickupDate || 'Not specified'],
+      ['Additional notes', customer.additionalNotes || 'None'],
+    ];
+
+    rows.forEach(([label, value]) => {
+      const term = document.createElement('dt');
+      const description = document.createElement('dd');
+
+      term.textContent = label;
+      description.textContent = value;
+      reviewCustomer.append(term, description);
+    });
   };
 
   const renderCheckout = () => {
@@ -174,53 +383,105 @@ import { sitePath } from '../utils/paths';
 
     if (!checkoutReady || !emptyState || !summaryList || !template) return;
 
-    const count = cart.items.reduce((total, item) => total + item.quantity, 0);
+    renderSummaryItems(cart);
+
+    if (currentStep === STEPS.SUBMITTED) {
+      checkoutReady.hidden = false;
+      emptyState.hidden = true;
+      if (checkoutForm) checkoutForm.hidden = true;
+      if (orderSummary) orderSummary.hidden = true;
+      if (reviewSection) reviewSection.hidden = true;
+      if (confirmation) confirmation.hidden = false;
+      return;
+    }
+
     const hasItems = cart.items.length > 0;
 
-    checkoutReady.hidden = !hasItems;
-    emptyState.hidden = hasItems;
-    summaryList.textContent = '';
+    if (!hasItems) {
+      currentStep = STEPS.DETAILS;
+      checkoutReady.hidden = true;
+      emptyState.hidden = false;
+      if (confirmation) confirmation.hidden = true;
+      return;
+    }
+
+    if (totalBlock) totalBlock.hidden = false;
+
+    checkoutReady.hidden = false;
+    emptyState.hidden = true;
+    showCheckoutStep(currentStep);
     clearSubmitFeedback();
-    setSubmitting(false);
-
-    if (totalCount) totalCount.textContent = String(count);
-    if (totalLabel) totalLabel.textContent = count === 1 ? 'item' : 'items';
-
-    if (!hasItems) return;
-
-    cart.items.forEach((item) => {
-      const fragment = template.content.cloneNode(true);
-      const title = fragment.querySelector('[data-checkout-item-title]');
-      const quantity = fragment.querySelector('[data-checkout-item-quantity]');
-      const configuration = fragment.querySelector('[data-checkout-item-configuration]');
-      const notes = fragment.querySelector('[data-checkout-item-notes]');
-
-      title.textContent = item.productTitle;
-      quantity.textContent = String(item.quantity);
-      notes.textContent = item.notes ? `Notes: ${item.notes}` : '';
-
-      Object.entries(item.configuration).forEach(([key, value]) => {
-        const term = document.createElement('dt');
-        const description = document.createElement('dd');
-
-        term.textContent = formatLabel(key);
-        description.textContent = formatValue(value);
-        configuration.append(term, description);
-      });
-
-      summaryList.append(fragment);
-    });
+    setConfirmSubmitting(false);
   };
 
   const doSubmit = async () => {
-    clearSubmitFeedback();
-
     if (!checkoutForm) return;
 
-    const form = checkoutForm;
+    const cart = getCart();
 
-    if (!form.checkValidity()) {
-      form.reportValidity();
+    if (cart.items.length === 0) {
+      renderCheckout();
+      return;
+    }
+
+    const invalidItems = cart.items.filter(
+      (item) => item.price == null || !Number.isFinite(item.price),
+    );
+
+    if (invalidItems.length > 0) {
+      setError(
+        reviewError,
+        'Some items in your cart have no price and cannot be ordered. Please go back and remove them.',
+      );
+      return;
+    }
+
+    clearSubmitFeedback();
+    setConfirmSubmitting(true);
+
+    try {
+      const order = createOrderFromCart(cart);
+
+      order.customer = buildCustomerFromForm();
+
+      const result = await submitOrder(order);
+
+      if (result.success) {
+        currentStep = STEPS.SUBMITTED;
+        clearCart();
+        renderCheckout();
+
+        if (resultTitle) resultTitle.textContent = 'Order placed';
+        if (resultMessage) {
+          resultMessage.textContent =
+            result.message || 'We have received your order and will be in touch soon.';
+        }
+        if (resultReference && result.externalReferenceId) {
+          resultReference.textContent = `Order reference: ${result.externalReferenceId}`;
+          resultReference.hidden = false;
+        }
+        return;
+      }
+
+      setError(reviewError, result.error || 'We could not submit your order. Please try again.');
+      if (retryButton) retryButton.hidden = false;
+    } catch {
+      setError(
+        reviewError,
+        'An unexpected error occurred. Your cart has been preserved. Please try again.',
+      );
+      if (retryButton) retryButton.hidden = false;
+    } finally {
+      setConfirmSubmitting(false);
+    }
+  };
+
+  checkoutForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    validatePhoneInput();
+
+    if (!checkoutForm?.reportValidity()) {
       return;
     }
 
@@ -236,68 +497,28 @@ import { sitePath } from '../utils/paths';
     );
 
     if (invalidItems.length > 0) {
-      if (checkoutError) {
-        checkoutError.textContent =
-          'Some items in your cart have no price and cannot be ordered. Please remove them and try again.';
-        checkoutError.hidden = false;
-      }
+      setError(
+        checkoutError,
+        'Some items in your cart have no price and cannot be ordered. Please remove them and try again.',
+      );
       return;
     }
 
-    setSubmitting(true);
+    renderCustomerRecap(buildCustomerFromForm());
+    clearSubmitFeedback();
+    currentStep = STEPS.REVIEW;
+    showCheckoutStep(STEPS.REVIEW);
+  });
 
-    try {
-      const formData = new FormData(form);
-      const order = createOrderFromCart(cart);
+  phoneInput?.addEventListener('input', validatePhoneInput);
 
-      order.customer = {
-        name: sanitizeValue(getFieldValue(formData, 'name')),
-        email: sanitizeValue(getFieldValue(formData, 'email')),
-        phone: sanitizeValue(getFieldValue(formData, 'phone')),
-        preferredContactMethod: sanitizeValue(getFieldValue(formData, 'preferredContactMethod')),
-        preferredPickupDate: sanitizeValue(getFieldValue(formData, 'preferredPickupDate')),
-        additionalNotes: sanitizeValue(getFieldValue(formData, 'additionalNotes')),
-      };
+  backButton?.addEventListener('click', () => {
+    currentStep = STEPS.DETAILS;
+    showCheckoutStep(STEPS.DETAILS);
+    clearSubmitFeedback();
+  });
 
-      const result = await submitOrder(order);
-
-      if (result.success) {
-        clearCart();
-        renderCheckout();
-
-        if (confirmation) confirmation.hidden = false;
-        if (resultTitle) resultTitle.textContent = 'Order placed';
-        if (resultMessage) {
-          resultMessage.textContent =
-            result.message || 'We have received your order and will be in touch soon.';
-        }
-        if (resultReference && result.externalReferenceId) {
-          resultReference.textContent = `Order reference: ${result.externalReferenceId}`;
-          resultReference.hidden = false;
-        }
-        return;
-      }
-
-      if (checkoutError) {
-        checkoutError.textContent =
-          result.error || 'We could not submit your order. Please try again.';
-        checkoutError.hidden = false;
-      }
-      if (retryButton) retryButton.hidden = false;
-    } catch {
-      if (checkoutError) {
-        checkoutError.textContent =
-          'An unexpected error occurred. Your cart has been preserved. Please try again.';
-        checkoutError.hidden = false;
-      }
-      if (retryButton) retryButton.hidden = false;
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  checkoutForm?.addEventListener('submit', (event) => {
-    event.preventDefault();
+  confirmButton?.addEventListener('click', () => {
     doSubmit();
   });
 
@@ -312,12 +533,13 @@ import { sitePath } from '../utils/paths';
 
 <style>
   .checkout-layout{align-items:start;display:grid;gap:2rem;grid-template-columns:minmax(0,1fr) 360px}
-  .checkout-panel,.order-summary,.checkout-empty{background:var(--paper);border:1px solid var(--line);border-radius:1.1rem}
+  .checkout-panel,.order-summary,.checkout-review,.checkout-empty{background:var(--paper);border:1px solid var(--line);border-radius:1.1rem}
   .checkout-panel{padding:2rem}
   .checkout-panel__heading{margin-bottom:1.5rem}
   .checkout-panel__heading h2{font-family:'Playfair Display',Georgia,serif;font-size:2.2rem;font-weight:500;letter-spacing:-.04em;line-height:1.1;margin:.5rem 0 0}
   .checkout-fields{display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr))}
   .checkout-fields label{color:var(--cocoa);display:flex;flex-direction:column;font-size:.78rem;font-weight:600;gap:.4rem}
+  .checkout-fields .optional{color:var(--muted);font-weight:400}
   .checkout-fields input,.checkout-fields select,.checkout-fields textarea{background:#fffdfa;border:1px solid var(--line);border-radius:.55rem;color:var(--cocoa);font-size:.92rem;outline-color:var(--honey);padding:.72rem .8rem}
   .checkout-fields textarea{resize:vertical}
   .checkout-fields__wide{grid-column:1/-1}
@@ -329,6 +551,9 @@ import { sitePath } from '../utils/paths';
   .order-summary__heading{border-bottom:1px solid var(--line);margin-bottom:1.2rem;padding-bottom:1rem}
   .order-summary__heading p{font-family:'Playfair Display',Georgia,serif;font-size:1.75rem;font-weight:500;letter-spacing:-.035em;margin:.85rem 0 0}
   .order-summary__items{display:grid;gap:1rem}
+  .order-summary__total{border-top:1px solid var(--line);display:flex;justify-content:space-between;margin-top:1.2rem;padding-top:1.1rem}
+  .order-summary__total span{color:var(--muted);font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+  .order-summary__total strong{font-family:'Playfair Display',Georgia,serif;font-size:1.55rem;font-weight:600;letter-spacing:-.02em}
   .summary-item{border-bottom:1px solid var(--line);padding-bottom:1rem}
   .summary-item:last-child{border-bottom:0;padding-bottom:0}
   .summary-item__heading{display:grid;gap:.35rem}
@@ -340,6 +565,24 @@ import { sitePath } from '../utils/paths';
   .summary-item__configuration:empty{display:none}
   .summary-item__notes{border-left:2px solid var(--honey);color:var(--muted);font-size:.84rem;margin:.85rem 0 0;padding-left:.7rem}
   .summary-item__notes:empty{display:none}
+  .summary-item__unit-price{color:var(--sage);font-size:.82rem;font-weight:600;margin:.85rem 0 0}
+  .summary-item__unit-price:empty{display:none}
+  .summary-item__line-total{color:var(--cocoa);font-size:.86rem;font-weight:600;margin:.3rem 0 0}
+  .summary-item__line-total:empty{display:none}
+  .checkout-review{grid-column:1/-1;padding:2rem}
+  .checkout-review__heading{max-width:480px}
+  .checkout-review__heading h2{font-family:'Playfair Display',Georgia,serif;font-size:2rem;font-weight:500;letter-spacing:-.04em;line-height:1.1;margin:.5rem 0 .35rem}
+  .checkout-review__heading p{color:var(--muted);margin:0}
+  .checkout-review__items{border-bottom:1px solid var(--line);display:grid;gap:1rem;margin:1.5rem 0 0;padding-bottom:1.25rem}
+  .checkout-review__customer-wrap{margin:1.5rem 0 0}
+  .checkout-review__customer-wrap h3{font-family:'Playfair Display',Georgia,serif;font-size:1.3rem;font-weight:500;letter-spacing:-.03em;margin:0 0 .75rem}
+  .checkout-review__customer{display:grid;gap:.45rem;grid-template-columns:max-content 1fr}
+  .checkout-review__customer dt{color:var(--muted);font-size:.8rem;font-weight:600}
+  .checkout-review__customer dd{font-size:.9rem;margin:0}
+  .checkout-review__total{align-items:baseline;border-top:1px solid var(--line);display:flex;justify-content:space-between;margin:1.5rem 0 0;padding-top:1.25rem}
+  .checkout-review__total span{color:var(--muted);font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+  .checkout-review__total strong{font-family:'Playfair Display',Georgia,serif;font-size:2.6rem;font-weight:600;letter-spacing:-.02em}
+  .checkout-review__actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.5rem}
   .checkout-confirmation{background:#f6eddf;border:1px solid var(--line);border-radius:1.1rem;grid-column:1/-1;padding:1.5rem}
   .checkout-confirmation h2{font-family:'Playfair Display',Georgia,serif;font-size:1.8rem;font-weight:500;letter-spacing:-.035em;margin:.5rem 0 .35rem}
   .checkout-confirmation p{color:var(--muted);margin:0}
@@ -349,5 +592,5 @@ import { sitePath } from '../utils/paths';
   .checkout-empty p{color:var(--muted);margin:0 0 1.25rem}
   .checkout-empty__links{display:flex;flex-wrap:wrap;gap:.75rem}
   @media(max-width:880px){.checkout-layout{grid-template-columns:1fr}.order-summary{position:static}}
-  @media(max-width:620px){.checkout-panel{padding:1.35rem}.checkout-fields{grid-template-columns:1fr}}
+  @media(max-width:620px){.checkout-panel,.checkout-review{padding:1.35rem}.checkout-fields{grid-template-columns:1fr}}
 </style>

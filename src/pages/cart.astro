@@ -38,6 +38,7 @@ import { sitePath } from '../utils/paths';
 </MainLayout>
 
 <script>
+  import type { Cart } from '../types/cart';
   import {
     clearCart,
     getCart,
@@ -46,15 +47,15 @@ import { sitePath } from '../utils/paths';
   } from '../utils/cart';
   import { formatLabel, formatValue } from '../utils/format';
 
-  const cartList = document.querySelector('[data-cart-list]');
-  const emptyState = document.querySelector('[data-cart-empty]');
-  const summary = document.querySelector('[data-cart-summary]');
-  const clearButton = document.querySelector('[data-cart-clear]');
-  const totalCount = document.querySelector('[data-cart-total-count]');
-  const totalLabel = document.querySelector('[data-cart-total-label]');
-  const template = document.querySelector('#cart-item-template');
+  const cartList = document.querySelector<HTMLElement>('[data-cart-list]');
+  const emptyState = document.querySelector<HTMLElement>('[data-cart-empty]');
+  const summary = document.querySelector<HTMLElement>('[data-cart-summary]');
+  const clearButton = document.querySelector<HTMLElement>('[data-cart-clear]');
+  const totalCount = document.querySelector<HTMLElement>('[data-cart-total-count]');
+  const totalLabel = document.querySelector<HTMLElement>('[data-cart-total-label]');
+  const template = document.querySelector<HTMLTemplateElement>('#cart-item-template');
 
-  const updateSummary = (cart) => {
+  const updateSummary = (cart: Cart) => {
     const count = cart.items.reduce((total, item) => total + item.quantity, 0);
 
     if (totalCount) totalCount.textContent = String(count);
@@ -76,16 +77,30 @@ import { sitePath } from '../utils/paths';
     if (!hasItems) return;
 
     cart.items.forEach((item) => {
-      const fragment = template.content.cloneNode(true);
-      const cartItem = fragment.querySelector('[data-cart-item]');
-      const title = fragment.querySelector('[data-cart-item-title]');
-      const collection = fragment.querySelector('[data-cart-item-collection]');
-      const configuration = fragment.querySelector('[data-cart-item-configuration]');
-      const notes = fragment.querySelector('[data-cart-item-notes]');
-      const quantity = fragment.querySelector('[data-cart-item-quantity]');
-      const decrease = fragment.querySelector('[data-cart-decrease]');
-      const increase = fragment.querySelector('[data-cart-increase]');
-      const remove = fragment.querySelector('[data-cart-remove]');
+      const fragment = template.content.cloneNode(true) as DocumentFragment;
+      const cartItem = fragment.querySelector<HTMLElement>('[data-cart-item]');
+      const title = fragment.querySelector<HTMLElement>('[data-cart-item-title]');
+      const collection = fragment.querySelector<HTMLElement>('[data-cart-item-collection]');
+      const configuration = fragment.querySelector<HTMLElement>('[data-cart-item-configuration]');
+      const notes = fragment.querySelector<HTMLElement>('[data-cart-item-notes]');
+      const quantity = fragment.querySelector<HTMLElement>('[data-cart-item-quantity]');
+      const decrease = fragment.querySelector<HTMLElement>('[data-cart-decrease]');
+      const increase = fragment.querySelector<HTMLElement>('[data-cart-increase]');
+      const remove = fragment.querySelector<HTMLElement>('[data-cart-remove]');
+
+      if (
+        !cartItem ||
+        !title ||
+        !collection ||
+        !configuration ||
+        !notes ||
+        !quantity ||
+        !decrease ||
+        !increase ||
+        !remove
+      ) {
+        return;
+      }
 
       cartItem.dataset.cartItemId = item.id;
       title.textContent = item.productTitle;

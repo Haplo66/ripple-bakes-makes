@@ -8,7 +8,11 @@ import type { Product } from '../types/product';
 
 export type PurchaseState = 'purchasable' | 'coming-soon' | 'unavailable';
 
-export const getPurchaseState = (product: Pick<Product, 'active' | 'price'>): PurchaseState => {
+export const getPurchaseState = (product: Pick<Product, 'active' | 'price' | 'status'>): PurchaseState => {
+  if (product.status === 'inactive') {
+    return 'coming-soon';
+  }
+
   if (product.active && product.price != null && Number.isFinite(product.price)) {
     return 'purchasable';
   }

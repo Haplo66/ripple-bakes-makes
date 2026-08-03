@@ -35,7 +35,9 @@ function createCsvReader(): DatasetReader {
 }
 
 function createSheetsReader(): DatasetReader {
-  let sheetsClient: Promise<ReturnType<typeof authenticateSheets> | null> | null = null;
+  let sheetsClient: Promise<
+    Awaited<ReturnType<typeof authenticateSheets>> | null
+  > | null = null;
 
   return {
     async read(dataset, warnings) {

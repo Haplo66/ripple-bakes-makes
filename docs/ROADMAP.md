@@ -441,11 +441,88 @@ Includes:
 - CI workflow (ci.yml): tests run on push (non-master) and PR — no secrets required
 - Deploy workflow: `npm run test` blocks deployment on failure
 
+### v1.20.0 — Maintenance
+
+**Status: Completed**
+
+**Completed:**
+- Resolve Astro type checking issues
+- Restore clean development checks
+- `npx astro check` passes with 0 errors and 0 warnings across all Astro and TypeScript files
+- Added explicit element types, safe null handling, and type guards to untyped client scripts in `.astro` components
+- Fixed TypeScript diagnostics in Doctor reporters, Drive importer scripts, pipeline utilities, and test files
+
+### v1.20.1 — Customer Order Experience Polish
+
+**Status: Completed**
+
+**Completed:**
+- Phone validation utility
+- Checkout phone validation
+- Inquiry phone validation
+- Optional pickup time
+- Checkout review step
+- Order item summary
+- Customer recap
+- Order total confirmation
+- Cart preservation on submission failure
+- Automated tests
+- Documentation updates
+
+### v1.20.2 — Customer Experience Follow-up
+
+**Status: Completed**
+
+**Completed:**
+- Product pages display Availability, Preparation Time, and Fulfillment
+- New `availability`, `preparationTime`, and `fulfillment` columns flow from Google Sheets through the import pipeline to the product page
+- Fulfillment values generate customer-friendly copy (Pickup Only / Shipping Available / Pickup or Shipping)
+- Preferred Contact Method is now optional on the checkout form
+- Checkout review shows "Not specified" when no contact preference is chosen
+- Availability / Status separation — `availability` is customer-facing fulfillment information while `status` controls ordering
+- Coming Soon experience for unavailable products — inactive products remain visible and display a Coming Soon badge
+- Customer-facing product messaging — "This product is currently unavailable." message shown for non-orderable products
+- Purchase-state handling for inactive products — inactive status products can never be added to cart or ordered
+- Automated tests
+
+### v1.20.3 — Gallery & Storytelling Enhancement
+
+**Status: In Progress**
+
+**Completed:**
+- Gallery cards keep an image-first design with no text overlaid on images
+- Cards show Product Name, a short product story, and a View Product link below the image
+- Image popup / lightbox preserved and enhanced with Product Name, story, and a View Product link (no text over the image)
+- Gallery captions reuse existing product information — no duplicate descriptions
+- Story source priority: Product Description → Short Description → Product Name fallback
+- Gallery images resolve to products by Product Name (no owner-managed IDs) — Product Name → Product ID → product page link → product description
+- Owner continues to manage business concepts (Product Name, Collection, Category) in Google Sheets; technical identifiers stay internal
+- Automated tests for gallery story resolution and product linking
+
+---
+
+### v1.20.4 — Automatic Product ID Generation
+
+**Status: Complete**
+
+**Completed:**
+- The owner no longer fills in Product IDs when adding products — the pipeline auto-generates them as `{Business}-{Collection}-{Number}` (e.g. `BK-CA-001`)
+- New `scripts/pipeline/product-ids.ts` resolves a collection's 2-letter code from the Collections sheet, then computes the next free sequence number across all products
+- New `scripts/pipeline/sheets-writer.ts` writes generated IDs back to the Products worksheet so Google Sheets stays the source of truth
+- `Collection Code` column added to the Collections schema (recommended; code is derived from existing product IDs when blank)
+- Product ID is no longer a required field — validation now requires only `businessArea`, `collection`, and `name`
+- Existing Product IDs are never modified or reused; un-generatable rows are skipped with a clear warning
+- Added tests for generation, sequencing, reuse protection, code fallback, and failure warnings
+- `--preview` mode reads live data and reports exactly which IDs would be written, without touching the sheet or files
+- Verified end-to-end: `Product ID` column added to the live Products sheet, 20 generated IDs written back, all 20 match the website's internal IDs, and `npm run update` (Drive + Sheets + build) completes with 42 pages
+
+**Why it mattered:** Product IDs are a technical detail. Automating them removes a source of owner error and keeps internal references (image folders, collection codes) consistent without manual spreadsheet bookkeeping.
+
 ---
 
 ## Current Status
 
-**Version: v1.19.5**
+**Version: v1.20.4**
 
 ### What Works Today
 
@@ -454,10 +531,16 @@ Includes:
 - Google Drive manages all business assets: product images, collection images, business area images, homepage images, logo, and favicon
 - `npm run update` synchronises both sources and rebuilds the website in a single command
 - Data quality warnings catch missing fields before they reach production
+- Product IDs are auto-generated for new products (`{Business}-{Collection}-{Number}`) and written back to the sheet — no manual ID bookkeeping
 - Forms sheet uses row-per-field structure for simpler management
+- Product pages show Availability, Preparation Time, and Fulfillment copy from the Products sheet
 
 **Ordering Workflow**
 - Customers can browse, customize, add to cart, and submit orders
+- Phone numbers validated on the order and inquiry forms (international numbers supported)
+- Preferred Contact Method is optional — customers can order without choosing a contact preference
+- Preferred Pickup Date is optional — customers can order without choosing a date
+- Checkout review step shows every item (quantity, options, unit price, line total) and a prominent Order Total before submission
 - Orders are sent to Google Apps Script which writes to Google Sheets
 - Owner receives email notification for every new order with pricing details
 - Order status managed directly in Google Sheets (Received → Confirmed → Preparing → Ready → Completed)
@@ -474,6 +557,14 @@ Includes:
 - Backward compatible — flat/code-based legacy paths still resolved as fallbacks
 - MD5 checksums prevent redundant downloads — unchanged files are skipped
 
+**Gallery & Storytelling**
+- Gallery cards show the image first with no text overlay, then Product Name, a short product story, and a View Product link
+- Product stories reuse existing product copy (Product Description → Short Description → Product Name) — no duplicate captions
+- Gallery images link to products by Product Name resolution (Product Name → Product ID → product page), keeping technical IDs internal
+- Lightbox popup shows the larger image plus Product Name, story, and a View Product link
+- Collection items link to their collection page; personal items display title only
+- `galleryFeatured` controls which products appear in the gallery (defaults to `true`)
+
 **Featured Logic**
 - `homepageFeatured` controls which products appear on the homepage
 - `featured` controls which products are highlighted within collections and business area pages
@@ -488,7 +579,7 @@ Includes:
 - Mock submission for development (no endpoint configured)
 
 **Website**
-- 18 products across Bakery and Sewing managed through Google Sheets
+- 20 products across Bakery and Sewing managed through Google Sheets
 - 13 collections with dynamic pages for each
 - Cart and checkout pages with real order submission
 - Contact page with working inquiry form and backend integration
@@ -504,7 +595,7 @@ Includes:
 - Doctor Config sheet controls
 
 **Testing Suite**
-- 233 automated tests across business logic, pipeline, and Doctor modules
+- 314 automated tests across business logic, pipeline, and Doctor modules
 - Node.js built-in test runner — zero additional dependencies
 - CI integration: tests run automatically on push and PR
 - Test failure blocks deployment
@@ -746,6 +837,31 @@ Assets/
 
 ---
 
+## v1.20 — Website Polish & Customer Experience
+
+Status: 🚧 In Progress
+
+### Overview
+
+A customer experience refinement milestone focused on improving website clarity, trust, and ease of use.
+
+This milestone improves how customers discover products, understand availability, place orders, and connect with RIPPLE creations while keeping the owner workflow simple and Google Sheets as the source of truth.
+
+Delivered improvements include:
+
+- Improved checkout review experience and validation
+- Clear product availability and fulfillment messaging
+- Better handling of unavailable products with Coming Soon states
+- Gallery storytelling and product discovery improvements
+- Continued separation between owner workflow and technical implementation details
+
+v1.20.1 — Checkout & Forms
+v1.20.2 — Customer Experience Follow-up
+v1.20.3 — Gallery & Storytelling Enhancement
+v1.20.4 — Automatic Product ID Generation
+
+---
+
 ## Development Principles
 
 - **Static Astro architecture.** No backend, no database servers, no runtime dependencies.
@@ -778,14 +894,6 @@ Do not add implementation history, debugging notes, terminal output, bug fixes, 
 
 ### 1. Website Experience Improvements
 
-**Gallery & Portfolio Experience:**
-- Category-based gallery browsing
-- Bakery and Sewing gallery sections
-- Image captions/storytelling
-- Lightbox viewing
-- Featured gallery items
-- Sheet-driven gallery management
-
 **Business Area Page Improvements:**
 - Stronger bakery and sewing landing pages
 - Better product discovery
@@ -796,7 +904,6 @@ Do not add implementation history, debugging notes, terminal output, bug fixes, 
 - Better descriptions
 - Preparation/customization details
 - Lead times
-- Pickup information
 - Care instructions
 - Bakery ingredients/allergen information
 - Sewing material/care information
@@ -891,12 +998,11 @@ Possible future sections:
 
 
 ### **DEVELOPER NOTES - DO NOT REMOVE**
-- build automated test suite (both code review, and scraping)
 - test if replacing pictures - it will update in website
 - wording and pages improvements
   - our story page + images
-  - consider removing collection feature items 
-  - ask about buttons - if from sawing need to set dropdown to sewing
   - hero picture area
   - images getting cut (sizing issue?)
   - home page first sentence - wording and font
+- Give every collection its own short introduction instead of jumping straight into products.
+- when in cart, maybe ability to edit product, do it will go back to product page and "update" button will appear?

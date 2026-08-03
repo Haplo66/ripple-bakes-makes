@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-07-30T15:28:03.735Z",
+    "generatedAt": "2026-08-03T02:42:49.845Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -98,7 +98,7 @@
           "id": "color",
           "label": "Color",
           "type": "select",
-          "required": false,
+          "required": true,
           "options": [
             {
               "value": "black",
@@ -267,6 +267,40 @@
           "label": "Name\\Text",
           "type": "text",
           "required": true
+        }
+      ]
+    },
+    {
+      "id": "SW-TOYS",
+      "name": "Soft Toys",
+      "fields": [
+        {
+          "id": "color",
+          "label": "Color",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "black",
+              "label": "Black"
+            },
+            {
+              "value": "white",
+              "label": "White"
+            },
+            {
+              "value": "blue",
+              "label": "Blue"
+            },
+            {
+              "value": "red",
+              "label": "Red"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
         }
       ]
     }

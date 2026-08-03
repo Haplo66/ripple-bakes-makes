@@ -78,23 +78,25 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
 <script>
   import { addToCart } from '../../utils/cart';
 
-  const forms = document.querySelectorAll('[data-dynamic-form]');
+  const forms = document.querySelectorAll<HTMLFormElement>('[data-dynamic-form]');
 
   forms.forEach((form) => {
-    const conditionalFields = form.querySelectorAll('[data-condition-field]');
+    const conditionalFields = form.querySelectorAll<HTMLElement>('[data-condition-field]');
 
-    const setFieldState = (field, isVisible) => {
+    const setFieldState = (field: HTMLElement, isVisible: boolean) => {
       field.hidden = !isVisible;
 
-      field.querySelectorAll('input, select, textarea').forEach((input) => {
-        input.disabled = !isVisible;
-        input.required =
-          isVisible && input.dataset.required === 'true';
-      });
+      field
+        .querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('input, select, textarea')
+        .forEach((input) => {
+          input.disabled = !isVisible;
+          input.required =
+            isVisible && input.dataset.required === 'true';
+        });
     };
 
-    const getFieldValue = (fieldId) => {
-      const checked = form.querySelector(
+    const getFieldValue = (fieldId: string) => {
+      const checked = form.querySelector<HTMLInputElement>(
         `[name="${fieldId}"]:checked`,
       );
 
@@ -102,7 +104,7 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
         return checked.value;
       }
 
-      const input = form.querySelector(`[name="${fieldId}"]`);
+      const input = form.querySelector<HTMLInputElement>(`[name="${fieldId}"]`);
       return input?.value;
     };
 
@@ -127,16 +129,16 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
     updateConditions();
   });
 
-  const cartForms = document.querySelectorAll('[data-cart-form]');
+  const cartForms = document.querySelectorAll<HTMLFormElement>('[data-cart-form]');
 
   cartForms.forEach((form) => {
-    const confirmation = form.querySelector('[data-cart-confirmation]');
+    const confirmation = form.querySelector<HTMLElement>('[data-cart-confirmation]');
 
-    const otherInputs = form.querySelectorAll('[data-other-input]');
+    const otherInputs = form.querySelectorAll<HTMLElement>('[data-other-input]');
 
     otherInputs.forEach((otherInput) => {
       const fieldId = otherInput.dataset.otherInput;
-      const select = form.querySelector(`[name="${fieldId}"]`);
+      const select = form.querySelector<HTMLSelectElement>(`[name="${fieldId}"]`);
 
       if (!select) return;
 
@@ -150,7 +152,7 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
 
     const getConfiguration = () => {
       const data = new FormData(form);
-      const configuration = {};
+      const configuration: Record<string, string | string[]> = {};
 
       data.forEach((value, key) => {
         if (key === 'quantity' || key === 'notes') {

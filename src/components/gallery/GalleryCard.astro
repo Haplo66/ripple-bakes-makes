@@ -16,81 +16,125 @@ const areaLabel = item.businessArea ? areaLabels[item.businessArea] : '';
 ---
 
 <article class="gallery-card" data-business-area={item.businessArea || ''} data-source-type={item.sourceType}>
-  <button class="gallery-card__trigger" type="button" aria-label={`View larger: ${item.title}`} data-gallery-trigger data-gallery-image={item.image} data-gallery-title={item.title}>
+  <button
+    class="gallery-card__image"
+    type="button"
+    aria-label={`View larger: ${item.title}`}
+    data-gallery-trigger
+    data-gallery-image={item.image}
+    data-gallery-title={item.title}
+    data-gallery-description={item.description || ''}
+    data-gallery-href={item.href || ''}
+    data-gallery-cta={item.cta || ''}
+  >
     <img class="gallery-card__img" src={item.image} alt={item.title} loading="lazy" />
-    <div class="gallery-card__overlay">
-      {areaLabel && <span class="gallery-card__badge">{areaLabel}</span>}
-      <h3 class="gallery-card__title">{item.title}</h3>
-    </div>
   </button>
+  <div class="gallery-card__content">
+    {areaLabel && <span class="gallery-card__area">{areaLabel}</span>}
+    <h3 class="gallery-card__title">{item.title}</h3>
+    {item.description && <p class="gallery-card__description">{item.description}</p>}
+    {item.href && (
+      <a class="gallery-card__cta" href={item.href}>
+        {item.cta || 'View Product'} <span aria-hidden="true">→</span>
+      </a>
+    )}
+  </div>
 </article>
 
 <style>
   .gallery-card {
     break-inside: avoid;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 1.15rem;
     margin-bottom: 1rem;
+    overflow: hidden;
   }
 
-  .gallery-card__trigger {
+  .gallery-card__image {
     background: none;
     border: none;
-    border-radius: 1rem;
     cursor: pointer;
     display: block;
-    overflow: hidden;
     padding: 0;
-    position: relative;
-    transition: box-shadow 0.25s ease, transform 0.25s ease;
     width: 100%;
   }
 
-  .gallery-card__trigger:hover {
-    box-shadow: var(--shadow);
-    transform: translateY(-3px);
+  .gallery-card__image:hover .gallery-card__img,
+  .gallery-card__image:focus-visible .gallery-card__img {
+    transform: scale(1.02);
   }
 
-  .gallery-card__trigger:focus-visible {
-    box-shadow: 0 0 0 4px rgba(214, 165, 75, 0.45);
+  .gallery-card__image:focus-visible {
     outline: none;
+  }
+
+  .gallery-card__image:focus-visible .gallery-card__img {
+    box-shadow: 0 0 0 4px rgba(214, 165, 75, 0.45);
   }
 
   .gallery-card__img {
     display: block;
     height: auto;
+    transition: transform 0.3s ease;
     width: 100%;
   }
 
-  .gallery-card__overlay {
-    background: linear-gradient(180deg, transparent 50%, rgba(74, 51, 38, 0.5));
-    bottom: 0;
+  .gallery-card__content {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
-    left: 0;
-    padding: 1.15rem;
-    position: absolute;
-    right: 0;
+    gap: 0.4rem;
+    padding: 1.1rem 1.2rem 1.3rem;
   }
 
-  .gallery-card__badge {
-    align-self: flex-start;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 99px;
-    color: var(--cocoa);
-    font-size: 0.65rem;
+  .gallery-card__area {
+    color: var(--sage);
+    font-size: 0.68rem;
     font-weight: 600;
     letter-spacing: 0.08em;
-    padding: 0.3rem 0.55rem;
     text-transform: uppercase;
   }
 
   .gallery-card__title {
-    color: #fff;
     font-family: 'Playfair Display', Georgia, serif;
     font-size: 1.15rem;
-    font-weight: 500;
+    font-weight: 600;
     line-height: 1.25;
     margin: 0;
-    text-align: left;
+  }
+
+  .gallery-card__description {
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .gallery-card__cta {
+    align-self: flex-start;
+    color: var(--cocoa);
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-top: 0.35rem;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .gallery-card__cta:hover,
+  .gallery-card__cta:focus-visible {
+    color: var(--honey);
+    outline: none;
+  }
+
+  .gallery-card__cta span {
+    color: var(--honey);
+    display: inline-block;
+    margin-left: 0.2rem;
+    transition: transform 0.2s ease;
+  }
+
+  .gallery-card__cta:hover span,
+  .gallery-card__cta:focus-visible span {
+    transform: translateX(3px);
   }
 </style>

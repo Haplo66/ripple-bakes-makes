@@ -3,11 +3,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 import MainLayout from '../layouts/MainLayout.astro';
 
+type BusinessArea = {
+  score: number;
+  maxScore: number;
+  status: string;
+  products: { total: number; active: number; featured: number; missingDescriptions: number; missingShortDescriptions: number; missingPrices: number; productsWithOneImage: number; productsWithNoImages: number };
+  images: { total: number; averagePerProduct: number };
+  forms: { available: number; uniqueReferenced: number; missing: number; productsLinked: number };
+};
+type BusinessOverall = { score: number; maxScore: number; status: string };
 type OwnerReport = {
   generated: string;
   version: string;
   website: { score: number; maxScore: number; status: string; checks: { passed: number; warnings: number; failures: number } };
-  business: { score: number; maxScore: number; status: string; products: Record<string, number>; images: { total: number; averagePerProduct: number }; forms: Record<string, number> };
+  business: { overall: BusinessOverall; byArea: Record<string, BusinessArea> };
   healthTable: { check: string; result: string; status: string }[];
   recommendations: { priority: string; area: string; text: string }[];
 };
@@ -43,12 +52,21 @@ try {
             <span class={"status-badge " + (report!.website.status === 'GOOD' ? 'badge-good' : report!.website.status === 'ATTENTION' ? 'badge-attention' : 'badge-critical')}>{report!.website.status}</span>
             <p class="status-detail">{report!.website.checks.passed} passed, {report!.website.checks.warnings} warnings, {report!.website.checks.failures} failures</p>
           </div>
-          <div class="status-card">
-            <span class="status-label">Business Health</span>
-            <span class={"status-score " + (report!.business.status === 'GOOD' ? 'good' : report!.business.status === 'ATTENTION' ? 'attention' : 'critical')}>{report!.business.score}<span class="status-max">/{report!.business.maxScore}</span></span>
-            <span class={"status-badge " + (report!.business.status === 'GOOD' ? 'badge-good' : report!.business.status === 'ATTENTION' ? 'badge-attention' : 'badge-critical')}>{report!.business.status}</span>
-            <p class="status-detail">{report!.business.products.active} active products, {report!.business.products.featured} featured</p>
-          </div>
+          {
+  report!.business.byArea && (
+    <div class="status-card">
+      <span class="status-label">Business Health</span>
+      <span class={"status-score " + (report!.business.overall.status === 'GOOD' ? 'good' : report!.business.overall.status === 'ATTENTION' ? 'attention' : 'critical')}>{report!.business.overall.score}<span class="status-max">/{report!.business.overall.maxScore}</span></span>
+      <span class={"status-badge " + (report!.business.overall.status === 'GOOD' ? 'badge-good' : report!.business.overall.status === 'ATTENTION' ? 'badge-attention' : 'badge-critical')}>{report!.business.overall.status}</span>
+      {(() => {
+        const areas = Object.values(report!.business.byArea);
+        const totalActive = areas.reduce((sum, a) => sum + a.products.active, 0);
+        const totalFeatured = areas.reduce((sum, a) => sum + a.products.featured, 0);
+        return <p class="status-detail">{totalActive} active products, {totalFeatured} featured</p>;
+      })()}
+    </div>
+  )
+}
         </div>
       </div></section>
 

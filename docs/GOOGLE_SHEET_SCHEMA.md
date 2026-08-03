@@ -61,6 +61,7 @@ Columns:
 | --- | --- | --- | --- | --- |
 | `id` / `Collection ID` | Yes | `bakery-cakes` | `id` | Stable unique collection ID. |
 | `businessArea` / `Business Area` | Yes | `bakery` | `businessArea`, loader `category` | Use `bakery` or `sewing`. |
+| `code` / `Collection Code` | Recommended | `CA` | `code` | 2-letter code used to auto-generate Product IDs (e.g. `BK-CA-001`). Blank when the collection has no products yet. When blank, the pipeline derives the code from an existing product ID in the same collection. |
 | `slug` | Optional but needed for routes | `cakes` | `slug` | URL segment. |
 | `name` / `Collection Name` | Yes | `Cakes` | `name`, loader `title` | Human-readable name. |
 | `subtitle` | Optional | `Made for celebrations.` | `subtitle` | Short headline support. |
@@ -72,15 +73,15 @@ Columns:
 | `status` | Optional | `Active` | `status`, loader `active` | `Active` renders publicly. |
 | `displayOrder` | Optional | `3` | `displayOrder` | Numeric sort value. |
 | `imageTone` | Optional | `cream` | `imageTone` | Placeholder tone. |
-| `galleryCaptions` | Optional | `["A soft finish"]` | `galleryCaptions`, loader `galleryImages` | Must be valid JSON array. |
+| `galleryCaptions` | Optional | `["A soft finish"]` | `galleryCaptions`, loader `galleryImages` | Must be valid JSON array. Used for the collection detail page. The gallery page does not require captions — it reuses existing product copy. |
 | `popularIdeas` | Optional | `["Birthday cake"]` | `popularIdeas` | Must be valid JSON array. |
 | `customizationNote` | Optional | `Share your date...` | `customizationNote` | Inquiry guidance. |
 
 Example row:
 
 ```csv
-id,businessArea,slug,name,subtitle,shortDescription,description,imageFolder,heroImage,featured,status,displayOrder,imageTone,galleryCaptions,popularIdeas,customizationNote
-bakery-cakes,bakery,cakes,Cakes,Made for celebrations.,Thoughtful celebration cakes with beautiful unfussy finishes.,Celebration cakes should feel special.,bakery/cakes,,true,Active,3,cream,"[""A soft simple finish""]","[""Birthday cake""]",Share your date and serving size.
+id,businessArea,code,slug,name,subtitle,shortDescription,description,imageFolder,heroImage,featured,status,displayOrder,imageTone,galleryCaptions,popularIdeas,customizationNote
+bakery-cakes,bakery,CA,cakes,Cakes,Made for celebrations.,Thoughtful celebration cakes with beautiful unfussy finishes.,Celebration cakes should feel special.,bakery/cakes,,true,Active,3,cream,"[""A soft simple finish""]","[""Birthday cake""]",Share your date and serving size.
 ```
 
 ## Products Worksheet
@@ -89,16 +90,17 @@ bakery-cakes,bakery,cakes,Cakes,Made for celebrations.,Thoughtful celebration ca
 
 Required columns:
 
-- `id`
 - `businessArea`
 - `collection`
 - `name`
+
+The `id` / `Product ID` column is **system-managed**. The owner does not create or maintain Product IDs. When a product's cell is blank, the pipeline auto-generates an ID in the `{BA}-{Collection Code}-{NNN}` family (e.g. `BK-CA-001`), derives the next free sequence number, and writes it back to the sheet so the sheet remains the source of truth. Existing IDs are never modified or reused. For a new product in a brand-new collection, add the collection's 2-letter `code` to the Collections sheet first.
 
 Columns:
 
 | Column | Required | Example | Maps To | Notes |
 | --- | --- | --- | --- | --- |
-| `id` / `Product ID` | Yes | `bakery-cakes-birthday-cake` | `id` | Stable unique product ID. |
+| `id` / `Product ID` | System-managed | `BK-CA-001` | `id` | Internal, system-managed unique product ID. Blank cells are auto-generated as `{BA}-{Collection Code}-{NNN}` and written back to the sheet. Never edited by the owner. |
 | `businessArea` / `Business Area` | Yes | `bakery` | `businessArea` | Use `bakery` or `sewing`. |
 | `collection` / `Collection` | Yes | `bakery-cakes` | `collection`, loader `collectionId` | Must match a collection ID. |
 | `category` | Optional | `cake` | `category` | Product type. |
@@ -109,21 +111,24 @@ Columns:
 | `description` | Optional | `Our signature birthday cake...` | `description` | Detail copy. |
 | `price` | Optional | `45` | `price` | Numeric price. Empty or missing displays the product as Coming Soon. `0` is valid and purchasable. |
 | `priceLabel` | Optional | `From $45` | `priceLabel` | Display-only pricing text. |
-| `status` | Optional | `Active` | `status` | Loader maps to runtime status. |
-| `active` | Optional | `true` | `active` | Controls public listing. |
+| `status` | Optional | `Active` | `status` | Ordering control. `Active` products are fully orderable. `Not Active` (or `Inactive`, `Hidden`) products stay visible on the site but display as Coming Soon and cannot be ordered. The `Availability` column is independent and never derived from this. |
+| `active` | Optional | `true` | `active` | Publishing flag. `true` publishes the product to customer-facing pages; `false` hides it. Independent of `status` — a product can be `active: true` with a `Not Active` status (visible, not orderable). |
 | `featured` | Optional | `true` | `featured` | Controls highlighting in featured sections. Does not affect homepage. |
 | `homepageFeatured` / `Homepage Featured` | Optional | `true` | `homepageFeatured` | Controls spotlight placement on the homepage. Independent of `featured`. |
-| `galleryFeatured` / `Gallery Featured` | Optional | `true` | `galleryFeatured` | Controls whether the product appears in the gallery page. Defaults to `true`. Set `FALSE` to exclude from gallery. |
+| `galleryFeatured` / `Gallery Featured` | Optional | `true` | `galleryFeatured` | Controls whether the product appears in the gallery page. Defaults to `true`. Set `FALSE` to exclude from gallery. The gallery card and lightbox reuse the product's Name, Description, and Short Description for storytelling — no separate captions column is needed. |
 | `formId` / `Form ID` | Optional | `birthday-cake-form` | `formId` | Must match a form ID. Products without a form can still be ordered (no customization form is rendered). |
 | `imageFolder` | Optional | `bakery/cakes/birthday-cake` | `imageFolder` | Image organization hint (overridden by image resolver). |
 | `imageTone` | Optional | `cream` | `imageTone` | Placeholder tone. |
 | `displayOrder` | Optional | `1` | `displayOrder` | Numeric sort value. |
+| `Availability` / `availability` | Optional | `Made to Order` | `availability` | Customer-facing availability wording shown on the product page. Never derived from Status. Empty hides the Availability row. |
+| `Preparation Time` / `preparationTime` | Optional | `2–3 Business Days` | `preparationTime` | Estimated preparation time displayed on the product page. Empty hides the Preparation Time row. |
+| `Fulfillment` / `fulfillment` | Optional | `Pickup or Shipping` | `fulfillment` | Fulfillment option used to generate customer-facing copy. Accepts `Pickup Only`, `Shipping Available`, or `Pickup or Shipping`. Empty hides the Fulfillment row. |
 
 Example row:
 
 ```csv
-id,businessArea,collection,category,slug,name,subtitle,shortDescription,description,price,priceLabel,status,active,featured,homepageFeatured,galleryFeatured,formId,imageTone,displayOrder
-bakery-cakes-birthday-cake,bakery,bakery-cakes,cake,birthday-cake,Birthday Cake,Classic layers made to celebrate.,Customizable layer cake.,Our signature birthday cake.,45,From $45,Active,true,true,true,true,birthday-cake-form,cream,1
+id,businessArea,collection,category,slug,name,subtitle,shortDescription,description,price,priceLabel,status,active,featured,homepageFeatured,galleryFeatured,formId,imageTone,displayOrder,availability,preparationTime,fulfillment
+BK-CA-001,bakery,bakery-cakes,cake,birthday-cake,Birthday Cake,Classic layers made to celebrate.,Customizable layer cake.,Our signature birthday cake.,45,From $45,Active,true,true,true,true,birthday-cake-form,cream,1,Made to Order,2–3 Business Days,Pickup or Shipping
 ```
 
 ## Forms Worksheet

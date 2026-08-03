@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "version": 1,
-    "generatedAt": "2026-07-27T18:31:12.954Z",
+    "generatedAt": "2026-08-02T16:55:01.869Z",
     "tool": "RIPPLE Drive Name Migration"
   },
   "products": [
@@ -268,7 +268,7 @@
     },
     {
       "code": "SW-ST-001",
-      "folder": "Soft Toy",
+      "folder": "Snake",
       "files": [
         {
           "name": "main-soft-toy.jpg",

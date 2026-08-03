@@ -22,7 +22,7 @@ export async function listDriveItems(
   let pageToken: string | undefined | null = undefined;
 
   do {
-    const response = await drive.files.list({
+    const response: { data: drive_v3.Schema$FileList } = await drive.files.list({
       q: `'${folderId}' in parents and trashed=false`,
       fields: 'nextPageToken, files(id, name, mimeType, md5Checksum)',
       pageSize: 1000,

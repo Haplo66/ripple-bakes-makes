@@ -5,7 +5,8 @@
  */
 
 import type { DoctorReport } from "../types.ts";
-import type { BusinessHealthResult } from "../business.ts";
+import type { BusinessHealthByArea, BusinessHealthResult } from "../business.ts";
+import { buildOverallBusinessHealth } from "../business.ts";
 import * as fs from "node:fs";
 import * as path from "node:path";
 
@@ -18,49 +19,50 @@ type OwnerHealthTableRow = {
 function buildHealthTable(
   report: DoctorReport,
   bh: BusinessHealthResult,
+  areaLabel: string,
 ): OwnerHealthTableRow[] {
   const rows: OwnerHealthTableRow[] = [];
 
   const wh = report.websiteHealth;
   rows.push({
-    check: "Website configuration & pipeline",
+    check: areaLabel + " - Website configuration & pipeline",
     result: wh.score + "/" + wh.maxScore + " — " + report.summary.pass + " of " + report.summary.total + " checks pass",
     status: wh.status === "GOOD" ? "Good" : wh.status === "ATTENTION" ? "Needs attention" : "Critical",
   });
 
   const m = bh.metrics;
   rows.push({
-    check: "Product descriptions",
+    check: areaLabel + " - Product descriptions",
     result: m.missingDescriptions > 0 ? m.missingDescriptions + " missing" : "All present",
     status: m.missingDescriptions > 0 ? "Needs attention" : "Good",
   });
 
   rows.push({
-    check: "Product short descriptions",
+    check: areaLabel + " - Product short descriptions",
     result: m.missingShortDescriptions > 0 ? m.missingShortDescriptions + " missing" : "All present",
     status: m.missingShortDescriptions > 0 ? "Needs attention" : "Good",
   });
 
   rows.push({
-    check: "Product images",
+    check: areaLabel + " - Product images",
     result: m.productsWithOneImage > 0 ? m.productsWithOneImage + " products need more images" : "All good",
     status: m.productsWithOneImage > 0 || m.productsWithNoImages > 0 ? "Needs attention" : "Good",
   });
 
   rows.push({
-    check: "Product pricing",
+    check: areaLabel + " - Product pricing",
     result: m.missingPrices > 0 ? m.missingPrices + " products missing price" : "All products priced",
     status: m.missingPrices > 0 ? "Critical" : "Good",
   });
 
   rows.push({
-    check: "Forms & ordering",
+    check: areaLabel + " - Forms & ordering",
     result: bh.formCoverage.valid + "/" + bh.formCoverage.uniqueFormIds + " available" + (bh.formCoverage.missing > 0 ? " (" + bh.formCoverage.missing + " missing)" : ""),
     status: bh.formCoverage.missing > 0 ? "Needs attention" : "Good",
   });
 
   rows.push({
-    check: "Featured products",
+    check: areaLabel + " - Featured products",
     result: m.featuredProducts + " featured, " + m.homepageFeatured + " on homepage",
     status: m.homepageFeatured >= 3 ? "Good" : "Needs attention",
   });
@@ -70,38 +72,36 @@ function buildHealthTable(
 
 function buildOwnerRecommendations(
   bh: BusinessHealthResult,
+  areaLabel: string,
 ): { priority: string; area: string; text: string }[] {
   const recs: { priority: string; area: string; text: string }[] = [];
   for (const r of bh.recommendations) {
     const area = r.text.includes("image") ? "Images" : r.text.includes("description") ? "Descriptions" : r.text.includes("form") ? "Forms" : "General";
-    recs.push({ priority: r.priority, area, text: r.text });
+    recs.push({ priority: r.priority, area: areaLabel + " - " + area, text: r.text });
   }
   return recs;
 }
 
 function ownerReport(report: DoctorReport): void {
-  const bh = report.businessHealth as unknown as BusinessHealthResult;
+  const bh = report.businessHealth as unknown as BusinessHealthByArea;
   const reportsDir = path.resolve("scripts/doctor/reports");
   fs.mkdirSync(reportsDir, { recursive: true });
 
-  const m = bh.metrics;
-  const output = {
-    generated: report.timestamp,
-    version: report.version,
-    website: {
-      score: report.websiteHealth.score,
-      maxScore: report.websiteHealth.maxScore,
-      status: report.websiteHealth.status,
-      checks: {
-        passed: report.summary.pass,
-        warnings: report.summary.warn,
-        failures: report.summary.fail,
-      },
-    },
-    business: {
-      score: bh.score,
-      maxScore: bh.maxScore,
-      status: bh.status,
+  const allHealthTable: OwnerHealthTableRow[] = [];
+  const allRecommendations: { priority: string; area: string; text: string }[] = [];
+  const overall = buildOverallBusinessHealth(bh);
+  const businessAreas: Record<string, { score: number; maxScore: number; status: string; products: Record<string, number>; images: Record<string, number>; forms: Record<string, number> }> = {};
+
+  const areas = Object.keys(bh).sort();
+  for (const area of areas) {
+    const areaBh = bh[area];
+    const areaLabel = area === "bakery" ? "Bakery" : area === "sewing" ? "Sewing" : area;
+
+    const m = areaBh.metrics;
+    businessAreas[area] = {
+      score: areaBh.score,
+      maxScore: areaBh.maxScore,
+      status: areaBh.status,
       products: {
         total: m.totalProducts,
         active: m.activeProducts,
@@ -117,11 +117,41 @@ function ownerReport(report: DoctorReport): void {
         averagePerProduct: m.averageImagesPerProduct,
       },
       forms: {
-        available: bh.formCoverage.valid,
-        uniqueReferenced: bh.formCoverage.uniqueFormIds,
-        missing: bh.formCoverage.missing,
-        productsLinked: bh.formCoverage.productsWithForms,
+        available: areaBh.formCoverage.valid,
+        uniqueReferenced: areaBh.formCoverage.uniqueFormIds,
+        missing: areaBh.formCoverage.missing,
+        productsLinked: areaBh.formCoverage.productsWithForms,
       },
+    };
+
+    allHealthTable.push(...buildHealthTable(report, areaBh, areaLabel));
+    allRecommendations.push(...buildOwnerRecommendations(areaBh, areaLabel));
+  }
+
+  const overallScore = overall.score;
+  const overallMax = overall.maxScore;
+  const overallStatus = overall.status;
+
+  const output = {
+    generated: report.timestamp,
+    version: report.version,
+    website: {
+      score: report.websiteHealth.score,
+      maxScore: report.websiteHealth.maxScore,
+      status: report.websiteHealth.status,
+      checks: {
+        passed: report.summary.pass,
+        warnings: report.summary.warn,
+        failures: report.summary.fail,
+      },
+    },
+    business: {
+      overall: {
+        score: overallScore,
+        maxScore: overallMax,
+        status: overallStatus,
+      },
+      byArea: businessAreas,
     },
     visibility: report.visibility
       ? {
@@ -139,8 +169,8 @@ function ownerReport(report: DoctorReport): void {
           topPage: report.visitors.topPage,
         }
       : null,
-    healthTable: buildHealthTable(report, bh),
-    recommendations: buildOwnerRecommendations(bh),
+    healthTable: allHealthTable,
+    recommendations: allRecommendations,
   };
 
   const filePath = path.join(reportsDir, "doctor-report-owner.json");

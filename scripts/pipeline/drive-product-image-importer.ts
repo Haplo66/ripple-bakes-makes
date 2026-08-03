@@ -10,9 +10,14 @@ import { join } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import { authenticateDrive } from './drive-auth.ts';
 import { IMAGE_DIR, MANIFEST_FILE } from './constants.ts';
+import {
+  classifyProductFolders,
+  findStaleManifestProducts,
+  type CatalogProduct,
+  type FolderCandidate,
+} from './product-folder-classifier.ts';
 import type { drive_v3 } from 'googleapis';
 
-const PRODUCT_ID_PATTERN = /^[A-Z]{2}-[A-Z]{2}-\d{3}$/;
 const ALLOWED_IMAGE = /\.(jpg|jpeg|png|webp)$/i;
 const DRIVE_FOLDER_MIME = 'application/vnd.google-apps.folder';
 
@@ -63,10 +68,6 @@ function isDebugTree(): boolean {
   return process.argv.includes('--debug-tree');
 }
 
-function isProductId(name: string): boolean {
-  return PRODUCT_ID_PATTERN.test(name);
-}
-
 function isImageFile(item: DriveItem): boolean {
   return item.mimeType !== DRIVE_FOLDER_MIME && ALLOWED_IMAGE.test(item.name);
 }
@@ -79,7 +80,7 @@ async function listAll(
   let pageToken: string | undefined | null = undefined;
 
   do {
-    const response = await drive.files.list({
+    const response: { data: drive_v3.Schema$FileList } = await drive.files.list({
       q: `'${folderId}' in parents and trashed=false`,
       fields: 'nextPageToken, files(id, name, mimeType, md5Checksum)',
       pageSize: 1000,
@@ -235,6 +236,21 @@ function readManifest(): Manifest | null {
   }
 }
 
+const PRODUCTS_CATALOG_FILE = join(process.cwd(), 'src', 'content', 'products.json');
+
+function loadProductCatalog(): CatalogProduct[] {
+  try {
+    const raw = JSON.parse(readFileSync(PRODUCTS_CATALOG_FILE, 'utf-8')) as {
+      data: { id?: string; name?: string }[];
+    };
+    return raw.data
+      .filter((p) => typeof p.id === 'string' && p.id.length > 0 && typeof p.name === 'string' && p.name.length > 0)
+      .map((p) => ({ id: p.id!, name: p.name! }));
+  } catch {
+    return [];
+  }
+}
+
 async function importProductImages(
   drive: drive_v3.Drive,
   sectionId: string,
@@ -243,11 +259,9 @@ async function importProductImages(
   const manifest = readManifest();
 
   const codeToManifest = new Map<string, ManifestEntry>();
-  const nameToCode = new Map<string, string>();
   if (manifest) {
     for (const entry of manifest.products) {
       codeToManifest.set(entry.code, entry);
-      nameToCode.set(entry.folder, entry.code);
     }
   }
 
@@ -302,6 +316,29 @@ async function importProductImages(
     return null;
   }
 
+  const catalog = loadProductCatalog();
+  if (catalog.length === 0) {
+    console.log('  No product catalog found; skipping product image discovery.');
+    return { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0 };
+  }
+
+  const stale = manifest ? findStaleManifestProducts(manifest.products, catalog) : [];
+  for (const s of stale) {
+    console.log(`  Warning: stale manifest entry ${s.code} ("${s.folder}") - ${s.reason}`);
+  }
+
+  const candidates: FolderCandidate[] = [];
+  for (const f of allFolders) {
+    if (subfoldersOf.has(f.id)) continue;
+    const targetInfo = buildTargetPath(f.id);
+    if (!targetInfo) continue;
+    candidates.push({
+      id: f.id,
+      name: f.name,
+      fullPath: `${targetInfo.ba}/${targetInfo.relPath}`,
+    });
+  }
+
   type ClassifiedFolder = {
     id: string;
     name: string;
@@ -310,26 +347,18 @@ async function importProductImages(
   };
 
   const classified: ClassifiedFolder[] = [];
-  const seen = new Set<string>();
+  const verdicts = classifyProductFolders(candidates, catalog, manifest?.products ?? []);
 
-  for (const f of allFolders) {
-    if (subfoldersOf.has(f.id)) continue;
-
-    const manifestCode = nameToCode.get(f.name);
-    if (!manifestCode && !isProductId(f.name)) continue;
-
-    const targetInfo = buildTargetPath(f.id);
-    if (!targetInfo) continue;
-
-    const fullPath = `${targetInfo.ba}/${targetInfo.relPath}`;
-    if (seen.has(fullPath)) continue;
-    seen.add(fullPath);
-
+  for (const verdict of verdicts) {
+    if (verdict.kind === 'unmatched') {
+      console.log(`  Skipping "${verdict.candidate.name}" (no matching product in catalog)`);
+      continue;
+    }
     classified.push({
-      id: f.id,
-      name: fullPath,
-      targetDir: fullPath,
-      manifestEntry: manifestCode ? codeToManifest.get(manifestCode) : undefined,
+      id: verdict.candidate.id,
+      name: verdict.candidate.fullPath,
+      targetDir: verdict.candidate.fullPath,
+      manifestEntry: verdict.manifestEntry,
     });
   }
 

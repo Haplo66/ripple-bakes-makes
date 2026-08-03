@@ -13,17 +13,19 @@ export interface SheetsReadResult {
   records: CsvRecord[];
 }
 
-const HEADER_MAP: Record<DatasetName, Record<string, string>> = {
+export const HEADER_MAP: Record<DatasetName, Record<string, string>> = {
   collections: {
     'Business Area': 'businessArea',
     'Collection ID': 'id',
     'Collection Name': 'name',
+    'Collection Code': 'code',
   },
   products: {
     'Product ID': 'id',
     'Business Area': 'businessArea',
     'Product Name': 'name',
     'Short Description': 'shortDescription',
+    'Description': 'description',
     'Collection': 'collection',
     'Form ID': 'formId',
     'Image Folder': 'imageFolder',
@@ -31,6 +33,10 @@ const HEADER_MAP: Record<DatasetName, Record<string, string>> = {
     'Featured': 'featured',
     'Homepage Featured': 'homepageFeatured',
     'Gallery Featured': 'galleryFeatured',
+    'Status': 'status',
+    'Availability': 'availability',
+    'Preparation Time': 'preparationTime',
+    'Fulfillment': 'fulfillment',
   },
   forms: {
     'Form ID': 'formId',
@@ -43,13 +49,15 @@ const HEADER_MAP: Record<DatasetName, Record<string, string>> = {
 
 };
 
-const normalizeHeader = (header: string, dataset: DatasetName): string =>
-  HEADER_MAP[dataset][header] || header;
+export const normalizeHeader = (
+  header: string,
+  dataset: DatasetName,
+): string => HEADER_MAP[dataset][header] || header;
 
 const rowToRecord = (
   headers: string[],
   row: unknown[],
-  rowIndex: number,
+  rowNumber: number,
   dataset: DatasetName,
 ): CsvRecord => {
   const values: Record<string, string> = {};
@@ -59,7 +67,7 @@ const rowToRecord = (
     values[key] = String(row[index] ?? '');
   });
 
-  return { rowNumber: rowIndex + 2, values };
+  return { rowNumber, values };
 };
 
 export async function readSheet(
@@ -109,8 +117,10 @@ export async function readSheet(
     }
 
     const records: CsvRecord[] = dataRows
-      .filter((row: unknown[]) => row.some((cell) => String(cell ?? '').trim().length > 0))
-      .map((row: unknown[], index: number) => rowToRecord(headers, row, index, dataset));
+      .map((row: unknown[], index: number) => ({ row, rowNumber: index + 2 }))
+      .filter(({ row }: { row: unknown[] }) => row.some((cell) => String(cell ?? '').trim().length > 0))
+      .map(({ row, rowNumber }: { row: unknown[]; rowNumber: number }) =>
+        rowToRecord(headers, row, rowNumber, dataset));
 
     return { found: true, records };
   } catch (error) {

@@ -6,7 +6,7 @@
 
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { authenticateDriveWithWrite } from '../pipeline/drive-write-auth.ts';
+import { authenticateDrive } from '../pipeline/drive-auth.ts';
 import { authenticateSheets } from '../pipeline/sheets-auth.ts';
 import { readSheet } from '../pipeline/sheets-reader.ts';
 import { findChildFolder, listDriveItems, DRIVE_FOLDER_MIME } from './drive-renamer.ts';
@@ -22,7 +22,7 @@ const BA_SLUG_TO_NAME: Record<string, string> = {
   sewing: 'Sewing',
 };
 
-type DriveClient = Awaited<ReturnType<typeof authenticateDriveWithWrite>>;
+type DriveClient = Awaited<ReturnType<typeof authenticateDrive>>;
 
 interface CliOptions {
   dryRun: boolean;
@@ -606,7 +606,7 @@ async function run(): Promise<void> {
   console.log('Connecting to Google Drive...');
   let drive: DriveClient;
   try {
-    drive = await authenticateDriveWithWrite();
+    drive = await authenticateDrive(true);
     console.log('  Connected');
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

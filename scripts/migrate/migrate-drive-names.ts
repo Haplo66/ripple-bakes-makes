@@ -4,7 +4,7 @@
  *
  */
 
-import { authenticateDriveWithWrite } from '../pipeline/drive-write-auth.ts';
+import { authenticateDrive } from '../pipeline/drive-auth.ts';
 import { buildNameMappings } from './name-mapper.ts';
 import {
   buildRenamePlan,
@@ -38,7 +38,7 @@ function parseArgs(): CliOptions {
 }
 
 async function resolveAssetsRoot(
-  drive: Awaited<ReturnType<typeof authenticateDriveWithWrite>>,
+  drive: Awaited<ReturnType<typeof authenticateDrive>>,
   rootId: string,
 ): Promise<string> {
   const assetsId = await findChildFolder(drive, rootId, 'Assets');
@@ -71,9 +71,9 @@ async function run(): Promise<void> {
   }
 
   console.log('Step 1: Connecting to Google Drive...');
-  let drive: Awaited<ReturnType<typeof authenticateDriveWithWrite>>;
+  let drive: Awaited<ReturnType<typeof authenticateDrive>>;
   try {
-    drive = await authenticateDriveWithWrite();
+    drive = await authenticateDrive(true);
     console.log('  Drive connected');
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

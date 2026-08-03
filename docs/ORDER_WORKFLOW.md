@@ -74,8 +74,8 @@ PUBLIC_ORDER_TOKEN=your-shared-secret
 | customerName | string | yes | Customer full name |
 | customerEmail | string | yes | Contact email address |
 | customerPhone | string | yes | Contact phone number |
-| preferredContactMethod | string | yes | email / phone / text |
-| preferredPickupDate | string | yes | Requested pickup date |
+| preferredContactMethod | string | no | email / phone / text (optional; empty if not selected) |
+| preferredPickupDate | string | no | Requested pickup date (optional; empty if not selected) |
 | additionalNotes | string | no | Freeform customer notes |
 | status | string | yes | Initial value: `Received` |
 | totalItems | number | yes | Sum of item quantities |
@@ -349,6 +349,54 @@ Examples:
 - `RIP-20260725-042` — forty-second order on July 25, 2026
 
 The sequence number resets daily.
+
+---
+
+## Checkout Experience
+
+### Phone Number Validation
+
+Both the **checkout (order)** form and the **contact (inquiry)** form validate the phone field before submission.
+
+- A valid phone number is composed only of digits, spaces, `+`, `(`, `)`, `.`, and `-`, and contains between **7 and 15 digits** (E.164 allows up to 15 digits, so international numbers are supported).
+- Leading `+` is allowed for international numbers.
+- Examples of accepted values:
+  ```
+  555-123-4567
+  (555) 123-4567
+  +1 555 123 4567
+  555.123.4567
+  ```
+- Obviously invalid values (e.g. `abc123`, `123`) are rejected with a clear message: "Please enter a valid phone number, e.g. 555-123-4567 or +1 555 123 4567."
+- Phone remains **required** on the order form (unchanged) and **optional** on the inquiry form. An empty optional phone field is accepted.
+
+The shared validation logic lives in `src/utils/phone.ts` (`isValidPhone`).
+
+### Optional Pickup Date
+
+The **Preferred Pickup Date** field on the checkout form is now **optional**.
+
+- Customers can submit an order without selecting a pickup date.
+- If a date is selected, it continues to be stored in `preferredPickupDate` and displayed to the owner exactly as before.
+- When no date is chosen, the value is stored empty and the email notification shows "Date: Not specified".
+
+This lets customers place an order even when they do not yet know their preferred pickup time.
+
+### Checkout Review Step
+
+Before an order is submitted, the customer reviews a full summary of the order.
+
+The flow is now two steps:
+
+1. **Your details** — the customer fills in contact and pickup information, then clicks **Review order**.
+2. **Review your order** — the full order is displayed before submission:
+   - For every item: product name, quantity, selected options/customizations, unit price, and line total
+   - The customer's details recap (name, email, phone, contact method, pickup date, notes)
+   - The **Order Total** displayed prominently
+
+   The customer then clicks **Confirm order** to submit, or **Back to edit** to change their details.
+
+The displayed total always equals the submitted order total (sum of `price × quantity` across all items). The cart is only cleared after a successful submission, and any failure preserves the cart with a retry option.
 
 ---
 
@@ -722,9 +770,13 @@ Steps:
 3. Click **Add to cart**
 4. Go to cart, click **Checkout**
 5. Fill in customer details
-6. Click **Prepare order**
+6. Click **Review order**
+7. Review the itemized summary (name, quantity, options, unit price, line total) and the **Order Total**
+8. Click **Confirm order**
 
 Verify:
+- [ ] Order summary shows each product with quantity, options, unit price, and line total
+- [ ] Order Total displayed and matches the order in the sheet
 - [ ] Success confirmation shown
 - [ ] Order ID displayed (RIP-YYYYMMDD-001 format)
 - [ ] Cart is cleared
@@ -795,6 +847,61 @@ Verify:
 - [ ] Empty cart message shown
 - [ ] Links to browse bakery/sewing displayed
 - [ ] Submit button not accessible
+
+### Test 6 — Phone Validation (Checkout)
+
+Steps:
+1. Add an item to the cart and go to checkout
+2. Enter an invalid phone number such as `abc123` or `123`
+3. Click **Review order**
+
+Verify:
+- [ ] Submission is blocked
+- [ ] Clear validation message shown ("Please enter a valid phone number...")
+4. Enter a valid number such as `555-123-4567` or `+1 555 123 4567`
+5. Click **Review order** → **Confirm order**
+
+Verify:
+- [ ] Order submitted successfully
+- [ ] Orders sheet contains the entered phone number
+
+### Test 7 — Phone Validation (Inquiry)
+
+Steps:
+1. Go to `/contact`
+2. Enter an invalid phone number and submit
+
+Verify:
+- [ ] Submission is blocked with a clear validation message
+3. Clear the phone field and submit (or enter a valid number)
+
+Verify:
+- [ ] Inquiry submits successfully (phone is optional)
+- [ ] Inquiries sheet contains the phone value if provided, empty otherwise
+
+### Test 8 — Optional Pickup Date
+
+Steps:
+1. Add an item to the cart and go to checkout
+2. Leave the **Preferred Pickup Date** field empty
+3. Fill in the remaining required details and submit
+
+Verify:
+- [ ] Order submits without a pickup date
+- [ ] Orders sheet `preferredPickupDate` is empty
+- [ ] Email notification shows "Date: Not specified"
+
+### Test 9 — Checkout Review Accuracy
+
+Steps:
+1. Add two products with different quantities and options
+2. Go to checkout and click **Review order**
+
+Verify:
+- [ ] Each item shows product name, quantity, options, unit price, and line total
+- [ ] Unit price × quantity equals the displayed line total
+- [ ] **Order Total** equals the sum of all line totals
+- [ ] The same total appears in the Orders sheet (`totalPrice`) after submission
 
 ---
 

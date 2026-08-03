@@ -10,7 +10,7 @@ import * as path from "node:path";
 import type { DoctorCheck, DoctorResult, DoctorReport } from "./types.ts";
 import { getRegisteredChecks, registerChecks } from "./registry.ts";
 import { buildHealthScore, buildSummary } from "./scoring.ts";
-import { buildBusinessHealth } from "./business.ts";
+import { buildBusinessHealthByArea } from "./business.ts";
 import { consoleReport } from "./reporters/console.reporter.ts";
 import { markdownReport } from "./reporters/markdown.reporter.ts";
 import { jsonReport } from "./reporters/json.reporter.ts";
@@ -69,7 +69,7 @@ async function main(): Promise<void> {
   const results = await runChecks(checks);
   const summary = buildSummary(results);
   const websiteHealth = buildHealthScore(results);
-  const businessHealth = buildBusinessHealth();
+  const businessHealth = buildBusinessHealthByArea();
   const visibility = await fetchVisibility();
   const visitors = await fetchVisitors();
 

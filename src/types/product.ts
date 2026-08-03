@@ -22,7 +22,8 @@ export type ProductStatus =
   | 'available'
   | 'seasonal'
   | 'out-of-stock'
-  | 'preorder';
+  | 'preorder'
+  | 'inactive';
 
 /** Product entity used across bakery and sewing offerings. */
 export interface Product {
@@ -92,4 +93,13 @@ export interface Product {
 
   /** Display-only price information. */
   priceLabel?: string;
+
+  /** Customer-facing availability wording (e.g. "Made to Order", "In Stock"). */
+  availability?: string;
+
+  /** Estimated preparation time (e.g. "2–3 Business Days"). */
+  preparationTime?: string;
+
+  /** Fulfillment option used to generate customer-facing copy (e.g. "Pickup or Shipping"). */
+  fulfillment?: string;
 }

@@ -255,6 +255,39 @@ describe('normalizeProducts', () => {
     assert.strictEqual(result[0].active, true);
   });
 
+  it('keeps active false when the active column is false', () => {
+    const records: CsvRecord[] = [
+      makeRecord(2, { id: 'p1', businessArea: 'bakery', collection: 'cakes', name: 'Cake', active: 'false' }),
+    ];
+    const result = normalizeProducts(records);
+    assert.strictEqual(result[0].active, false);
+  });
+
+  it('preserves the status column for inactive statuses', () => {
+    const records: CsvRecord[] = [
+      makeRecord(2, { id: 'p1', businessArea: 'bakery', collection: 'cakes', name: 'Cake', status: 'Not Active' }),
+    ];
+    const result = normalizeProducts(records);
+    assert.strictEqual(result[0].status, 'Not Active');
+  });
+
+  it('keeps active true for inactive statuses when the active column is true', () => {
+    const records: CsvRecord[] = [
+      makeRecord(2, { id: 'p1', businessArea: 'bakery', collection: 'cakes', name: 'Cake', status: 'Inactive', active: 'true' }),
+    ];
+    const result = normalizeProducts(records);
+    assert.strictEqual(result[0].status, 'Inactive');
+    assert.strictEqual(result[0].active, true);
+  });
+
+  it('keeps active driven by the active column, not status', () => {
+    const records: CsvRecord[] = [
+      makeRecord(2, { id: 'p1', businessArea: 'bakery', collection: 'cakes', name: 'Cake', status: 'Seasonal' }),
+    ];
+    const result = normalizeProducts(records);
+    assert.strictEqual(result[0].active, true);
+  });
+
   it('defaults displayOrder to 0', () => {
     const records: CsvRecord[] = [
       makeRecord(2, { id: 'p1', businessArea: 'bakery', collection: 'cakes', name: 'Cake', displayOrder: '' }),
@@ -327,6 +360,47 @@ describe('normalizeProducts', () => {
     assert.strictEqual(result[0].formId, 'form-1');
     assert.strictEqual(result[0].priceLabel, 'per slice');
   });
+
+  it('passes through availability, preparationTime, and fulfillment when provided', () => {
+    const records: CsvRecord[] = [
+      makeRecord(2, {
+        id: 'p1', businessArea: 'bakery', collection: 'cakes', name: 'Cake',
+        availability: 'Made to Order', preparationTime: '2–3 Business Days',
+        fulfillment: 'Pickup or Shipping',
+      }),
+    ];
+    const result = normalizeProducts(records);
+    assert.strictEqual(result[0].availability, 'Made to Order');
+    assert.strictEqual(result[0].preparationTime, '2–3 Business Days');
+    assert.strictEqual(result[0].fulfillment, 'Pickup or Shipping');
+  });
+
+  it('sets availability, preparationTime, and fulfillment to undefined when empty', () => {
+    const records: CsvRecord[] = [
+      makeRecord(2, {
+        id: 'p1', businessArea: 'bakery', collection: 'cakes', name: 'Cake',
+        availability: '', preparationTime: '   ', fulfillment: '',
+      }),
+    ];
+    const result = normalizeProducts(records);
+    assert.strictEqual(result[0].availability, undefined);
+    assert.strictEqual(result[0].preparationTime, undefined);
+    assert.strictEqual(result[0].fulfillment, undefined);
+  });
+
+  it('trims whitespace from availability, preparationTime, and fulfillment', () => {
+    const records: CsvRecord[] = [
+      makeRecord(2, {
+        id: 'p1', businessArea: 'bakery', collection: 'cakes', name: 'Cake',
+        availability: '  In Stock  ', preparationTime: ' 1–2 Business Days ',
+        fulfillment: ' Pickup Only ',
+      }),
+    ];
+    const result = normalizeProducts(records);
+    assert.strictEqual(result[0].availability, 'In Stock');
+    assert.strictEqual(result[0].preparationTime, '1–2 Business Days');
+    assert.strictEqual(result[0].fulfillment, 'Pickup Only');
+  });
 });
 
 describe('normalizeCollections', () => {
@@ -346,6 +420,24 @@ describe('normalizeCollections', () => {
     const warnings: PipelineWarning[] = [];
     const result = normalizeCollections(records, 'collections.csv', warnings);
     assert.strictEqual(result[0].businessArea, 'bakery');
+  });
+
+  it('normalizes code to uppercase and trims whitespace', () => {
+    const records: CsvRecord[] = [
+      makeRecord(2, { id: 'c1', businessArea: 'bakery', name: 'Cakes', code: '  fp ' }),
+    ];
+    const warnings: PipelineWarning[] = [];
+    const result = normalizeCollections(records, 'collections.csv', warnings);
+    assert.strictEqual(result[0].code, 'FP');
+  });
+
+  it('defaults code to empty string when blank', () => {
+    const records: CsvRecord[] = [
+      makeRecord(2, { id: 'c1', businessArea: 'bakery', name: 'Cakes', code: '' }),
+    ];
+    const warnings: PipelineWarning[] = [];
+    const result = normalizeCollections(records, 'collections.csv', warnings);
+    assert.strictEqual(result[0].code, '');
   });
 
   it('defaults slug to slugified name when slug is empty', () => {
