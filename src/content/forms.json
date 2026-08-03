@@ -1,11 +1,33 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-08-03T02:42:49.845Z",
+    "generatedAt": "2026-08-03T14:06:42.978Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
   "data": [
+    {
+      "id": "BK-GARLICBUNS",
+      "name": "Garlic Buns",
+      "fields": [
+        {
+          "id": "size",
+          "label": "Size",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "30-pieces",
+              "label": "30 pieces"
+            },
+            {
+              "value": "60-pieces-20",
+              "label": "60 pieces (+$20)"
+            }
+          ]
+        }
+      ]
+    },
     {
       "id": "SW-BEANIE",
       "name": "Beanie Hats",
@@ -89,12 +111,6 @@
           ]
         },
         {
-          "id": "name",
-          "label": "Name",
-          "type": "text",
-          "required": false
-        },
-        {
           "id": "color",
           "label": "Color",
           "type": "select",
@@ -121,6 +137,28 @@
               "label": "Other"
             }
           ]
+        },
+        {
+          "id": "add-name",
+          "label": "Add Name",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "no-name",
+              "label": "No name"
+            },
+            {
+              "value": "add-stitched-name-15",
+              "label": "Add stitched name (+$15)"
+            }
+          ]
+        },
+        {
+          "id": "name",
+          "label": "Name",
+          "type": "text",
+          "required": false
         }
       ]
     },

@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-08-03T02:42:49.845Z",
+    "generatedAt": "2026-08-03T14:06:42.977Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -258,7 +258,7 @@
       "name": "Custom Baby Blanket",
       "shortDescription": "Personalized Baby Blanket",
       "description": "Set of a crib blanket, car seat blanket and a taggie, rustling toy or a beanie hat. With an option to add the baby's name",
-      "status": "Not Active",
+      "status": "Active",
       "featured": true,
       "homepageFeatured": true,
       "galleryFeatured": true,
