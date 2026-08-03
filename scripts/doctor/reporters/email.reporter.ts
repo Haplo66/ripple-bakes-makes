@@ -750,7 +750,7 @@ async function sendEmail(
 
   const businessName = config.businessName || "RIPPLE";
   const dashboardUrl = config.dashboardUrl || "";
-  const subject = buildSubject(businessName, data.website.status, overallStatus);
+  const subject = buildSubject(businessName, data.website.status, data.business.overall.status);
   const body = buildBody(data, businessName, dashboardUrl);
   const htmlBody = buildHtmlBody(data, businessName, dashboardUrl);
 
