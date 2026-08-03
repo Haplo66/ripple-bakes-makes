@@ -220,7 +220,7 @@ function buildPlainTextBody(data: OwnerReportData, businessName: string, dashboa
   lines.push("Generated: " + formatDate(data.generated));
   lines.push("");
   lines.push("Website Health: " + ws.score + "/" + ws.maxScore + " " + websiteStatusLabel(ws.status));
-  lines.push("Business Health: " + overallScore + "/" + overallMax + " " + businessStatusLabel(overallScore, overallMax));
+  lines.push("Business Health: " + data.business.overall.score + "/" + data.business.overall.maxScore + " " + businessStatusLabel(data.business.overall.score, data.business.overall.maxScore));
   lines.push("");
 
   for (const areaKey of Object.keys(areas).sort()) {
@@ -275,12 +275,9 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
   const areaKeys = Object.keys(areas).sort();
   const areaLabels: Record<string, string> = { bakery: "Bakery", sewing: "Sewing" };
 
-  const areaValues = Object.values(areas);
-  const overallScore = areaValues.length > 0
-    ? Math.round(areaValues.reduce((sum, a) => sum + a.score, 0) / areaValues.length)
-    : 0;
-  const overallMax = 100;
-  const overallStatus = overallScore >= 90 ? "GOOD" : overallScore >= 70 ? "ATTENTION" : "CRITICAL";
+  const overallScore = data.business.overall.score;
+  const overallMax = data.business.overall.maxScore;
+  const overallStatus = data.business.overall.status;
 
   let totalProducts = 0;
   let totalMissingDescriptions = 0;

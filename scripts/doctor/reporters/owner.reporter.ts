@@ -6,6 +6,7 @@
 
 import type { DoctorReport } from "../types.ts";
 import type { BusinessHealthByArea, BusinessHealthResult } from "../business.ts";
+import { buildOverallBusinessHealth } from "../business.ts";
 import * as fs from "node:fs";
 import * as path from "node:path";
 
@@ -88,6 +89,7 @@ function ownerReport(report: DoctorReport): void {
 
   const allHealthTable: OwnerHealthTableRow[] = [];
   const allRecommendations: { priority: string; area: string; text: string }[] = [];
+  const overall = buildOverallBusinessHealth(bh);
   const businessAreas: Record<string, { score: number; maxScore: number; status: string; products: Record<string, number>; images: Record<string, number>; forms: Record<string, number> }> = {};
 
   const areas = Object.keys(bh).sort();
@@ -126,12 +128,9 @@ function ownerReport(report: DoctorReport): void {
     allRecommendations.push(...buildOwnerRecommendations(areaBh, areaLabel));
   }
 
-  const areaValues = Object.values(businessAreas);
-  const overallScore = areaValues.length > 0
-    ? Math.round(areaValues.reduce((sum, a) => sum + a.score, 0) / areaValues.length)
-    : 0;
-  const overallMax = 100;
-  const overallStatus = overallScore >= 90 ? "GOOD" : overallScore >= 70 ? "ATTENTION" : "CRITICAL";
+  const overallScore = overall.score;
+  const overallMax = overall.maxScore;
+  const overallStatus = overall.status;
 
   const output = {
     generated: report.timestamp,

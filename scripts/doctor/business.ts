@@ -321,4 +321,75 @@ export function buildBusinessHealthByArea(): BusinessHealthByArea {
   return result;
 }
 
+export function buildOverallBusinessHealth(
+  byArea: BusinessHealthByArea,
+): BusinessHealthResult {
+  const areas = Object.values(byArea);
+  if (areas.length === 0) {
+    return { score: 0, maxScore: 100, status: "CRITICAL", metrics: emptyMetrics(), productAnalysis: [], formCoverage: { valid: 0, uniqueFormIds: 0, missing: 0, missingIds: [], productsWithForms: 0 }, recommendations: [] };
+  }
+  const score = Math.round(areas.reduce((sum, a) => sum + a.score, 0) / areas.length);
+  const status = getStatus(score);
+  const combinedMetrics = combineMetrics(areas);
+  const combinedFormCoverage = combineFormCoverage(areas);
+  const combinedAnalysis = areas.flatMap((a) => a.productAnalysis);
+  const recommendations = areas.flatMap((a) => a.recommendations);
+
+  return {
+    score,
+    maxScore: 100,
+    status,
+    metrics: combinedMetrics,
+    productAnalysis: combinedAnalysis,
+    formCoverage: combinedFormCoverage,
+    recommendations,
+  };
+}
+
+function emptyMetrics(): BusinessMetrics {
+  return {
+    totalProducts: 0,
+    activeProducts: 0,
+    featuredProducts: 0,
+    homepageFeatured: 0,
+    galleryFeatured: 0,
+    missingDescriptions: 0,
+    missingShortDescriptions: 0,
+    missingPrices: 0,
+    totalImages: 0,
+    averageImagesPerProduct: 0,
+    productsWithNoImages: 0,
+    productsWithOneImage: 0,
+  };
+}
+
+function combineMetrics(areas: BusinessHealthResult[]): BusinessMetrics {
+  return {
+    totalProducts: areas.reduce((sum, a) => sum + a.metrics.totalProducts, 0),
+    activeProducts: areas.reduce((sum, a) => sum + a.metrics.activeProducts, 0),
+    featuredProducts: areas.reduce((sum, a) => sum + a.metrics.featuredProducts, 0),
+    homepageFeatured: areas.reduce((sum, a) => sum + a.metrics.homepageFeatured, 0),
+    galleryFeatured: areas.reduce((sum, a) => sum + a.metrics.galleryFeatured, 0),
+    missingDescriptions: areas.reduce((sum, a) => sum + a.metrics.missingDescriptions, 0),
+    missingShortDescriptions: areas.reduce((sum, a) => sum + a.metrics.missingShortDescriptions, 0),
+    missingPrices: areas.reduce((sum, a) => sum + a.metrics.missingPrices, 0),
+    totalImages: areas.reduce((sum, a) => sum + a.metrics.totalImages, 0),
+    averageImagesPerProduct: areas.length > 0
+      ? Math.round(areas.reduce((sum, a) => sum + a.metrics.averageImagesPerProduct, 0) / areas.length * 10) / 10
+      : 0,
+    productsWithNoImages: areas.reduce((sum, a) => sum + a.metrics.productsWithNoImages, 0),
+    productsWithOneImage: areas.reduce((sum, a) => sum + a.metrics.productsWithOneImage, 0),
+  };
+}
+
+function combineFormCoverage(areas: BusinessHealthResult[]): FormCoverage {
+  return {
+    valid: areas.reduce((sum, a) => sum + a.formCoverage.valid, 0),
+    uniqueFormIds: areas.reduce((sum, a) => sum + a.formCoverage.uniqueFormIds, 0),
+    missing: areas.reduce((sum, a) => sum + a.formCoverage.missing, 0),
+    missingIds: areas.flatMap((a) => a.formCoverage.missingIds),
+    productsWithForms: areas.reduce((sum, a) => sum + a.formCoverage.productsWithForms, 0),
+  };
+}
+
 export type { BusinessHealthByArea };
