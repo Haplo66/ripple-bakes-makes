@@ -10,6 +10,15 @@ const { field } = Astro.props;
 const fieldId = `field-${field.id}`;
 const resolvedType = resolveFieldType(field.type);
 const hasOptions = Boolean(field.options?.length);
+const isSelected = (option: { value: string; label: string }) => {
+  const fallback = field.defaultValue;
+  if (fallback == null) return false;
+  const needle = String(fallback).trim().toLowerCase();
+  return (
+    option.value.toLowerCase() === needle ||
+    option.label.toLowerCase() === needle
+  );
+};
 const inputType = (resolvedType === 'phone' ? 'tel' : resolvedType) as
   | 'text'
   | 'number'
@@ -93,7 +102,7 @@ const validationAttributes = {
                 value={option.value}
                 required={field.required}
                 data-required={field.required ? 'true' : 'false'}
-                checked={option.value === field.defaultValue}
+                checked={isSelected(option)}
               />
               <span>{option.label}</span>
             </label>
@@ -116,7 +125,7 @@ const validationAttributes = {
                 value={option.value}
                 required={field.required}
                 data-required={field.required ? 'true' : 'false'}
-                checked={option.value === field.defaultValue}
+                checked={isSelected(option)}
               />
               <span>{option.label}</span>
             </label>
@@ -253,11 +262,13 @@ const validationAttributes = {
     padding: 0;
   }
 
-  .choice:has(input:checked) {
+  .form-field[data-field-type='selection'] .choice:has(input:checked),
+  .form-field[data-field-type='checkbox'] .choice:has(input:checked) {
     color: var(--honey);
   }
 
-  .choice:has(input:checked)::before {
+  .form-field[data-field-type='selection'] .choice:has(input:checked)::before,
+  .form-field[data-field-type='checkbox'] .choice:has(input:checked)::before {
     content: '';
     width: .65rem;
     height: .65rem;
@@ -267,6 +278,37 @@ const validationAttributes = {
     box-shadow: inset 0 0 0 2px var(--honey);
     flex-shrink: 0;
     margin-right: .35rem;
+  }
+
+  .form-field[data-field-type='toggle'] .choice-list {
+    display: grid;
+    gap: 0;
+    grid-template-columns: repeat(2, 1fr);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: .6rem;
+    background: #fffdfa;
+  }
+
+  .form-field[data-field-type='toggle'] .choice {
+    justify-content: center;
+    margin: 0;
+    padding: .62rem .7rem;
+    text-align: center;
+  }
+
+  .form-field[data-field-type='toggle'] .choice + .choice {
+    border-left: 1px solid var(--line);
+  }
+
+  .form-field[data-field-type='toggle'] .choice input {
+    position: absolute;
+    opacity: 0;
+  }
+
+  .form-field[data-field-type='toggle'] .choice:has(input:checked) {
+    background: var(--honey);
+    color: #fffdfa;
   }
 
   .choice--single {
