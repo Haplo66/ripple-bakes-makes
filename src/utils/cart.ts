@@ -4,8 +4,9 @@
  *
  */
 
-import type { Cart, CartItem, CartItemInput } from '../types/cart';
+import type { Cart, CartItem, CartItemInput, ProductOptionValue } from '../types/cart';
 import { getProductById } from '../data/products';
+import { getOptionAdjustments, parseOptionValue } from './option-pricing';
 
 const CART_STORAGE_KEY = 'ripple-cart';
 
@@ -15,6 +16,24 @@ const createEmptyCart = (): Cart => ({
 
 const canUseStorage = (): boolean =>
   typeof window !== 'undefined' && Boolean(window.localStorage);
+
+const isProductOptionValue = (value: unknown): value is ProductOptionValue =>
+  typeof value === 'object' &&
+  value !== null &&
+  typeof (value as ProductOptionValue).value === 'string' &&
+  typeof (value as ProductOptionValue).priceAdjustment === 'number';
+
+const isCartItemConfigurationValue = (value: unknown): boolean =>
+  typeof value === 'string' ||
+  typeof value === 'number' ||
+  typeof value === 'boolean' ||
+  isProductOptionValue(value) ||
+  (Array.isArray(value) && value.every(isCartItemConfigurationValue));
+
+const isCartItemConfiguration = (value: unknown): value is Record<string, string | string[] | boolean | number | ProductOptionValue | ProductOptionValue[]> =>
+  typeof value === 'object' &&
+  value !== null &&
+  Object.values(value).every(isCartItemConfigurationValue);
 
 const isCartItem = (item: unknown): item is CartItem => {
   if (!item || typeof item !== 'object') {
@@ -28,8 +47,7 @@ const isCartItem = (item: unknown): item is CartItem => {
     typeof candidate.collectionId === 'string' &&
     typeof candidate.productId === 'string' &&
     typeof candidate.productTitle === 'string' &&
-    typeof candidate.configuration === 'object' &&
-    candidate.configuration !== null &&
+    isCartItemConfiguration(candidate.configuration) &&
     typeof candidate.quantity === 'number' &&
     candidate.quantity >= 1 &&
     (typeof candidate.price === 'undefined' ||
@@ -145,16 +163,42 @@ export const addToCart = (item: CartItemInput): Cart => {
   }
 
   const cart = getCart();
+  const parsedConfiguration = parseConfiguration(item.configuration);
+  const optionAdjustment = getOptionAdjustments(parsedConfiguration);
+  const itemPrice = product.price + optionAdjustment;
+
   const cartItem: CartItem = {
     ...item,
     id: item.id || createCartItemId(),
     quantity: Math.max(1, item.quantity),
+    price: itemPrice,
+    configuration: parsedConfiguration,
   };
 
   return saveCart({
     ...cart,
     items: [...cart.items, cartItem],
   });
+};
+
+const parseConfiguration = (
+  configuration: Record<string, string | string[] | boolean | number>,
+): Record<string, string | string[] | boolean | number | ProductOptionValue | ProductOptionValue[]> => {
+  const parsed: Record<string, string | string[] | boolean | number | ProductOptionValue | ProductOptionValue[]> = {};
+
+  for (const [key, value] of Object.entries(configuration)) {
+    if (Array.isArray(value)) {
+      parsed[key] = value.map((v) =>
+        typeof v === 'string' ? parseOptionValue(v) : v,
+      );
+    } else if (typeof value === 'string') {
+      parsed[key] = parseOptionValue(value);
+    } else {
+      parsed[key] = value;
+    }
+  }
+
+  return parsed;
 };
 
 /** Updates a cart item quantity, never allowing a quantity below one. */

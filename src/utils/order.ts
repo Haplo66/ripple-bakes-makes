@@ -13,16 +13,31 @@ const stripPrefix = (key: string, productId: string): string => {
 };
 
 const cleanConfiguration = (
-  config: Record<string, string | string[] | boolean | number>,
+  config: Record<string, string | string[] | boolean | number | unknown>,
   productId: string,
 ): Record<string, string | string[] | boolean | number> => {
   const cleaned: Record<string, string | string[] | boolean | number> = {};
 
   for (const [key, value] of Object.entries(config)) {
-    cleaned[stripPrefix(key, productId)] = sanitizeValue(value);
+    const cleanKey = stripPrefix(key, productId);
+    cleaned[cleanKey] = sanitizeConfigurationValue(value);
   }
 
   return cleaned;
+};
+
+const sanitizeConfigurationValue = (
+  value: unknown,
+): string | string[] | boolean | number => {
+  if (typeof value === 'object' && value !== null && 'value' in value) {
+    return (value as { value: string }).value;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((v) => sanitizeConfigurationValue(v) as string);
+  }
+
+  return sanitizeValue(value as string | string[] | boolean | number);
 };
 
 const sanitizeValue = (

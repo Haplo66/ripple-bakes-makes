@@ -5,6 +5,8 @@
       <h2 data-cart-item-title></h2>
       <dl class="cart-item__configuration" data-cart-item-configuration></dl>
       <p class="cart-item__notes" data-cart-item-notes></p>
+      <p class="cart-item__unit-price" data-cart-item-unit-price></p>
+      <p class="cart-item__line-total" data-cart-item-line-total></p>
     </div>
 
     <div class="cart-item__controls">
@@ -35,6 +37,8 @@
   .cart-item__configuration:empty{display:none}
   .cart-item__notes{border-left:2px solid var(--honey);color:var(--muted);font-size:.86rem;margin:.9rem 0 0;padding-left:.75rem}
   .cart-item__notes:empty{display:none}
+  .cart-item__unit-price{color:var(--sage);font-size:.82rem;font-weight:600;margin:.5rem 0 0}
+  .cart-item__line-total{color:var(--cocoa);font-size:.9rem;font-weight:700;margin:.25rem 0 0}
   .cart-item__controls{align-items:end;display:flex;flex-direction:column;gap:.85rem;justify-content:space-between}
   .quantity-control{align-items:center;background:#fffdfa;border:1px solid var(--line);border-radius:99px;display:inline-flex;gap:.7rem;padding:.3rem}
   .quantity-control button{align-items:center;background:var(--cream);border:0;border-radius:50%;color:var(--cocoa);cursor:pointer;display:inline-flex;font-weight:700;height:2rem;justify-content:center;width:2rem}

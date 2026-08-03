@@ -4,8 +4,16 @@
  *
  */
 
+/** Captured product option value with its price adjustment. */
+export interface ProductOptionValue {
+  /** Clean display value (e.g. "60 pieces"). */
+  value: string;
+  /** Price adjustment for this option (e.g. 20). */
+  priceAdjustment: number;
+}
+
 /** Captured product option values for a cart item. */
-export type CartItemConfiguration = Record<string, string | string[] | boolean | number>;
+export type CartItemConfiguration = Record<string, string | string[] | boolean | number | ProductOptionValue | ProductOptionValue[]>;
 
 /** Product snapshot and customer selections stored for a future order. */
 export interface CartItem {

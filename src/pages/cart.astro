@@ -38,14 +38,16 @@ import { sitePath } from '../utils/paths';
 </MainLayout>
 
 <script>
-  import type { Cart } from '../types/cart';
-  import {
-    clearCart,
-    getCart,
-    removeFromCart,
-    updateCartItemQuantity,
-  } from '../utils/cart';
-  import { formatLabel, formatValue } from '../utils/format';
+import type { Cart } from '../types/cart';
+import {
+  clearCart,
+  getCart,
+  removeFromCart,
+  updateCartItemQuantity,
+} from '../utils/cart';
+import { getCartTotal } from '../utils/order';
+import { formatLabel, formatPrice } from '../utils/format';
+import { formatOptionValue } from '../utils/option-pricing';
 
   const cartList = document.querySelector<HTMLElement>('[data-cart-list]');
   const emptyState = document.querySelector<HTMLElement>('[data-cart-empty]');
@@ -55,86 +57,106 @@ import { sitePath } from '../utils/paths';
   const totalLabel = document.querySelector<HTMLElement>('[data-cart-total-label]');
   const template = document.querySelector<HTMLTemplateElement>('#cart-item-template');
 
-  const updateSummary = (cart: Cart) => {
-    const count = cart.items.reduce((total, item) => total + item.quantity, 0);
+const updateSummary = (cart: Cart) => {
+  const count = cart.items.reduce((total, item) => total + item.quantity, 0);
+  const total = getCartTotal(cart);
+  const totalPrice = formatPrice(total);
 
-    if (totalCount) totalCount.textContent = String(count);
-    if (totalLabel) totalLabel.textContent = count === 1 ? 'item' : 'items';
-  };
+  if (totalCount) totalCount.textContent = String(count);
+  if (totalLabel) totalLabel.textContent = count === 1 ? 'item' : 'items';
 
-  const renderCart = () => {
-    const cart = getCart();
+  const totalPriceEl = document.querySelector<HTMLElement>('[data-cart-total-price]');
+  if (totalPriceEl) {
+    totalPriceEl.textContent = totalPrice || '$0.00';
+  }
+};
 
-    if (!cartList || !emptyState || !summary || !template) return;
+const renderCart = () => {
+  const cart = getCart();
 
-    cartList.textContent = '';
-    updateSummary(cart);
+  if (!cartList || !emptyState || !summary || !template) return;
 
-    const hasItems = cart.items.length > 0;
-    emptyState.hidden = hasItems;
-    summary.hidden = !hasItems;
+  cartList.textContent = '';
+  updateSummary(cart);
 
-    if (!hasItems) return;
+  const hasItems = cart.items.length > 0;
+  emptyState.hidden = hasItems;
+  summary.hidden = !hasItems;
 
-    cart.items.forEach((item) => {
-      const fragment = template.content.cloneNode(true) as DocumentFragment;
-      const cartItem = fragment.querySelector<HTMLElement>('[data-cart-item]');
-      const title = fragment.querySelector<HTMLElement>('[data-cart-item-title]');
-      const collection = fragment.querySelector<HTMLElement>('[data-cart-item-collection]');
-      const configuration = fragment.querySelector<HTMLElement>('[data-cart-item-configuration]');
-      const notes = fragment.querySelector<HTMLElement>('[data-cart-item-notes]');
-      const quantity = fragment.querySelector<HTMLElement>('[data-cart-item-quantity]');
-      const decrease = fragment.querySelector<HTMLElement>('[data-cart-decrease]');
-      const increase = fragment.querySelector<HTMLElement>('[data-cart-increase]');
-      const remove = fragment.querySelector<HTMLElement>('[data-cart-remove]');
+  if (!hasItems) return;
 
-      if (
-        !cartItem ||
-        !title ||
-        !collection ||
-        !configuration ||
-        !notes ||
-        !quantity ||
-        !decrease ||
-        !increase ||
-        !remove
-      ) {
-        return;
-      }
+  cart.items.forEach((item) => {
+    const fragment = template.content.cloneNode(true) as DocumentFragment;
+    const cartItem = fragment.querySelector<HTMLElement>('[data-cart-item]');
+    const title = fragment.querySelector<HTMLElement>('[data-cart-item-title]');
+    const collection = fragment.querySelector<HTMLElement>('[data-cart-item-collection]');
+    const configuration = fragment.querySelector<HTMLElement>('[data-cart-item-configuration]');
+    const notes = fragment.querySelector<HTMLElement>('[data-cart-item-notes]');
+    const quantity = fragment.querySelector<HTMLElement>('[data-cart-item-quantity]');
+    const decrease = fragment.querySelector<HTMLElement>('[data-cart-decrease]');
+    const increase = fragment.querySelector<HTMLElement>('[data-cart-increase]');
+    const remove = fragment.querySelector<HTMLElement>('[data-cart-remove]');
+    const unitPriceEl = fragment.querySelector<HTMLElement>('[data-cart-item-unit-price]');
+    const lineTotalEl = fragment.querySelector<HTMLElement>('[data-cart-item-line-total]');
 
-      cartItem.dataset.cartItemId = item.id;
-      title.textContent = item.productTitle;
-      collection.textContent = formatLabel(item.collectionId);
-      quantity.textContent = String(item.quantity);
-      notes.textContent = item.notes ? `Notes: ${item.notes}` : '';
+    if (
+      !cartItem ||
+      !title ||
+      !collection ||
+      !configuration ||
+      !notes ||
+      !quantity ||
+      !decrease ||
+      !increase ||
+      !remove
+    ) {
+      return;
+    }
 
-      Object.entries(item.configuration).forEach(([key, value]) => {
-        const term = document.createElement('dt');
-        const description = document.createElement('dd');
+    cartItem.dataset.cartItemId = item.id;
+    title.textContent = item.productTitle;
+    collection.textContent = formatLabel(item.collectionId);
+    quantity.textContent = String(item.quantity);
+    notes.textContent = item.notes ? `Notes: ${item.notes}` : '';
 
-        term.textContent = formatLabel(key);
-        description.textContent = formatValue(value);
-        configuration.append(term, description);
-      });
+    Object.entries(item.configuration).forEach(([key, value]) => {
+      const term = document.createElement('dt');
+      const description = document.createElement('dd');
 
-      decrease.addEventListener('click', () => {
-        updateCartItemQuantity(item.id, item.quantity - 1);
-        renderCart();
-      });
-
-      increase.addEventListener('click', () => {
-        updateCartItemQuantity(item.id, item.quantity + 1);
-        renderCart();
-      });
-
-      remove.addEventListener('click', () => {
-        removeFromCart(item.id);
-        renderCart();
-      });
-
-      cartList.append(fragment);
+      term.textContent = formatLabel(key);
+      description.textContent = formatOptionValue(value);
+      configuration.append(term, description);
     });
-  };
+
+    const unitPrice = formatPrice(item.price);
+    const lineTotal = formatPrice((item.price ?? 0) * item.quantity);
+
+    if (unitPriceEl) {
+      unitPriceEl.textContent = unitPrice ? `Unit Price: ${unitPrice}` : '';
+    }
+
+    if (lineTotalEl) {
+      lineTotalEl.textContent = lineTotal ? `Total: ${lineTotal}` : '';
+    }
+
+    decrease.addEventListener('click', () => {
+      updateCartItemQuantity(item.id, item.quantity - 1);
+      renderCart();
+    });
+
+    increase.addEventListener('click', () => {
+      updateCartItemQuantity(item.id, item.quantity + 1);
+      renderCart();
+    });
+
+    remove.addEventListener('click', () => {
+      removeFromCart(item.id);
+      renderCart();
+    });
+
+    cartList.append(fragment);
+  });
+};
 
   clearButton?.addEventListener('click', () => {
     clearCart();

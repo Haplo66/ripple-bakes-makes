@@ -1,5 +1,7 @@
 ---
 import { sitePath } from '../../utils/paths';
+import { getCart, getCartTotal } from '../../utils/cart';
+import { formatPrice } from '../../utils/format';
 ---
 
 <aside class="cart-summary" data-cart-summary>
@@ -7,6 +9,10 @@ import { sitePath } from '../../utils/paths';
   <p>
     <strong data-cart-total-count>0</strong>
     <span data-cart-total-label>items</span>
+  </p>
+
+  <p class="cart-summary__total">
+    <strong data-cart-total-price></strong>
   </p>
 
   <a class="button button--honey" href={sitePath('checkout')}>
@@ -23,5 +29,7 @@ import { sitePath } from '../../utils/paths';
   .cart-summary p{font-family:'Playfair Display',Georgia,serif;font-size:1.75rem;font-weight:500;letter-spacing:-.035em;margin:.85rem 0 1.2rem}
   .cart-summary .button{width:100%}
   .cart-summary .button:disabled{cursor:not-allowed;opacity:.7;transform:none}
+  .cart-summary__total{font-size:1.1rem;margin:.5rem 0 1rem}
+  .cart-summary__total strong{font-size:1.3rem}
   .cart-summary__clear{background:transparent;border:0;color:var(--muted);cursor:pointer;display:block;font-size:.82rem;font-weight:600;margin:.9rem auto 0;padding:.25rem;text-decoration:underline;text-underline-offset:.25rem}
 </style>

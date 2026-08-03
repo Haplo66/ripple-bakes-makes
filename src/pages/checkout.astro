@@ -171,7 +171,8 @@ import { sitePath } from '../utils/paths';
   import type { Cart, CartItem } from '../types/cart';
   import type { OrderCustomer } from '../types/order';
   import { clearCart, getCart } from '../utils/cart';
-  import { formatLabel, formatPrice, formatValue } from '../utils/format';
+  import { formatLabel, formatPrice } from '../utils/format';
+import { formatOptionValue } from '../utils/option-pricing';
   import { createOrderFromCart, getCartTotal, sanitizeValue } from '../utils/order';
   import { isValidPhone, PHONE_VALIDATION_MESSAGE } from '../utils/phone';
   import { submitOrder } from '../utils/submission';
@@ -306,14 +307,14 @@ import { sitePath } from '../utils/paths';
     unitPriceEl.textContent = unitPrice ? `${unitPrice} each` : '';
     lineTotalEl.textContent = lineTotal ? `Line total: ${lineTotal}` : '';
 
-    Object.entries(item.configuration).forEach(([key, value]) => {
-      const term = document.createElement('dt');
-      const description = document.createElement('dd');
+Object.entries(item.configuration).forEach(([key, value]) => {
+  const term = document.createElement('dt');
+  const description = document.createElement('dd');
 
-      term.textContent = formatLabel(key);
-      description.textContent = formatValue(value);
-      configuration.append(term, description);
-    });
+  term.textContent = formatLabel(key);
+  description.textContent = formatOptionValue(value);
+  configuration.append(term, description);
+});
   };
 
   const renderSummaryItems = (cart: Cart) => {
