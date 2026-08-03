@@ -145,6 +145,19 @@ function readProductAnalysis(): ProductAnalysisRow[] {
   }
 }
 
+function readProductAnalysisByArea(areaKey: string): ProductAnalysisRow[] {
+  const fullPath = path.resolve("scripts/doctor/reports/doctor-report.json");
+  try {
+    if (!fs.existsSync(fullPath)) return [];
+    const raw = JSON.parse(fs.readFileSync(fullPath, "utf-8"));
+    const bh = raw.businessHealth;
+    if (!bh || !bh[areaKey]) return [];
+    return bh[areaKey].productAnalysis ?? [];
+  } catch {
+    return [];
+  }
+}
+
 function readCollectionsCount(): number {
   const p = path.resolve("src/content/collections.json");
   try {
@@ -207,7 +220,7 @@ function buildPlainTextBody(data: OwnerReportData, businessName: string, dashboa
   lines.push("Generated: " + formatDate(data.generated));
   lines.push("");
   lines.push("Website Health: " + ws.score + "/" + ws.maxScore + " " + websiteStatusLabel(ws.status));
-  lines.push("Business Health: " + data.business.overall.score + "/" + data.business.overall.maxScore + " " + businessStatusLabel(data.business.overall.score, data.business.overall.maxScore));
+  lines.push("Business Health: " + overallScore + "/" + overallMax + " " + businessStatusLabel(overallScore, overallMax));
   lines.push("");
 
   for (const areaKey of Object.keys(areas).sort()) {
@@ -262,6 +275,13 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
   const areaKeys = Object.keys(areas).sort();
   const areaLabels: Record<string, string> = { bakery: "Bakery", sewing: "Sewing" };
 
+  const areaValues = Object.values(areas);
+  const overallScore = areaValues.length > 0
+    ? Math.round(areaValues.reduce((sum, a) => sum + a.score, 0) / areaValues.length)
+    : 0;
+  const overallMax = 100;
+  const overallStatus = overallScore >= 90 ? "GOOD" : overallScore >= 70 ? "ATTENTION" : "CRITICAL";
+
   let totalProducts = 0;
   let totalMissingDescriptions = 0;
   let totalMissingShortDescriptions = 0;
@@ -300,9 +320,9 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
   const wsStatusLabel = websiteStatusLabel(ws.status);
   const wsColor = ws.status === "GOOD" ? green : ws.status === "ATTENTION" ? amber : red;
 
-  const bsLabel = businessStatusLabel(data.business.overall.score, data.business.overall.maxScore);
+  const bsLabel = businessStatusLabel(overallScore, overallMax);
   let bsColor = red;
-  const bsPct = data.business.overall.score / data.business.overall.maxScore;
+  const bsPct = overallScore / overallMax;
   if (bsPct >= 0.9) bsColor = green;
   else if (bsPct >= 0.75) bsColor = "#6b8e5a";
   else if (bsPct >= 0.5) bsColor = amber;
@@ -386,7 +406,7 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
       '<td width="', w, '" style="vertical-align:top; padding:8px; background:', warmBg, '; border:1px solid ', accent, '; border-radius:8px; text-align:center;">',
       '<p style="color:', muted, '; margin:0 0 4px; font-size:11px; text-transform:uppercase; letter-spacing:1px;">', escHtml(label), '</p>',
       '<p style="font-size:32px; font-weight:bold; color:', primary, '; margin:8px 0 4px;">', escHtml(score), '/', escHtml(max), '</p>',
-       '<p style="color:', color, '; margin:0 0 6px; font-size:15px; font-weight:bold;">', escHtml(label === "Website Health" ? websiteStatusLabel(data.website.status) : businessStatusLabel(data.business.overall.score, data.business.overall.maxScore)), '</p>',
+       '<p style="color:', color, '; margin:0 0 6px; font-size:15px; font-weight:bold;">', escHtml(label === "Website Health" ? websiteStatusLabel(data.website.status) : businessStatusLabel(overallScore, overallMax)), '</p>',
       '<p style="color:', muted, '; margin:0; font-size:12px; line-height:1.4;">', escHtml(explanation), '</p>',
       '</td>',
     );
@@ -444,7 +464,7 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
     '<tr><td style="padding:0 30px 20px;">',
     '<table width="100%" cellpadding="0" cellspacing="0"><tr>',
     cardCell(ws.score, ws.maxScore, "Website Health", wsColor, healthExplanation(ws.status), true),
-    cardCell(data.business.overall.score, data.business.overall.maxScore, "Business Health", bsColor, businessExplanation(data.business.overall.score, data.business.overall.maxScore), true),
+    cardCell(overallScore, overallMax, "Business Health", bsColor, businessExplanation(overallScore, overallMax), true),
     '</tr></table>',
     '</td></tr>',
   );
@@ -519,53 +539,6 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
 
   parts.push('</table></td></tr>');
 
-  // ── Section 3b: Per-Area Breakdown ──────────────────
-
-  for (const areaKey of areaKeys) {
-    const area = areas[areaKey];
-    const areaLabel = areaLabels[areaKey] || areaKey;
-    const ap = area.products;
-
-    parts.push(
-      '<tr><td style="padding:0 30px;"><div style="border-top:1px solid ', accent, '; margin:0;"></div></td></tr>',
-      '<tr><td style="padding:20px 30px 8px;"><h2 style="color:', primary, '; margin:0; font-size:18px;">', escHtml(areaLabel), '</h2></td></tr>',
-      '<tr><td style="padding:0 30px 20px;">',
-      '<table width="100%" cellpadding="0" cellspacing="0">',
-    );
-
-    const areaSnapshot: [string, number | string][] = [
-      ["Products", ap.total],
-      ["Active", ap.active],
-      ["Featured", ap.featured],
-      ["Missing Descriptions", ap.missingDescriptions],
-      ["Missing Short Desc", ap.missingShortDescriptions],
-      ["Missing Prices", ap.missingPrices],
-      ["Images Needing Attention", ap.productsWithOneImage + ap.productsWithNoImages],
-      ["Avg Images", area.images.averagePerProduct.toFixed(1)],
-      ["Forms Missing", area.forms.missing],
-    ];
-
-    for (let i = 0; i < areaSnapshot.length; i += 3) {
-      parts.push('<tr>');
-      for (let j = i; j < i + 3 && j < areaSnapshot.length; j++) {
-        const [label, value] = areaSnapshot[j];
-        parts.push(
-          '<td style="width:33.33%; padding:4px;">',
-          '<table width="100%" cellpadding="0" cellspacing="0" style="background:', warmBg, '; border:1px solid ', accent, '; border-radius:6px;">',
-          '<tr><td style="padding:12px; text-align:center;">',
-          '<p style="color:', muted, '; margin:0; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">', escHtml(label), '</p>',
-          '<p style="color:', primary, '; margin:6px 0 0; font-size:22px; font-weight:bold;">', escHtml(value), '</p>',
-          '</td></tr></table>',
-          '</td>',
-        );
-      }
-      parts.push('</tr>');
-      parts.push('<tr><td colspan="3" style="height:8px;"></td></tr>');
-    }
-
-    parts.push('</table></td></tr>');
-  }
-
   // ── Section 4: Progress ──────────────────────────────────────
 
   const descFilled = totalProducts - totalMissingShortDescriptions;
@@ -591,66 +564,89 @@ function buildHtmlBody(data: OwnerReportData, businessName: string, dashboardUrl
     '<tr><td style="padding:0 30px 20px;">',
   );
 
-  if (needingAttention.length > 0) {
-    parts.push(
-      '<p style="color:', amber, '; font-size:13px; font-weight:bold; margin:0 0 10px;">Needs Attention</p>',
-      '<table width="100%" cellpadding="0" cellspacing="0">',
-    );
-    for (let i = 0; i < needingAttention.length; i += 3) {
-      parts.push('<tr>');
-      for (let j = i; j < i + 3 && j < needingAttention.length; j++) {
-        const pr = needingAttention[j];
-        const cardIssues: string[] = [];
-        if (pr.imageCount <= 1) cardIssues.push("More images needed");
-        if (!pr.hasDescription) cardIssues.push("Description needed");
-        if (!pr.hasShortDescription) cardIssues.push("Short description needed");
-        if (!pr.hasPrice) cardIssues.push("Price needed");
-        if (pr.hasValidFormId === false) cardIssues.push("Form needed");
+  for (const areaKey of areaKeys) {
+    const area = areas[areaKey];
+    const areaLabel = areaLabels[areaKey] || areaKey;
 
-        parts.push(
-          '<td width="33.33%" style="padding:4px; vertical-align:top; background:', warmBg, '; border:1px solid ', accent, '; border-radius:6px;">',
-          '<table width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:10px;">',
-          '<p style="margin:0 0 6px; color:', amber, '; font-size:13px;">&#9888; <strong style="color:', primary, ';">', escHtml(pr.name), '</strong></p>',
-          '<p style="margin:0; color:', muted, '; font-size:11px; line-height:1.5;">',
-          cardIssues.map((i) => "\u2022 " + i).join("<br>"),
-          '</p>',
-          '</td></tr></table>',
-          '</td>',
-        );
-      }
-      for (let e = needingAttention.length - i; e < 3; e++) {
-        parts.push('<td width="33.33%" style="padding:4px;"></td>');
-      }
-      parts.push('</tr>');
-      parts.push('<tr><td colspan="3" style="height:4px;"></td></tr>');
-    }
-    parts.push('</table>');
-  }
+    const areaAnalysis = readProductAnalysisByArea(areaKey);
+    const areaNeedingAttention: ProductAnalysisRow[] = [];
+    const areaComplete: ProductAnalysisRow[] = [];
 
-  if (complete.length > 0) {
-    parts.push(
-      '<p style="color:', green, '; font-size:13px; font-weight:bold; margin:16px 0 10px;">Complete</p>',
-      '<table width="100%" cellpadding="0" cellspacing="0">',
-    );
-    for (let i = 0; i < complete.length; i += 3) {
-      parts.push('<tr>');
-      for (let j = i; j < i + 3 && j < complete.length; j++) {
-        const pr = complete[j];
-        parts.push(
-          '<td width="33.33%" style="padding:4px; vertical-align:top; background:', warmBg, '; border:1px solid ', accent, '; border-radius:6px;">',
-          '<table width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:10px;">',
-          '<p style="margin:0; color:', green, '; font-size:13px;">&#10003; <strong style="color:', primary, ';">', escHtml(pr.name), '</strong></p>',
-          '</td></tr></table>',
-          '</td>',
-        );
+    for (const pr of areaAnalysis) {
+      const issues: string[] = [];
+      if (pr.imageCount <= 1) issues.push("image");
+      if (!pr.hasDescription) issues.push("description");
+      if (!pr.hasShortDescription) issues.push("short description");
+      if (!pr.hasPrice) issues.push("price");
+      if (pr.hasValidFormId === false) issues.push("form");
+      if (issues.length > 0) {
+        areaNeedingAttention.push(pr);
+      } else {
+        areaComplete.push(pr);
       }
-      for (let e = complete.length - i; e < 3; e++) {
-        parts.push('<td width="33.33%" style="padding:4px;"></td>');
-      }
-      parts.push('</tr>');
-      parts.push('<tr><td colspan="3" style="height:4px;"></td></tr>');
     }
-    parts.push('</table>');
+
+    if (areaNeedingAttention.length > 0) {
+      parts.push(
+        '<p style="color:', amber, '; font-size:13px; font-weight:bold; margin:0 0 10px;">', escHtml(areaLabel), ' - Needs Attention</p>',
+        '<table width="100%" cellpadding="0" cellspacing="0">',
+      );
+      for (let i = 0; i < areaNeedingAttention.length; i += 3) {
+        parts.push('<tr>');
+        for (let j = i; j < i + 3 && j < areaNeedingAttention.length; j++) {
+          const pr = areaNeedingAttention[j];
+          const cardIssues: string[] = [];
+          if (pr.imageCount <= 1) cardIssues.push("More images needed");
+          if (!pr.hasDescription) cardIssues.push("Description needed");
+          if (!pr.hasShortDescription) cardIssues.push("Short description needed");
+          if (!pr.hasPrice) cardIssues.push("Price needed");
+          if (pr.hasValidFormId === false) cardIssues.push("Form needed");
+
+          parts.push(
+            '<td width="33.33%" style="padding:4px; vertical-align:top; background:', warmBg, '; border:1px solid ', accent, '; border-radius:6px;">',
+            '<table width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:10px;">',
+            '<p style="margin:0 0 6px; color:', amber, '; font-size:13px;">&#9888; <strong style="color:', primary, ';">', escHtml(pr.name), '</strong></p>',
+            '<p style="margin:0; color:', muted, '; font-size:11px; line-height:1.5;">',
+            cardIssues.map((i) => "\u2022 " + i).join("<br>"),
+            '</p>',
+            '</td></tr></table>',
+            '</td>',
+          );
+        }
+        for (let e = areaNeedingAttention.length - i; e < 3; e++) {
+          parts.push('<td width="33.33%" style="padding:4px;"></td>');
+        }
+        parts.push('</tr>');
+        parts.push('<tr><td colspan="3" style="height:4px;"></td></tr>');
+      }
+      parts.push('</table>');
+    }
+
+    if (areaComplete.length > 0) {
+      parts.push(
+        '<p style="color:', green, '; font-size:13px; font-weight:bold; margin:16px 0 10px;">', escHtml(areaLabel), ' - Complete</p>',
+        '<table width="100%" cellpadding="0" cellspacing="0">',
+      );
+      for (let i = 0; i < areaComplete.length; i += 3) {
+        parts.push('<tr>');
+        for (let j = i; j < i + 3 && j < areaComplete.length; j++) {
+          const pr = areaComplete[j];
+          parts.push(
+            '<td width="33.33%" style="padding:4px; vertical-align:top; background:', warmBg, '; border:1px solid ', accent, '; border-radius:6px;">',
+            '<table width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:10px;">',
+            '<p style="margin:0; color:', green, '; font-size:13px;">&#10003; <strong style="color:', primary, ';">', escHtml(pr.name), '</strong></p>',
+            '</td></tr></table>',
+            '</td>',
+          );
+        }
+        for (let e = areaComplete.length - i; e < 3; e++) {
+          parts.push('<td width="33.33%" style="padding:4px;"></td>');
+        }
+        parts.push('</tr>');
+        parts.push('<tr><td colspan="3" style="height:4px;"></td></tr>');
+      }
+      parts.push('</table>');
+    }
   }
 
   parts.push('</td></tr>');
@@ -757,7 +753,7 @@ async function sendEmail(
 
   const businessName = config.businessName || "RIPPLE";
   const dashboardUrl = config.dashboardUrl || "";
-  const subject = buildSubject(businessName, data.website.status, data.business.overall.status);
+  const subject = buildSubject(businessName, data.website.status, overallStatus);
   const body = buildBody(data, businessName, dashboardUrl);
   const htmlBody = buildHtmlBody(data, businessName, dashboardUrl);
 

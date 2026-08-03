@@ -126,9 +126,12 @@ function ownerReport(report: DoctorReport): void {
     allRecommendations.push(...buildOwnerRecommendations(areaBh, areaLabel));
   }
 
-  const overallScore = Object.values(businessAreas).reduce((sum, a) => sum + a.score, 0);
-  const overallMax = Object.values(businessAreas).reduce((sum, a) => sum + a.maxScore, 0);
-  const overallStatus = overallScore >= overallMax * 0.9 ? "GOOD" : overallScore >= overallMax * 0.7 ? "ATTENTION" : "CRITICAL";
+  const areaValues = Object.values(businessAreas);
+  const overallScore = areaValues.length > 0
+    ? Math.round(areaValues.reduce((sum, a) => sum + a.score, 0) / areaValues.length)
+    : 0;
+  const overallMax = 100;
+  const overallStatus = overallScore >= 90 ? "GOOD" : overallScore >= 70 ? "ATTENTION" : "CRITICAL";
 
   const output = {
     generated: report.timestamp,
