@@ -78,6 +78,20 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
 <script>
   import { addToCart } from '../../utils/cart';
 
+  const PLACEHOLDER_PATTERNS = [
+    /^select one$/i,
+    /^select\.\.\.$/i,
+    /^choose one$/i,
+    /^choose\.\.\.$/i,
+    /^please select/i,
+    /^select a?n?o?t?h?e?r?$/i,
+  ];
+
+  const isPlaceholderValue = (value) => {
+    if (!value || !value.trim()) return true;
+    return PLACEHOLDER_PATTERNS.some((pattern) => pattern.test(value.trim()));
+  };
+
   const forms = document.querySelectorAll<HTMLFormElement>('[data-dynamic-form]');
 
   forms.forEach((form) => {
@@ -102,6 +116,11 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
 
       if (checked) {
         return checked.value;
+      }
+
+      const select = form.querySelector<HTMLSelectElement>(`[name="${fieldId}"]`);
+      if (select) {
+        return select.value;
       }
 
       const input = form.querySelector<HTMLInputElement>(`[name="${fieldId}"]`);
@@ -139,14 +158,25 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
     otherInputs.forEach((otherInput) => {
       const fieldId = otherInput.dataset.otherInput;
       const select = form.querySelector<HTMLSelectElement>(`[name="${fieldId}"]`);
-
-      if (!select) return;
+      const radios = form.querySelectorAll<HTMLInputElement>(`[name="${fieldId}"][type="radio"]`);
 
       const toggleOther = () => {
-        otherInput.hidden = select.value !== 'other';
+        let value = '';
+        if (select) {
+          value = select.value;
+        } else if (radios.length > 0) {
+          const checked = form.querySelector<HTMLInputElement>(`[name="${fieldId}"][type="radio"]:checked`);
+          value = checked?.value || '';
+        }
+        otherInput.hidden = value !== 'other';
       };
 
-      select.addEventListener('change', toggleOther);
+      if (select) {
+        select.addEventListener('change', toggleOther);
+      }
+      radios.forEach((radio) => {
+        radio.addEventListener('change', toggleOther);
+      });
       toggleOther();
     });
 
@@ -199,6 +229,79 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
       event.preventDefault();
 
       if (!form.reportValidity()) {
+        return;
+      }
+
+      const fields = form.querySelectorAll<HTMLElement>('[data-form-field]');
+      let hasValidationErrors = false;
+
+      fields.forEach((fieldEl) => {
+        const fieldId = fieldEl.dataset.formField;
+        const fieldType = fieldEl.dataset.fieldType;
+        const isRequired = fieldEl.dataset.fieldRequired === 'true';
+        const fieldLabel = fieldEl.querySelector<HTMLElement>('label, legend');
+        const labelText = fieldLabel?.textContent?.trim() || fieldId || 'This field';
+        const existingError = fieldEl.querySelector<HTMLElement>('.form-field__error');
+
+        if (!isRequired) {
+          existingError?.remove();
+          fieldEl.removeAttribute('data-invalid');
+          return;
+        }
+
+        const input = form.querySelector<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+          `[name="${fieldId}"]`,
+        );
+
+        if (!input) {
+          existingError?.remove();
+          fieldEl.removeAttribute('data-invalid');
+          return;
+        }
+
+        const value = input instanceof HTMLSelectElement && input.multiple
+          ? Array.from(input.selectedOptions).map((o) => o.value)
+          : input.value;
+
+        let isValid = true;
+
+        if ((fieldType === 'selection' || fieldType === 'dropdown') && isPlaceholderValue(value as string)) {
+          isValid = false;
+        } else if (fieldType === 'checkbox' && fieldEl.dataset.fieldRequired === 'true') {
+          const checked = form.querySelectorAll<HTMLInputElement>(
+            `[name="${fieldId}"]:checked`,
+          );
+          if (checked.length === 0) {
+            isValid = false;
+          }
+        }
+
+        if (!isValid) {
+          hasValidationErrors = true;
+          fieldEl.setAttribute('data-invalid', 'true');
+          const isCheckbox = fieldType === 'checkbox';
+          const message = isCheckbox
+            ? `Please check ${labelText}`
+            : `Please select a value for ${labelText}`;
+          if (!existingError) {
+            const errorEl = document.createElement('p');
+            errorEl.className = 'form-field__error';
+            errorEl.textContent = message;
+            fieldEl.appendChild(errorEl);
+          } else {
+            existingError.textContent = message;
+          }
+        } else {
+          existingError?.remove();
+          fieldEl.removeAttribute('data-invalid');
+        }
+      });
+
+      if (hasValidationErrors) {
+        const firstInvalid = form.querySelector<HTMLElement>('[data-invalid]');
+        firstInvalid?.querySelector<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+          'input, select, textarea',
+        )?.focus();
         return;
       }
 
@@ -308,6 +411,19 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
     font-size: .85rem;
     font-weight: 600;
     margin: .85rem 0 0;
+  }
+
+  [data-invalid] {
+    outline: 2px solid var(--rust);
+    outline-offset: .25rem;
+    border-radius: .55rem;
+  }
+
+  .form-field__error {
+    color: var(--rust);
+    font-size: .72rem;
+    font-weight: 600;
+    margin: .25rem 0 0;
   }
 
   @media (max-width: 620px) {
