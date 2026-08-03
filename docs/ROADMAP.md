@@ -1006,5 +1006,3 @@ Possible future sections:
   - home page first sentence - wording and font
 - Give every collection its own short introduction instead of jumping straight into products.
 - when in cart, maybe ability to edit product, do it will go back to product page and "update" button will appear?
-- review in import folder with csv files are needed
-- email report got screwed up, and need to divide issues to sewing and bakery
