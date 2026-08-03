@@ -155,21 +155,8 @@ interface FormRecordOutput {
   fields: FormFieldRecord[];
 }
 
-const fieldTypeMap: Record<string, string> = {
-  dropdown: 'select',
-  textbox: 'text',
-  select: 'select',
-  text: 'text',
-  textarea: 'textarea',
-  number: 'number',
-  checkbox: 'checkbox',
-  radio: 'radio',
-  multiselect: 'multiselect',
-};
-
 const mapFieldType = (rawType: string): string => {
-  const key = rawType.trim().toLowerCase();
-  return fieldTypeMap[key] || 'text';
+  return rawType.trim().toLowerCase();
 };
 
 const normalizeFormsNewFormat = (

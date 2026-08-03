@@ -4,18 +4,32 @@
  *
  */
 
-/** Field input types supported by reusable product inquiry forms. */
+/** Canonical field types for product customization forms. */
 export type FormFieldType =
+  | 'dropdown'
+  | 'selection'
+  | 'toggle'
   | 'text'
   | 'textarea'
-  | 'select'
-  | 'multiselect'
   | 'checkbox'
-  | 'radio'
-  | 'number'
-  | 'date'
-  | 'email'
-  | 'phone';
+  | 'number';
+
+/** Legacy field type aliases mapped to canonical types. */
+const fieldTypeAliasMap: Record<string, FormFieldType> = {
+  'selection box': 'selection',
+  select: 'selection',
+  multiselect: 'selection',
+  radio: 'selection',
+  'yes/no': 'toggle',
+  boolean: 'toggle',
+  textbox: 'text',
+};
+
+/** Resolves a raw field type string to a canonical FormFieldType. */
+export const resolveFieldType = (rawType: string): FormFieldType => {
+  const normalized = rawType.trim().toLowerCase();
+  return fieldTypeAliasMap[normalized] || normalized;
+};
 
 /** Reusable display option for choice-based form fields. */
 export interface FormOption {

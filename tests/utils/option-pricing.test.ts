@@ -90,8 +90,16 @@ describe('getOptionAdjustments', () => {
 });
 
 describe('formatOptionValue', () => {
-  it('returns the clean value for structured option values', () => {
-    assert.strictEqual(formatOptionValue({ value: '60 pieces', priceAdjustment: 20 }), '60 pieces');
+  it('returns the clean value for structured option values with no adjustment', () => {
+    assert.strictEqual(formatOptionValue({ value: 'White', priceAdjustment: 0 }), 'White');
+  });
+
+  it('returns the value with positive adjustment inline', () => {
+    assert.strictEqual(formatOptionValue({ value: 'Yes', priceAdjustment: 15 }), 'Yes (+$15)');
+  });
+
+  it('returns the value with negative adjustment inline', () => {
+    assert.strictEqual(formatOptionValue({ value: 'Cotton', priceAdjustment: -5 }), 'Cotton (-$5)');
   });
 
   it('returns the string for plain string values', () => {
@@ -105,7 +113,7 @@ describe('formatOptionValue', () => {
   it('handles arrays with structured values', () => {
     assert.strictEqual(
       formatOptionValue([{ value: '60 pieces', priceAdjustment: 20 }, 'cheese']),
-      '60 pieces, cheese',
+      '60 pieces (+$20), cheese',
     );
   });
 

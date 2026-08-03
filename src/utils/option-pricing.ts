@@ -51,7 +51,16 @@ export const formatOptionValue = (
   value: unknown,
 ): string => {
   if (typeof value === 'object' && value !== null && 'value' in value) {
-    return String((value as ProductOptionValue).value);
+    const optionValue = value as ProductOptionValue;
+    const adjustment = optionValue.priceAdjustment;
+
+    if (adjustment === 0) {
+      return optionValue.value;
+    }
+
+    const absAdjustment = Math.abs(adjustment);
+    const sign = adjustment > 0 ? '+' : '-';
+    return `${optionValue.value} (${sign}$${absAdjustment})`;
   }
 
   if (Array.isArray(value)) {

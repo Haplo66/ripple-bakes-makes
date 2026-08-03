@@ -997,6 +997,59 @@ Possible future sections:
 - Do not create a separate analytics system
 
 
+## Future UX & Customer Experience Improvements
+
+### Collection Storytelling
+**Status:** Planned
+
+Add collection introduction sections above product grids.
+
+Goals:
+- Explain the story behind each RIPPLE collection
+- Help customers understand products before browsing
+- Strengthen handmade/premium brand positioning
+
+Implementation:
+- Add collection description/story fields managed through Google Sheets
+- Display introduction content on collection pages
+- Keep owner workflow unchanged
+
+---
+
+### Cart Item Editing
+**Status:** Planned
+
+Allow customers to edit existing cart items without removing and recreating them.
+
+Goals:
+- Reduce checkout friction
+- Improve experience for configurable bakery and sewing products
+- Preserve selected options, quantity, and notes
+
+Implementation:
+- Add Edit action on cart items
+- Restore product configuration from cart
+- Update existing cart item instead of creating duplicate
+
+---
+
+### Customer Order Communication
+**Status:** Planned
+
+Add customer-facing order lifecycle communication.
+
+Goals:
+- Increase customer confidence after ordering
+- Reduce "did my order go through?" questions
+- Provide a more professional ordering experience
+
+Implementation:
+- Add order confirmation email after submission
+- Future status notifications based on Google Sheets order status changes
+- Keep order management inside existing Sheets workflow
+- 
+
+
 ### **DEVELOPER NOTES - DO NOT REMOVE**
 - test if replacing pictures - it will update in website
 - wording and pages improvements

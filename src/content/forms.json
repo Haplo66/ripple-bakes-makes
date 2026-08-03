@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-08-03T14:06:42.978Z",
+    "generatedAt": "2026-08-03T19:40:14.643Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -13,7 +13,7 @@
         {
           "id": "size",
           "label": "Size",
-          "type": "select",
+          "type": "dropdown",
           "required": true,
           "options": [
             {
@@ -35,7 +35,7 @@
         {
           "id": "color-a",
           "label": "Color A",
-          "type": "select",
+          "type": "dropdown",
           "required": true,
           "options": [
             {
@@ -63,7 +63,7 @@
         {
           "id": "color-b",
           "label": "Color B",
-          "type": "select",
+          "type": "dropdown",
           "required": true,
           "options": [
             {
@@ -97,7 +97,7 @@
         {
           "id": "accessories",
           "label": "Accessories",
-          "type": "select",
+          "type": "dropdown",
           "required": true,
           "options": [
             {
@@ -113,7 +113,7 @@
         {
           "id": "color",
           "label": "Color",
-          "type": "select",
+          "type": "dropdown",
           "required": true,
           "options": [
             {
@@ -141,7 +141,7 @@
         {
           "id": "add-name",
           "label": "Add Name",
-          "type": "select",
+          "type": "dropdown",
           "required": true,
           "options": [
             {
@@ -157,7 +157,7 @@
         {
           "id": "name",
           "label": "Name",
-          "type": "text",
+          "type": "textbox",
           "required": false
         }
       ]
@@ -169,7 +169,7 @@
         {
           "id": "side-a-color",
           "label": "Side A Color",
-          "type": "select",
+          "type": "dropdown",
           "required": true,
           "options": [
             {
@@ -197,7 +197,7 @@
         {
           "id": "side-b-color",
           "label": "Side B Color",
-          "type": "select",
+          "type": "dropdown",
           "required": true,
           "options": [
             {
@@ -231,7 +231,7 @@
         {
           "id": "shirt-size",
           "label": "Shirt size",
-          "type": "select",
+          "type": "dropdown",
           "required": true,
           "options": [
             {
@@ -251,7 +251,7 @@
         {
           "id": "shirt-color",
           "label": "Shirt color",
-          "type": "select",
+          "type": "dropdown",
           "required": true,
           "options": [
             {
@@ -279,7 +279,7 @@
         {
           "id": "theme",
           "label": "Theme",
-          "type": "select",
+          "type": "dropdown",
           "required": true,
           "options": [
             {
@@ -303,8 +303,44 @@
         {
           "id": "nametext",
           "label": "Name\\Text",
-          "type": "text",
+          "type": "textbox",
           "required": true
+        },
+        {
+          "id": "t1",
+          "label": "t1",
+          "type": "selection",
+          "required": true,
+          "options": [
+            {
+              "value": "test-1",
+              "label": "test 1"
+            },
+            {
+              "value": "test-2",
+              "label": "test 2"
+            },
+            {
+              "value": "test-3",
+              "label": "test 3"
+            }
+          ]
+        },
+        {
+          "id": "t2",
+          "label": "t2",
+          "type": "toggle",
+          "required": true,
+          "options": [
+            {
+              "value": "test-1",
+              "label": "test 1"
+            },
+            {
+              "value": "test-2",
+              "label": "test 2"
+            }
+          ]
         }
       ]
     },
@@ -315,7 +351,7 @@
         {
           "id": "color",
           "label": "Color",
-          "type": "select",
+          "type": "dropdown",
           "required": true,
           "options": [
             {

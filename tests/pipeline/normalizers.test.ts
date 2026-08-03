@@ -582,7 +582,7 @@ describe('normalizeForms', () => {
     assert.strictEqual(result[0].fields.length, 2);
     assert.strictEqual(result[0].fields[0].id, 'size');
     assert.strictEqual(result[0].fields[0].label, 'Size');
-    assert.strictEqual(result[0].fields[0].type, 'select');
+    assert.strictEqual(result[0].fields[0].type, 'dropdown');
     assert.strictEqual(result[0].fields[0].required, true);
     assert.deepStrictEqual(result[0].fields[0].options, [
       { value: 's', label: 'S' },
@@ -624,9 +624,9 @@ describe('normalizeForms', () => {
     ];
     const warnings: PipelineWarning[] = [];
     const result = normalizeForms(records, 'forms.csv', warnings);
-    assert.strictEqual(result[0].fields[0].type, 'select');
-    assert.strictEqual(result[0].fields[1].type, 'text');
-    assert.strictEqual(result[0].fields[2].type, 'text');
+    assert.strictEqual(result[0].fields[0].type, 'dropdown');
+    assert.strictEqual(result[0].fields[1].type, 'textbox');
+    assert.strictEqual(result[0].fields[2].type, 'unknown');
   });
 
   it('handles empty records', () => {
