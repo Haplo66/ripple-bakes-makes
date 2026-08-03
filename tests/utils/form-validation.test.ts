@@ -59,23 +59,23 @@ describe('validateFormField', () => {
   const baseField: FormField = {
     id: 'test',
     label: 'Test',
-    type: 'selection',
+    type: 'toggle',
     required: true,
     options: [{ value: 'a', label: 'A' }],
   };
 
-  it('returns false for required selection with placeholder value', () => {
-    const field = { ...baseField, type: 'selection' as const };
+  it('returns false for required toggle with placeholder value', () => {
+    const field = { ...baseField, type: 'toggle' as const };
     assert.strictEqual(validateFormField(field, 'Select one'), false);
   });
 
-  it('returns true for required selection with real value', () => {
-    const field = { ...baseField, type: 'selection' as const };
+  it('returns true for required toggle with real value', () => {
+    const field = { ...baseField, type: 'toggle' as const };
     assert.strictEqual(validateFormField(field, 'Red'), true);
   });
 
-  it('returns true for optional selection with placeholder value', () => {
-    const field = { ...baseField, required: false, type: 'selection' as const };
+  it('returns true for optional toggle with placeholder value', () => {
+    const field = { ...baseField, required: false, type: 'toggle' as const };
     assert.strictEqual(validateFormField(field, 'Select one'), true);
   });
 
@@ -99,9 +99,9 @@ describe('validateFormField', () => {
     assert.strictEqual(validateFormField(field, undefined), true);
   });
 
-  it('returns false for toggle with not exactly 2 options', () => {
+  it('returns true for toggle with more than 2 options', () => {
     const field = { ...baseField, type: 'toggle' as const, options: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }, { value: 'maybe', label: 'Maybe' }] };
-    assert.strictEqual(validateFormField(field, 'yes'), false);
+    assert.strictEqual(validateFormField(field, 'yes'), true);
   });
 
   it('returns true for toggle with exactly 2 options', () => {

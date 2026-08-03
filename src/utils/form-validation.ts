@@ -29,10 +29,6 @@ export const validateFormField = (
     return false;
   }
 
-  if (field.type === 'toggle' && field.options) {
-    if (field.options.length !== 2) return false;
-  }
-
   if (field.type === 'checkbox' && field.required && field.options) {
     if (!Array.isArray(value) || value.length === 0) return false;
   }

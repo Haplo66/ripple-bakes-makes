@@ -7,7 +7,6 @@
 /** Canonical field types for product customization forms. */
 export type FormFieldType =
   | 'dropdown'
-  | 'selection'
   | 'toggle'
   | 'text'
   | 'textarea'
@@ -16,10 +15,11 @@ export type FormFieldType =
 
 /** Legacy field type aliases mapped to canonical types. */
 const fieldTypeAliasMap: Record<string, FormFieldType> = {
-  'selection box': 'selection',
-  select: 'selection',
-  multiselect: 'selection',
-  radio: 'selection',
+  selection: 'toggle',
+  'selection box': 'toggle',
+  select: 'toggle',
+  multiselect: 'toggle',
+  radio: 'toggle',
   'yes/no': 'toggle',
   boolean: 'toggle',
   textbox: 'text',

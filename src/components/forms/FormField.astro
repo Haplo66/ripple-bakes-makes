@@ -30,7 +30,7 @@ const inputType = (resolvedType === 'phone' ? 'tel' : resolvedType) as
   | 'tel'
   | 'radio'
   | 'checkbox';
-const showOther = (resolvedType === 'selection' || resolvedType === 'dropdown') && field.options?.some((o) => /other/i.test(o.label));
+const showOther = (resolvedType === 'toggle' || resolvedType === 'dropdown') && field.options?.some((o) => /other/i.test(o.label));
 const otherInputName = field.id + '-other';
 const otherPlaceholder = 'Enter your ' + field.label.toLowerCase();
 const validationAttributes = {
@@ -89,29 +89,6 @@ const validationAttributes = {
           </option>
         ))}
       </select>
-    ) : resolvedType === 'selection' && hasOptions ? (
-      <fieldset>
-        <legend>
-          {field.label}
-          {!field.required && <span>(optional)</span>}
-        </legend>
-
-        <div class="selection-list">
-          {field.options?.map((option, index) => (
-            <label class="selection-item">
-              <input
-                type="radio"
-                name={field.id}
-                value={option.value}
-                required={field.required}
-                data-required={field.required ? 'true' : 'false'}
-                checked={isSelected(option, index)}
-              />
-              <span class="selection-item__label">{option.label}</span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
     ) : resolvedType === 'toggle' && hasOptions ? (
       <fieldset>
         <legend>
@@ -281,84 +258,41 @@ const validationAttributes = {
     margin-right: .35rem;
   }
 
-  .form-field[data-field-type='selection'] .selection-list {
-    border: 1px solid var(--line);
-    border-radius: .6rem;
-    background: #fffdfa;
-    overflow: hidden;
+  .form-field[data-field-type='toggle'] .choice-list {
+    display: grid;
+    gap: .45rem;
+    grid-template-columns: 1fr;
   }
 
-  .form-field[data-field-type='selection'] .selection-item {
+  .form-field[data-field-type='toggle'] .choice {
     align-items: center;
     display: flex;
-    cursor: pointer;
+    flex-direction: row;
     font-size: .9rem;
     font-weight: 500;
-    gap: .6rem;
-    padding: .7rem .85rem;
-    position: relative;
+    gap: .55rem;
   }
 
-  .form-field[data-field-type='selection'] .selection-item + .selection-item {
-    border-top: 1px solid var(--line);
+  .form-field[data-field-type='toggle'] .choice input {
+    accent-color: var(--honey);
+    flex: 0 0 auto;
+    padding: 0;
   }
 
-  .form-field[data-field-type='selection'] .selection-item input {
-    opacity: 0;
-    position: absolute;
+  .form-field[data-field-type='toggle'] .choice:has(input:checked) {
+    color: var(--honey);
   }
 
-  .form-field[data-field-type='selection'] .selection-item__label::before {
+  .form-field[data-field-type='toggle'] .choice:has(input:checked)::before {
     content: '';
     width: .65rem;
     height: .65rem;
     border-radius: 50%;
-    border: 2px solid var(--line);
+    border: 2px solid var(--honey);
     background: var(--cream);
+    box-shadow: inset 0 0 0 2px var(--honey);
     flex-shrink: 0;
     margin-right: .35rem;
-  }
-
-  .form-field[data-field-type='selection'] .selection-item:has(input:checked) {
-    background: #f4e8d3;
-    color: var(--cocoa);
-    font-weight: 600;
-  }
-
-  .form-field[data-field-type='selection'] .selection-item:has(input:checked) .selection-item__label::before {
-    border-color: var(--honey);
-    box-shadow: inset 0 0 0 2px var(--honey);
-  }
-
-  .form-field[data-field-type='toggle'] .choice-list {
-    display: grid;
-    gap: 0;
-    grid-template-columns: repeat(2, 1fr);
-    overflow: hidden;
-    border: 1px solid var(--line);
-    border-radius: .6rem;
-    background: #fffdfa;
-  }
-
-  .form-field[data-field-type='toggle'] .choice {
-    justify-content: center;
-    margin: 0;
-    padding: .62rem .7rem;
-    text-align: center;
-  }
-
-  .form-field[data-field-type='toggle'] .choice + .choice {
-    border-left: 1px solid var(--line);
-  }
-
-  .form-field[data-field-type='toggle'] .choice input {
-    position: absolute;
-    opacity: 0;
-  }
-
-  .form-field[data-field-type='toggle'] .choice:has(input:checked) {
-    background: var(--honey);
-    color: #fffdfa;
   }
 
   .choice--single {

@@ -265,7 +265,7 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
 
         let isValid = true;
 
-        if ((fieldType === 'selection' || fieldType === 'dropdown') && isPlaceholderValue(value as string)) {
+        if (fieldType === 'dropdown' && isPlaceholderValue(value as string)) {
           isValid = false;
         } else if (fieldType === 'checkbox' && fieldEl.dataset.fieldRequired === 'true') {
           const checked = form.querySelectorAll<HTMLInputElement>(
@@ -362,7 +362,7 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
   }
 
   .product-form__fields :global(.form-field:has(textarea)),
-  .product-form__fields :global(.form-field:has(fieldset):not([data-field-type='selection']):not([data-field-type='toggle'])) {
+  .product-form__fields :global(.form-field:has(fieldset):not([data-field-type='toggle'])) {
     grid-column: span 2;
   }
 
@@ -432,7 +432,7 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
     }
 
     .product-form__fields :global(.form-field:has(textarea)),
-    .product-form__fields :global(.form-field:has(fieldset):not([data-field-type='selection']):not([data-field-type='toggle'])) {
+    .product-form__fields :global(.form-field:has(fieldset):not([data-field-type='toggle'])) {
       grid-column: auto;
     }
   }
