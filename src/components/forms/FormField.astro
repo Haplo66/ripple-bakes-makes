@@ -10,9 +10,12 @@ const { field } = Astro.props;
 const fieldId = `field-${field.id}`;
 const resolvedType = resolveFieldType(field.type);
 const hasOptions = Boolean(field.options?.length);
-const isSelected = (option: { value: string; label: string }) => {
+const isSelected = (
+  option: { value: string; label: string },
+  index: number,
+) => {
   const fallback = field.defaultValue;
-  if (fallback == null) return false;
+  if (fallback == null) return index === 0;
   const needle = String(fallback).trim().toLowerCase();
   return (
     option.value.toLowerCase() === needle ||
@@ -93,18 +96,18 @@ const validationAttributes = {
           {!field.required && <span>(optional)</span>}
         </legend>
 
-        <div class="choice-list">
-          {field.options?.map((option) => (
-            <label class="choice">
+        <div class="selection-list">
+          {field.options?.map((option, index) => (
+            <label class="selection-item">
               <input
                 type="radio"
                 name={field.id}
                 value={option.value}
                 required={field.required}
                 data-required={field.required ? 'true' : 'false'}
-                checked={isSelected(option)}
+                checked={isSelected(option, index)}
               />
-              <span>{option.label}</span>
+              <span class="selection-item__label">{option.label}</span>
             </label>
           ))}
         </div>
@@ -117,7 +120,7 @@ const validationAttributes = {
         </legend>
 
         <div class="choice-list">
-          {field.options?.map((option) => (
+          {field.options?.map((option, index) => (
             <label class="choice">
               <input
                 type="radio"
@@ -125,7 +128,7 @@ const validationAttributes = {
                 value={option.value}
                 required={field.required}
                 data-required={field.required ? 'true' : 'false'}
-                checked={isSelected(option)}
+                checked={isSelected(option, index)}
               />
               <span>{option.label}</span>
             </label>
@@ -262,12 +265,10 @@ const validationAttributes = {
     padding: 0;
   }
 
-  .form-field[data-field-type='selection'] .choice:has(input:checked),
   .form-field[data-field-type='checkbox'] .choice:has(input:checked) {
     color: var(--honey);
   }
 
-  .form-field[data-field-type='selection'] .choice:has(input:checked)::before,
   .form-field[data-field-type='checkbox'] .choice:has(input:checked)::before {
     content: '';
     width: .65rem;
@@ -278,6 +279,55 @@ const validationAttributes = {
     box-shadow: inset 0 0 0 2px var(--honey);
     flex-shrink: 0;
     margin-right: .35rem;
+  }
+
+  .form-field[data-field-type='selection'] .selection-list {
+    border: 1px solid var(--line);
+    border-radius: .6rem;
+    background: #fffdfa;
+    overflow: hidden;
+  }
+
+  .form-field[data-field-type='selection'] .selection-item {
+    align-items: center;
+    display: flex;
+    cursor: pointer;
+    font-size: .9rem;
+    font-weight: 500;
+    gap: .6rem;
+    padding: .7rem .85rem;
+    position: relative;
+  }
+
+  .form-field[data-field-type='selection'] .selection-item + .selection-item {
+    border-top: 1px solid var(--line);
+  }
+
+  .form-field[data-field-type='selection'] .selection-item input {
+    opacity: 0;
+    position: absolute;
+  }
+
+  .form-field[data-field-type='selection'] .selection-item__label::before {
+    content: '';
+    width: .65rem;
+    height: .65rem;
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    background: var(--cream);
+    flex-shrink: 0;
+    margin-right: .35rem;
+  }
+
+  .form-field[data-field-type='selection'] .selection-item:has(input:checked) {
+    background: #f4e8d3;
+    color: var(--cocoa);
+    font-weight: 600;
+  }
+
+  .form-field[data-field-type='selection'] .selection-item:has(input:checked) .selection-item__label::before {
+    border-color: var(--honey);
+    box-shadow: inset 0 0 0 2px var(--honey);
   }
 
   .form-field[data-field-type='toggle'] .choice-list {
