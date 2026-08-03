@@ -362,7 +362,7 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
   }
 
   .product-form__fields :global(.form-field:has(textarea)),
-  .product-form__fields :global(.form-field:has(fieldset)) {
+  .product-form__fields :global(.form-field:has(fieldset):not([data-field-type='selection']):not([data-field-type='toggle'])) {
     grid-column: span 2;
   }
 
@@ -432,7 +432,7 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
     }
 
     .product-form__fields :global(.form-field:has(textarea)),
-    .product-form__fields :global(.form-field:has(fieldset)) {
+    .product-form__fields :global(.form-field:has(fieldset):not([data-field-type='selection']):not([data-field-type='toggle'])) {
       grid-column: auto;
     }
   }
