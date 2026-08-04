@@ -11,7 +11,8 @@ export type FormFieldType =
   | 'text'
   | 'textarea'
   | 'checkbox'
-  | 'number';
+  | 'number'
+  | 'phone';
 
 /** Legacy field type aliases mapped to canonical types. */
 const fieldTypeAliasMap: Record<string, FormFieldType> = {

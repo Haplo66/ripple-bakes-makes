@@ -28,7 +28,7 @@ export const parseOptionValue = (rawValue: string): ProductOptionValue => {
 };
 
 export const getOptionAdjustments = (
-  configuration: Record<string, string | string[] | boolean | number | ProductOptionValue | ProductOptionValue[]>,
+  configuration: Record<string, string | boolean | number | ProductOptionValue | (string | ProductOptionValue)[]>,
 ): number => {
   let total = 0;
 

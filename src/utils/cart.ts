@@ -4,7 +4,7 @@
  *
  */
 
-import type { Cart, CartItem, CartItemInput, ProductOptionValue } from '../types/cart';
+import type { Cart, CartItem, CartItemConfiguration, CartItemInput, ProductOptionValue } from '../types/cart';
 import { getProductById } from '../data/products';
 import { getOptionAdjustments, parseOptionValue } from './option-pricing';
 
@@ -182,7 +182,7 @@ export const addToCart = (item: CartItemInput): Cart => {
 };
 
 const parseConfiguration = (
-  configuration: Record<string, string | string[] | boolean | number>,
+  configuration: CartItemConfiguration,
 ): Record<string, string | string[] | boolean | number | ProductOptionValue | ProductOptionValue[]> => {
   const parsed: Record<string, string | string[] | boolean | number | ProductOptionValue | ProductOptionValue[]> = {};
 
