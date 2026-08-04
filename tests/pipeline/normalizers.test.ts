@@ -600,6 +600,43 @@ describe('normalizeForms', () => {
     assert.strictEqual(result.length, 0);
   });
 
+  it('encodes priced options with a -- price delimiter', () => {
+    const records: CsvRecord[] = [
+      makeRecord(2, { formId: 'form-1', formName: 'My Form', fieldName: 'Size', fieldType: 'toggle', values: 'test 1|test 2 (+$10)', required: 'false' }),
+    ];
+    const warnings: PipelineWarning[] = [];
+    const result = normalizeForms(records, 'forms.csv', warnings);
+    assert.deepStrictEqual(result[0].fields[0].options, [
+      { value: 'test-1', label: 'test 1' },
+      { value: 'test-2--10', label: 'test 2 (+$10)' },
+    ]);
+  });
+
+  it('keeps free options ending in a number without a price delimiter', () => {
+    const records: CsvRecord[] = [
+      makeRecord(2, { formId: 'form-1', formName: 'My Form', fieldName: 'Size', fieldType: 'toggle', values: 'test 1|test 2|test 3', required: 'false' }),
+    ];
+    const warnings: PipelineWarning[] = [];
+    const result = normalizeForms(records, 'forms.csv', warnings);
+    assert.deepStrictEqual(result[0].fields[0].options, [
+      { value: 'test-1', label: 'test 1' },
+      { value: 'test-2', label: 'test 2' },
+      { value: 'test-3', label: 'test 3' },
+    ]);
+  });
+
+  it('encodes multi-word priced options with a -- price delimiter', () => {
+    const records: CsvRecord[] = [
+      makeRecord(2, { formId: 'form-1', formName: 'My Form', fieldName: 'Size', fieldType: 'toggle', values: '30 pieces|60 pieces (+$20)', required: 'false' }),
+    ];
+    const warnings: PipelineWarning[] = [];
+    const result = normalizeForms(records, 'forms.csv', warnings);
+    assert.deepStrictEqual(result[0].fields[0].options, [
+      { value: '30-pieces', label: '30 pieces' },
+      { value: '60-pieces--20', label: '60 pieces (+$20)' },
+    ]);
+  });
+
   it('parses JSON fields format', () => {
     const records: CsvRecord[] = [
       makeRecord(2, {

@@ -34,6 +34,21 @@ export const normalizeId = (value: string): string =>
 
 const slugify = normalizeId;
 
+const PRICE_MARKER_RE = /\([+-]?\$(\d+)\)$/;
+
+const encodeOptionValue = (label: string): string => {
+  const marker = label.match(PRICE_MARKER_RE);
+
+  if (marker) {
+    const amount = marker[1];
+    const base = label.slice(0, marker.index).trim();
+
+    return `${slugify(base)}--${amount}`;
+  }
+
+  return slugify(label);
+};
+
 const parseJsonField = <T>(
   value: string,
   fallback: T,
@@ -194,7 +209,7 @@ const normalizeFormsNewFormat = (
       type: mapFieldType(fieldType),
       required: parseBoolean(required),
       options: rawValues.length > 0
-        ? rawValues.map((v) => ({ value: slugify(v), label: v }))
+        ? rawValues.map((v) => ({ value: encodeOptionValue(v), label: v }))
         : undefined,
     });
   }

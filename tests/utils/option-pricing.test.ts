@@ -9,8 +9,8 @@ import assert from 'node:assert';
 import { parseOptionValue, getOptionAdjustments, formatOptionValue } from '../../src/utils/option-pricing.ts';
 
 describe('parseOptionValue', () => {
-  it('extracts price adjustment from value with suffix number', () => {
-    const result = parseOptionValue('60-pieces-20');
+  it('extracts price adjustment from value with -- price suffix', () => {
+    const result = parseOptionValue('60-pieces--20');
     assert.strictEqual(result.value, '60 pieces');
     assert.strictEqual(result.priceAdjustment, 20);
   });
@@ -27,16 +27,39 @@ describe('parseOptionValue', () => {
     assert.strictEqual(result.priceAdjustment, 0);
   });
 
-  it('handles values with multiple hyphens and a numeric suffix', () => {
-    const result = parseOptionValue('large-red-10');
+  it('handles values with multiple hyphens and a -- price suffix', () => {
+    const result = parseOptionValue('large-red--10');
     assert.strictEqual(result.value, 'large red');
     assert.strictEqual(result.priceAdjustment, 10);
+  });
+
+  it('treats a single-dash numeric suffix as part of the value', () => {
+    const result = parseOptionValue('large-red-10');
+    assert.strictEqual(result.value, 'large red 10');
+    assert.strictEqual(result.priceAdjustment, 0);
   });
 
   it('handles values where the suffix is not a number', () => {
     const result = parseOptionValue('small-cup');
     assert.strictEqual(result.value, 'small cup');
     assert.strictEqual(result.priceAdjustment, 0);
+  });
+
+  it('treats free toggle options ending in a number as zero adjustment', () => {
+    const result = parseOptionValue('test-1');
+    assert.strictEqual(result.value, 'test 1');
+    assert.strictEqual(result.priceAdjustment, 0);
+  });
+
+  it('treats free toggle options ending in 2 and 3 as zero adjustment', () => {
+    assert.strictEqual(parseOptionValue('test-2').priceAdjustment, 0);
+    assert.strictEqual(parseOptionValue('test-3').priceAdjustment, 0);
+  });
+
+  it('extracts price from a priced option whose base ends in a number', () => {
+    const result = parseOptionValue('test-2--10');
+    assert.strictEqual(result.value, 'test 2');
+    assert.strictEqual(result.priceAdjustment, 10);
   });
 
   it('handles empty string', () => {

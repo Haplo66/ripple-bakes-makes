@@ -6,7 +6,7 @@
 
 import type { ProductOptionValue } from '../types/cart';
 
-const PRICE_ADJUSTMENT_SUFFIX_RE = /-(\d+)$/;
+const PRICE_ADJUSTMENT_SUFFIX_RE = /--(\d+)$/;
 
 export const parseOptionValue = (rawValue: string): ProductOptionValue => {
   const match = rawValue.match(PRICE_ADJUSTMENT_SUFFIX_RE);
