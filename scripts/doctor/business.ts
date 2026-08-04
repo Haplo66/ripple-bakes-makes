@@ -356,6 +356,7 @@ function emptyMetrics(): BusinessMetrics {
     missingDescriptions: 0,
     missingShortDescriptions: 0,
     missingPrices: 0,
+    missingFormRefs: 0,
     totalImages: 0,
     averageImagesPerProduct: 0,
     productsWithNoImages: 0,
@@ -373,6 +374,7 @@ function combineMetrics(areas: BusinessHealthResult[]): BusinessMetrics {
     missingDescriptions: areas.reduce((sum, a) => sum + a.metrics.missingDescriptions, 0),
     missingShortDescriptions: areas.reduce((sum, a) => sum + a.metrics.missingShortDescriptions, 0),
     missingPrices: areas.reduce((sum, a) => sum + a.metrics.missingPrices, 0),
+    missingFormRefs: areas.reduce((sum, a) => sum + a.metrics.missingFormRefs, 0),
     totalImages: areas.reduce((sum, a) => sum + a.metrics.totalImages, 0),
     averageImagesPerProduct: areas.length > 0
       ? Math.round(areas.reduce((sum, a) => sum + a.metrics.averageImagesPerProduct, 0) / areas.length * 10) / 10

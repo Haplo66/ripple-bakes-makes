@@ -26,6 +26,7 @@ describe('emailReport — no false email failures', () => {
     config = {
       doctorEnabled: true,
       reportEmails: ['test@example.com'],
+      reportFrequency: '',
       businessName: 'Test Business',
       dashboardUrl: 'https://example.com/doctor',
     };

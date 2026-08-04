@@ -87,7 +87,7 @@ const form = providedForm || (formId ? getFormById(formId) : undefined) || {
     /^select a?n?o?t?h?e?r?$/i,
   ];
 
-  const isPlaceholderValue = (value) => {
+  const isPlaceholderValue = (value: string): boolean => {
     if (!value || !value.trim()) return true;
     return PLACEHOLDER_PATTERNS.some((pattern) => pattern.test(value.trim()));
   };
