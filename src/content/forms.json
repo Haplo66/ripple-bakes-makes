@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-08-03T19:40:14.643Z",
+    "generatedAt": "2026-08-04T03:01:09.744Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -13,7 +13,7 @@
         {
           "id": "size",
           "label": "Size",
-          "type": "dropdown",
+          "type": "toggle",
           "required": true,
           "options": [
             {
@@ -21,7 +21,7 @@
               "label": "30 pieces"
             },
             {
-              "value": "60-pieces-20",
+              "value": "60-pieces--20",
               "label": "60 pieces (+$20)"
             }
           ]
@@ -141,7 +141,7 @@
         {
           "id": "add-name",
           "label": "Add Name",
-          "type": "dropdown",
+          "type": "selection",
           "required": true,
           "options": [
             {
@@ -149,7 +149,7 @@
               "label": "No name"
             },
             {
-              "value": "add-stitched-name-15",
+              "value": "add-stitched-name--15",
               "label": "Add stitched name (+$15)"
             }
           ]
@@ -305,42 +305,6 @@
           "label": "Name\\Text",
           "type": "textbox",
           "required": true
-        },
-        {
-          "id": "t1",
-          "label": "t1",
-          "type": "selection",
-          "required": true,
-          "options": [
-            {
-              "value": "test-1",
-              "label": "test 1"
-            },
-            {
-              "value": "test-2",
-              "label": "test 2"
-            },
-            {
-              "value": "test-3",
-              "label": "test 3"
-            }
-          ]
-        },
-        {
-          "id": "t2",
-          "label": "t2",
-          "type": "toggle",
-          "required": true,
-          "options": [
-            {
-              "value": "test-1",
-              "label": "test 1"
-            },
-            {
-              "value": "test-2",
-              "label": "test 2"
-            }
-          ]
         }
       ]
     },
