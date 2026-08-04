@@ -298,7 +298,7 @@ GitHub Pages
 
 #### v1.17.1 — Gallery Foundation
 
-**Status:** Planned
+**Status:** Superseded by v1.20.3 Gallery & Storytelling Enhancement
 
 **Scope:**
 - Create Gallery page
@@ -433,7 +433,7 @@ Assets/
 
 ### v1.20 — Website Polish & Customer Experience
 
-**Status:** 🚧 In Progress — v1.20.0–v1.20.2 and v1.20.4 complete; v1.20.3 gallery enhancement is substantially delivered (see below).
+**Status:** ✅ Completed — v1.20.0–v1.20.4 all delivered.
 
 A customer experience refinement milestone focused on improving website clarity, trust, and ease of use — how customers discover products, understand availability, place orders, and connect with RIPPLE creations, while keeping the owner workflow simple and Google Sheets as the source of truth.
 
@@ -475,9 +475,9 @@ A customer experience refinement milestone focused on improving website clarity,
 - Purchase-state handling for inactive products — inactive status products can never be added to cart or ordered
 - Automated tests
 
-#### v1.20.3 — Gallery & Storytelling Enhancement
+#### v1.20.3 — Gallery & Storytelling Enhancement ✅
 
-**Status:** Delivered (labeled "In Progress" pending final sign-off)
+**Status:** Completed
 
 **Completed:**
 - Gallery cards keep an image-first design with no text overlaid on images
