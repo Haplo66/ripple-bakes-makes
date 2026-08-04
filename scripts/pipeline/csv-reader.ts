@@ -7,12 +7,19 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { IMPORT_DIR } from './constants.ts';
-import type { CsvRecord, PipelineWarning } from './types.ts';
+import { normalizeHeader } from './header-map.ts';
+import type { CsvRecord, DatasetName, PipelineWarning } from './types.ts';
 
 export interface CsvReadResult {
   found: boolean;
   records: CsvRecord[];
 }
+
+const datasetFromFileName = (fileName: string): DatasetName => {
+  if (fileName.startsWith('collections')) return 'collections';
+  if (fileName.startsWith('products')) return 'products';
+  return 'forms';
+};
 
 const parseCsvLine = (line: string): string[] => {
   const values: string[] = [];
@@ -47,7 +54,7 @@ const parseCsvLine = (line: string): string[] => {
   return values;
 };
 
-const parseCsv = (content: string): CsvRecord[] => {
+const parseCsv = (content: string, dataset: DatasetName): CsvRecord[] => {
   const lines = content.replace(/^\uFEFF/, '').split(/\r?\n/);
   const [headerLine, ...dataLines] = lines;
 
@@ -55,7 +62,9 @@ const parseCsv = (content: string): CsvRecord[] => {
     return [];
   }
 
-  const headers = parseCsvLine(headerLine).map((header) => header.trim());
+  const headers = parseCsvLine(headerLine)
+    .map((header) => header.trim())
+    .map((header) => normalizeHeader(header, dataset));
 
   return dataLines
     .map((line, index) => ({ line, rowNumber: index + 2 }))
@@ -85,5 +94,5 @@ export const readCsvFile = (
     return { found: false, records: [] };
   }
 
-  return { found: true, records: parseCsv(readFileSync(filePath, 'utf8')) };
+  return { found: true, records: parseCsv(readFileSync(filePath, 'utf8'), datasetFromFileName(fileName)) };
 };
