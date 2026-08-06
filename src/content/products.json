@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-08-04T03:01:09.742Z",
+    "generatedAt": "2026-08-06T16:01:07.160Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -91,8 +91,8 @@
       "id": "BK-FP-002",
       "businessArea": "bakery",
       "collection": "filled-pockets",
-      "slug": "tuna-filled-pocket",
-      "name": "Tuna Filled Pocket",
+      "slug": "tuna-cheese-filled-pocket",
+      "name": "Tuna & Cheese Filled Pocket",
       "shortDescription": "Handmade pastry pocket with tuna filling",
       "description": "Fresh baked filled pocket ",
       "status": "Active",
@@ -100,9 +100,9 @@
       "homepageFeatured": true,
       "galleryFeatured": true,
       "formId": "BK-POCKETS",
-      "image": "main-tuna-filled-pocket.jpg",
+      "image": "main-filled-pockets.jpg",
       "images": [
-        "main-tuna-filled-pocket.jpg"
+        "main-filled-pockets.jpg"
       ],
       "imageTone": "cream",
       "active": true,
@@ -111,8 +111,8 @@
       "availability": "Made to Order",
       "preparationTime": "Next Day",
       "fulfillment": "Pickup Only",
-      "imageFolder": "products/Bakery/Filled Pockets/Tuna Filled Pocket",
-      "primaryImage": "main-tuna-filled-pocket.jpg"
+      "imageFolder": "collections/Bakery/Filled Pockets",
+      "primaryImage": "main-filled-pockets.jpg"
     },
     {
       "id": "BK-FP-003",
