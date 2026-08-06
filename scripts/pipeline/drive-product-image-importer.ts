@@ -16,6 +16,7 @@ import {
   type CatalogProduct,
   type FolderCandidate,
 } from './product-folder-classifier.ts';
+import { removeStaleImages } from './image-cleaner.ts';
 import type { drive_v3 } from 'googleapis';
 
 const ALLOWED_IMAGE = /\.(jpg|jpeg|png|webp)$/i;
@@ -251,11 +252,20 @@ function loadProductCatalog(): CatalogProduct[] {
   }
 }
 
+type ImportCounts = {
+  items: number;
+  downloaded: number;
+  replaced: number;
+  skipped: number;
+  failed: number;
+  removed: number;
+};
+
 async function importProductImages(
   drive: drive_v3.Drive,
   sectionId: string,
   dryRun: boolean,
-): Promise<{ items: number; downloaded: number; replaced: number; skipped: number; failed: number }> {
+): Promise<ImportCounts> {
   const manifest = readManifest();
 
   const codeToManifest = new Map<string, ManifestEntry>();
@@ -319,7 +329,7 @@ async function importProductImages(
   const catalog = loadProductCatalog();
   if (catalog.length === 0) {
     console.log('  No product catalog found; skipping product image discovery.');
-    return { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0 };
+    return { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0, removed: 0 };
   }
 
   const stale = manifest ? findStaleManifestProducts(manifest.products, catalog) : [];
@@ -366,7 +376,7 @@ async function importProductImages(
 
   if (sorted.length === 0) {
     console.log('  No product folders found.');
-    return { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0 };
+    return { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0, removed: 0 };
   }
 
   console.log(`  ${sorted.length} product folder(s)`);
@@ -378,6 +388,7 @@ async function importProductImages(
   let replaced = 0;
   let skipped = 0;
   let failed = 0;
+  let removed = 0;
 
   for (const cf of sorted) {
     const targetDir = join(IMAGE_DIR, 'products', cf.targetDir);
@@ -417,9 +428,19 @@ async function importProductImages(
         case 'failed': failed += 1; break;
       }
     }
+
+    const staleFiles = removeStaleImages(
+      targetDir,
+      imageFiles.map((img) => img.name),
+      dryRun,
+    );
+    for (const name of staleFiles) {
+      console.log(`  Removed stale image: products/${cf.targetDir}/${name}`);
+      removed += 1;
+    }
   }
 
-  return { items: sorted.length, downloaded, replaced, skipped, failed };
+  return { items: sorted.length, downloaded, replaced, skipped, failed, removed };
 }
 
 async function importFlatSection(
@@ -428,11 +449,11 @@ async function importFlatSection(
   targetDir: string,
   label: string,
   dryRun: boolean,
-): Promise<{ items: number; downloaded: number; replaced: number; skipped: number; failed: number }> {
+): Promise<ImportCounts> {
   const files = await listAll(drive, sectionId);
   const images = files.filter(isImageFile);
 
-  if (images.length === 0) return { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0 };
+  if (images.length === 0) return { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0, removed: 0 };
 
   const absDir = targetDir ? join(IMAGE_DIR, targetDir) : '';
   console.log(`  ${label}: ${images.length} file(s)`);
@@ -442,7 +463,7 @@ async function importFlatSection(
       const relative = absDir ? `${targetDir}/${img.name}` : img.name;
       console.log(`    → ${relative}`);
     }
-    return { items: images.length, downloaded: 0, replaced: 0, skipped: 0, failed: 0 };
+    return { items: images.length, downloaded: 0, replaced: 0, skipped: 0, failed: 0, removed: 0 };
   }
 
   if (absDir) mkdirSync(absDir, { recursive: true });
@@ -463,16 +484,16 @@ async function importFlatSection(
     }
   }
 
-  return { items: images.length, downloaded, replaced, skipped, failed };
+  return { items: images.length, downloaded, replaced, skipped, failed, removed: 0 };
 }
 
 async function importCollectionImages(
   drive: drive_v3.Drive,
   sectionId: string,
   dryRun: boolean,
-): Promise<{ items: number; downloaded: number; replaced: number; skipped: number; failed: number }> {
+): Promise<ImportCounts> {
   const topLevel = await listAll(drive, sectionId);
-  let total = { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0 };
+  let total = { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0, removed: 0 };
 
   for (const entry of topLevel) {
     if (entry.mimeType !== DRIVE_FOLDER_MIME) continue;
@@ -511,11 +532,11 @@ async function importHomepageImages(
   drive: drive_v3.Drive,
   sectionId: string,
   dryRun: boolean,
-): Promise<{ items: number; downloaded: number; replaced: number; skipped: number; failed: number }> {
+): Promise<ImportCounts> {
   const subfolders = await listAll(drive, sectionId);
   const folders = subfolders.filter((s) => s.mimeType === DRIVE_FOLDER_MIME);
   console.log(`  Homepage Images: ${folders.length} subfolder(s)`);
-  let total = { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0 };
+  let total = { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0, removed: 0 };
 
   for (const sub of folders) {
     const targetDir = `home/${sub.name}`;
@@ -534,9 +555,9 @@ async function importBusinessAreaImages(
   drive: drive_v3.Drive,
   sectionId: string,
   dryRun: boolean,
-): Promise<{ items: number; downloaded: number; replaced: number; skipped: number; failed: number }> {
+): Promise<ImportCounts> {
   const areas = await listAll(drive, sectionId);
-  let total = { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0 };
+  let total = { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0, removed: 0 };
 
   for (const area of areas) {
     if (area.mimeType !== DRIVE_FOLDER_MIME) continue;
@@ -569,11 +590,11 @@ async function importFavicon(
   drive: drive_v3.Drive,
   sectionId: string,
   dryRun: boolean,
-): Promise<{ items: number; downloaded: number; replaced: number; skipped: number; failed: number }> {
+): Promise<ImportCounts> {
   const files = await listAll(drive, sectionId);
   const images = files.filter(isImageFile);
 
-  if (images.length === 0) return { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0 };
+  if (images.length === 0) return { items: 0, downloaded: 0, replaced: 0, skipped: 0, failed: 0, removed: 0 };
 
   console.log(`  Favicon: ${images.length} file(s)`);
 
@@ -581,7 +602,7 @@ async function importFavicon(
     for (const img of images) {
       console.log(`    → public/${img.name}`);
     }
-    return { items: images.length, downloaded: 0, replaced: 0, skipped: 0, failed: 0 };
+    return { items: images.length, downloaded: 0, replaced: 0, skipped: 0, failed: 0, removed: 0 };
   }
 
   const publicDir = join(process.cwd(), 'public');
@@ -602,7 +623,7 @@ async function importFavicon(
     }
   }
 
-  return { items: images.length, downloaded, replaced, skipped, failed };
+  return { items: images.length, downloaded, replaced, skipped, failed, removed: 0 };
 }
 
 async function run(): Promise<void> {
@@ -666,6 +687,7 @@ async function run(): Promise<void> {
   let totalReplaced = 0;
   let totalSkipped = 0;
   let totalFailed = 0;
+  let totalRemoved = 0;
 
   for (const section of SECTIONS) {
     const sectionId = await findChildFolder(drive, assetsId, section.label);
@@ -674,7 +696,7 @@ async function run(): Promise<void> {
       continue;
     }
 
-    let result: { items: number; downloaded: number; replaced: number; skipped: number; failed: number };
+    let result: ImportCounts;
 
     switch (section.type) {
       case 'product-images':
@@ -702,6 +724,7 @@ async function run(): Promise<void> {
     totalReplaced += result.replaced;
     totalSkipped += result.skipped;
     totalFailed += result.failed;
+    totalRemoved += result.removed;
   }
 
   console.log('');
@@ -713,6 +736,10 @@ async function run(): Promise<void> {
 
   if (totalFailed > 0) {
     console.log(`  Failed:           ${totalFailed}`);
+  }
+
+  if (totalRemoved > 0) {
+    console.log(`  Stale removed:    ${totalRemoved}`);
   }
 
   if (dryRun) {

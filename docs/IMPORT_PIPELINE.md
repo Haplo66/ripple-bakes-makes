@@ -39,6 +39,7 @@ scripts/pipeline/
   generators.ts           JSON output generation
   image-scanner.ts        Dynamic filesystem image discovery
   image-resolver.ts       Image fallback hierarchy resolution
+  image-cleaner.ts        Stale local image cleanup
   logger.ts               Pipeline logging
   types.ts                Shared TypeScript types
   constants.ts            File paths, sheet tab names, pipeline metadata
@@ -62,7 +63,7 @@ The GitHub Actions workflow sets `SHEETS_ENABLED=true` and reads data directly f
 
 1. **Validate environment** — checks required env vars
 2. **Repair Drive image extensions** — fixes files missing extensions in Drive
-3. **Import Drive assets** — syncs product, collection, business-area, homepage images from Drive to `public/images/`
+3. **Import Drive assets** — syncs product, collection, business-area, homepage images from Drive to `public/images/`. Product image folders are kept in sync with the source: new images are downloaded, changed images are replaced, and **stale local images that no longer exist in Drive are removed** (see [Stale Image Cleanup](#stale-image-cleanup)).
 4. **Import Gallery Images** — syncs gallery images from Drive `Assets/Gallery Images/{Personal,Bakery,Sewing}/` to `public/images/gallery/{category}/`
 5. **Import Google Sheets data** — reads collections, products, forms from Sheets (or CSV fallback) → generates JSON to `src/content/` (also scans gallery folder for `gallery-assets.json`)
 6. **Validate generated content** — checks for missing images, descriptions, empty datasets
@@ -78,6 +79,25 @@ Product image folders under Drive `Assets/Product Images/` are discovered from t
 - The asset manifest (`data/manifest/images.json`) is used only as a **checksum cache** to skip unchanged files — it is never required for discovery. New product folders import without a manifest entry.
 - Drive folders that do not match any current product (for example, after a product was renamed or removed) are **skipped with a warning** and never deleted automatically.
 - Stale manifest entries (products removed or renamed since the manifest was generated) are reported as warnings so orphan folders can be reviewed.
+
+### Stale Image Cleanup
+
+Product image sync removes local images that were deleted from Drive so the published website never shows old photos:
+
+| Source state | Result |
+|-------------|--------|
+| Existing source image | Kept |
+| New source image | Added |
+| Deleted source image | Removed from `public/images/products/...` |
+| Empty product image folder | Existing local images removed, handled safely |
+
+For each matched product folder, after downloading the current Drive images the importer removes any local `.jpg/.jpeg/.png/.webp` file whose name is not present in the source folder. Each removal is reported:
+
+```text
+Removed stale image: products/Sewing/Custom Shirts/Custom Design Shirt/gallery-01.jpg
+```
+
+Cleanup is scoped to the **current product's** asset folder, so fallback images used by other products, collections, business areas, and placeholders are never touched. Non-image files and subfolders are left intact. Cleanup is a no-op during a dry run (`--dry-run`) — it reports what would be removed without deleting anything.
 
 ## CSV Schemas
 

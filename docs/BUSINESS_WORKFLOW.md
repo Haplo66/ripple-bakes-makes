@@ -66,7 +66,7 @@ This single command does everything:
 
 1. Checks the environment is ready
 2. Repairs any image files missing their file extension
-3. Downloads new or changed images from Drive
+3. Downloads new or changed images from Drive, and **removes any old images you deleted from Drive** so the website never shows stale photos
 4. Imports the latest data from Sheets
 5. Validates everything is in order
 6. Builds the website
@@ -149,6 +149,20 @@ npm run update
 ```
 
 Your new product will appear on the site with its images.
+
+---
+
+## Removing Images
+
+If you delete an image from a product folder in Google Drive and then run `npm run update`, the old image is removed from the website automatically — you never need to delete files from the code project yourself.
+
+For example, if you delete `gallery-02.jpg` from a product's folder in Drive, the update reports:
+
+```
+Removed stale image: products/Sewing/Custom Shirts/Custom Design Shirt/gallery-02.jpg
+```
+
+If you delete **all** the images from a product folder, the product falls back to its collection, business area, or a placeholder image — the same behavior as a product with no images.
 
 ---
 
