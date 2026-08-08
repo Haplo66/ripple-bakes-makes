@@ -1,11 +1,55 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-08-06T16:01:07.162Z",
+    "generatedAt": "2026-08-08T23:12:39.399Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
   "data": [
+    {
+      "id": "BK-BOREK",
+      "name": "Borekitas",
+      "fields": [
+        {
+          "id": "size",
+          "label": "Size",
+          "type": "dropdown",
+          "required": true,
+          "options": [
+            {
+              "value": "16-larg",
+              "label": "16 Larg"
+            },
+            {
+              "value": "20-small",
+              "label": "20 Small"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BK-CALZONE",
+      "name": "Calzone",
+      "fields": [
+        {
+          "id": "size",
+          "label": "Size",
+          "type": "dropdown",
+          "required": true,
+          "options": [
+            {
+              "value": "16-larg",
+              "label": "16 Larg"
+            },
+            {
+              "value": "20-small",
+              "label": "20 Small"
+            }
+          ]
+        }
+      ]
+    },
     {
       "id": "BK-GARLICBUNS",
       "name": "Garlic Buns",
@@ -23,6 +67,28 @@
             {
               "value": "60-pieces--20",
               "label": "60 pieces (+$20)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BK-TUNA",
+      "name": "Tuna & Cheese Filled Pocket",
+      "fields": [
+        {
+          "id": "size",
+          "label": "Size",
+          "type": "dropdown",
+          "required": true,
+          "options": [
+            {
+              "value": "16-larg",
+              "label": "16 Larg"
+            },
+            {
+              "value": "20-small",
+              "label": "20 Small"
             }
           ]
         }
@@ -47,12 +113,40 @@
               "label": "White"
             },
             {
-              "value": "blue",
-              "label": "Blue"
+              "value": "gray",
+              "label": "Gray"
             },
             {
-              "value": "red",
-              "label": "Red"
+              "value": "dark-blue",
+              "label": "Dark Blue"
+            },
+            {
+              "value": "light-blue-red",
+              "label": "Light Blue Red"
+            },
+            {
+              "value": "pink",
+              "label": "Pink"
+            },
+            {
+              "value": "green",
+              "label": "Green"
+            },
+            {
+              "value": "yellow",
+              "label": "Yellow"
+            },
+            {
+              "value": "orange",
+              "label": "Orange"
+            },
+            {
+              "value": "purple",
+              "label": "Purple"
+            },
+            {
+              "value": "brown",
+              "label": "Brown"
             },
             {
               "value": "other",
@@ -75,12 +169,40 @@
               "label": "White"
             },
             {
-              "value": "blue",
-              "label": "Blue"
+              "value": "gray",
+              "label": "Gray"
             },
             {
-              "value": "red",
-              "label": "Red"
+              "value": "dark-blue",
+              "label": "Dark Blue"
+            },
+            {
+              "value": "light-blue-red",
+              "label": "Light Blue Red"
+            },
+            {
+              "value": "pink",
+              "label": "Pink"
+            },
+            {
+              "value": "green",
+              "label": "Green"
+            },
+            {
+              "value": "yellow",
+              "label": "Yellow"
+            },
+            {
+              "value": "orange",
+              "label": "Orange"
+            },
+            {
+              "value": "purple",
+              "label": "Purple"
+            },
+            {
+              "value": "brown",
+              "label": "Brown"
             },
             {
               "value": "other",
@@ -95,24 +217,8 @@
       "name": "Baby Blankets",
       "fields": [
         {
-          "id": "accessories",
-          "label": "Accessories",
-          "type": "dropdown",
-          "required": true,
-          "options": [
-            {
-              "value": "hat",
-              "label": "Hat"
-            },
-            {
-              "value": "elephant",
-              "label": "Elephant"
-            }
-          ]
-        },
-        {
-          "id": "color",
-          "label": "Color",
+          "id": "color-a",
+          "label": "Color A",
           "type": "dropdown",
           "required": true,
           "options": [
@@ -125,16 +231,116 @@
               "label": "White"
             },
             {
-              "value": "blue",
-              "label": "Blue"
+              "value": "gray",
+              "label": "Gray"
             },
             {
-              "value": "red",
-              "label": "Red"
+              "value": "dark-blue",
+              "label": "Dark Blue"
+            },
+            {
+              "value": "light-blue-red",
+              "label": "Light Blue Red"
+            },
+            {
+              "value": "pink",
+              "label": "Pink"
+            },
+            {
+              "value": "green",
+              "label": "Green"
+            },
+            {
+              "value": "yellow",
+              "label": "Yellow"
+            },
+            {
+              "value": "orange",
+              "label": "Orange"
+            },
+            {
+              "value": "purple",
+              "label": "Purple"
+            },
+            {
+              "value": "brown",
+              "label": "Brown"
             },
             {
               "value": "other",
               "label": "Other"
+            }
+          ]
+        },
+        {
+          "id": "color-b",
+          "label": "Color B",
+          "type": "dropdown",
+          "required": true,
+          "options": [
+            {
+              "value": "black",
+              "label": "Black"
+            },
+            {
+              "value": "white",
+              "label": "White"
+            },
+            {
+              "value": "gray",
+              "label": "Gray"
+            },
+            {
+              "value": "dark-blue",
+              "label": "Dark Blue"
+            },
+            {
+              "value": "light-blue-red",
+              "label": "Light Blue Red"
+            },
+            {
+              "value": "pink",
+              "label": "Pink"
+            },
+            {
+              "value": "green",
+              "label": "Green"
+            },
+            {
+              "value": "yellow",
+              "label": "Yellow"
+            },
+            {
+              "value": "orange",
+              "label": "Orange"
+            },
+            {
+              "value": "purple",
+              "label": "Purple"
+            },
+            {
+              "value": "brown",
+              "label": "Brown"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        },
+        {
+          "id": "accessories",
+          "label": "Accessories",
+          "type": "dropdown",
+          "required": true,
+          "options": [
+            {
+              "value": "hat",
+              "label": "Hat"
+            },
+            {
+              "value": "elephant",
+              "label": "Elephant"
             }
           ]
         },
@@ -163,6 +369,124 @@
       ]
     },
     {
+      "id": "SW-BOWLCOZY",
+      "name": "Bowl Cozy",
+      "fields": [
+        {
+          "id": "side-a-color",
+          "label": "Side A Color",
+          "type": "dropdown",
+          "required": false,
+          "options": [
+            {
+              "value": "black",
+              "label": "Black"
+            },
+            {
+              "value": "white",
+              "label": "White"
+            },
+            {
+              "value": "gray",
+              "label": "Gray"
+            },
+            {
+              "value": "dark-blue",
+              "label": "Dark Blue"
+            },
+            {
+              "value": "light-blue-red",
+              "label": "Light Blue Red"
+            },
+            {
+              "value": "pink",
+              "label": "Pink"
+            },
+            {
+              "value": "green",
+              "label": "Green"
+            },
+            {
+              "value": "yellow",
+              "label": "Yellow"
+            },
+            {
+              "value": "orange",
+              "label": "Orange"
+            },
+            {
+              "value": "purple",
+              "label": "Purple"
+            },
+            {
+              "value": "brown",
+              "label": "Brown"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        },
+        {
+          "id": "side-b-color",
+          "label": "Side B Color",
+          "type": "dropdown",
+          "required": false,
+          "options": [
+            {
+              "value": "black",
+              "label": "Black"
+            },
+            {
+              "value": "white",
+              "label": "White"
+            },
+            {
+              "value": "gray",
+              "label": "Gray"
+            },
+            {
+              "value": "dark-blue",
+              "label": "Dark Blue"
+            },
+            {
+              "value": "light-blue-red",
+              "label": "Light Blue Red"
+            },
+            {
+              "value": "pink",
+              "label": "Pink"
+            },
+            {
+              "value": "green",
+              "label": "Green"
+            },
+            {
+              "value": "yellow",
+              "label": "Yellow"
+            },
+            {
+              "value": "orange",
+              "label": "Orange"
+            },
+            {
+              "value": "purple",
+              "label": "Purple"
+            },
+            {
+              "value": "brown",
+              "label": "Brown"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "SW-BUCKET",
       "name": "Bucket Hats",
       "fields": [
@@ -181,12 +505,40 @@
               "label": "White"
             },
             {
-              "value": "blue",
-              "label": "Blue"
+              "value": "gray",
+              "label": "Gray"
             },
             {
-              "value": "red",
-              "label": "Red"
+              "value": "dark-blue",
+              "label": "Dark Blue"
+            },
+            {
+              "value": "light-blue-red",
+              "label": "Light Blue Red"
+            },
+            {
+              "value": "pink",
+              "label": "Pink"
+            },
+            {
+              "value": "green",
+              "label": "Green"
+            },
+            {
+              "value": "yellow",
+              "label": "Yellow"
+            },
+            {
+              "value": "orange",
+              "label": "Orange"
+            },
+            {
+              "value": "purple",
+              "label": "Purple"
+            },
+            {
+              "value": "brown",
+              "label": "Brown"
             },
             {
               "value": "other",
@@ -209,12 +561,226 @@
               "label": "White"
             },
             {
-              "value": "blue",
-              "label": "Blue"
+              "value": "gray",
+              "label": "Gray"
             },
             {
-              "value": "red",
-              "label": "Red"
+              "value": "dark-blue",
+              "label": "Dark Blue"
+            },
+            {
+              "value": "light-blue-red",
+              "label": "Light Blue Red"
+            },
+            {
+              "value": "pink",
+              "label": "Pink"
+            },
+            {
+              "value": "green",
+              "label": "Green"
+            },
+            {
+              "value": "yellow",
+              "label": "Yellow"
+            },
+            {
+              "value": "orange",
+              "label": "Orange"
+            },
+            {
+              "value": "purple",
+              "label": "Purple"
+            },
+            {
+              "value": "brown",
+              "label": "Brown"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        },
+        {
+          "id": "theme",
+          "label": "Theme",
+          "type": "textbox",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "SW-LOVIE",
+      "name": "Animal Lovie",
+      "fields": [
+        {
+          "id": "side-a-color",
+          "label": "Side A Color",
+          "type": "dropdown",
+          "required": false,
+          "options": [
+            {
+              "value": "black",
+              "label": "Black"
+            },
+            {
+              "value": "white",
+              "label": "White"
+            },
+            {
+              "value": "gray",
+              "label": "Gray"
+            },
+            {
+              "value": "dark-blue",
+              "label": "Dark Blue"
+            },
+            {
+              "value": "light-blue-red",
+              "label": "Light Blue Red"
+            },
+            {
+              "value": "pink",
+              "label": "Pink"
+            },
+            {
+              "value": "green",
+              "label": "Green"
+            },
+            {
+              "value": "yellow",
+              "label": "Yellow"
+            },
+            {
+              "value": "orange",
+              "label": "Orange"
+            },
+            {
+              "value": "purple",
+              "label": "Purple"
+            },
+            {
+              "value": "brown",
+              "label": "Brown"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SW-RICEPACKS",
+      "name": "Rice Packs",
+      "fields": [
+        {
+          "id": "side-a-color",
+          "label": "Side A Color",
+          "type": "dropdown",
+          "required": false,
+          "options": [
+            {
+              "value": "black",
+              "label": "Black"
+            },
+            {
+              "value": "white",
+              "label": "White"
+            },
+            {
+              "value": "gray",
+              "label": "Gray"
+            },
+            {
+              "value": "dark-blue",
+              "label": "Dark Blue"
+            },
+            {
+              "value": "light-blue-red",
+              "label": "Light Blue Red"
+            },
+            {
+              "value": "pink",
+              "label": "Pink"
+            },
+            {
+              "value": "green",
+              "label": "Green"
+            },
+            {
+              "value": "yellow",
+              "label": "Yellow"
+            },
+            {
+              "value": "orange",
+              "label": "Orange"
+            },
+            {
+              "value": "purple",
+              "label": "Purple"
+            },
+            {
+              "value": "brown",
+              "label": "Brown"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        },
+        {
+          "id": "side-b-color",
+          "label": "Side B Color",
+          "type": "dropdown",
+          "required": false,
+          "options": [
+            {
+              "value": "black",
+              "label": "Black"
+            },
+            {
+              "value": "white",
+              "label": "White"
+            },
+            {
+              "value": "gray",
+              "label": "Gray"
+            },
+            {
+              "value": "dark-blue",
+              "label": "Dark Blue"
+            },
+            {
+              "value": "light-blue-red",
+              "label": "Light Blue Red"
+            },
+            {
+              "value": "pink",
+              "label": "Pink"
+            },
+            {
+              "value": "green",
+              "label": "Green"
+            },
+            {
+              "value": "yellow",
+              "label": "Yellow"
+            },
+            {
+              "value": "orange",
+              "label": "Orange"
+            },
+            {
+              "value": "purple",
+              "label": "Purple"
+            },
+            {
+              "value": "brown",
+              "label": "Brown"
             },
             {
               "value": "other",
@@ -235,16 +801,36 @@
           "required": true,
           "options": [
             {
-              "value": "small",
-              "label": "Small"
+              "value": "1-2-years-1-years",
+              "label": "1-2 Years - 1 Years"
             },
             {
-              "value": "medium",
-              "label": "Medium"
+              "value": "2-3-years-2-years",
+              "label": "2-3 Years - 2 Years"
             },
             {
-              "value": "large",
-              "label": "Large"
+              "value": "3-4-years-3-years",
+              "label": "3-4 Years - 3 Years"
+            },
+            {
+              "value": "5-6-years-5-years",
+              "label": "5-6 Years - 5 Years"
+            },
+            {
+              "value": "7-8-years-7-years",
+              "label": "7-8 Years - 7 Years"
+            },
+            {
+              "value": "9-10-years-9-years",
+              "label": "9-10 Years - 9 Years"
+            },
+            {
+              "value": "11-12-years-11-years",
+              "label": "11-12 Years - 11 Years"
+            },
+            {
+              "value": "13-14-years-13-years",
+              "label": "13-14 Years - 13 Years"
             }
           ]
         },
@@ -263,12 +849,40 @@
               "label": "White"
             },
             {
-              "value": "blue",
-              "label": "Blue"
+              "value": "gray",
+              "label": "Gray"
             },
             {
-              "value": "red",
-              "label": "Red"
+              "value": "dark-blue",
+              "label": "Dark Blue"
+            },
+            {
+              "value": "light-blue-red",
+              "label": "Light Blue Red"
+            },
+            {
+              "value": "pink",
+              "label": "Pink"
+            },
+            {
+              "value": "green",
+              "label": "Green"
+            },
+            {
+              "value": "yellow",
+              "label": "Yellow"
+            },
+            {
+              "value": "orange",
+              "label": "Orange"
+            },
+            {
+              "value": "purple",
+              "label": "Purple"
+            },
+            {
+              "value": "brown",
+              "label": "Brown"
             },
             {
               "value": "other",
@@ -282,6 +896,10 @@
           "type": "dropdown",
           "required": true,
           "options": [
+            {
+              "value": "bunny",
+              "label": "Bunny"
+            },
             {
               "value": "minecraft",
               "label": "Minecraft"
@@ -305,12 +923,28 @@
           "label": "Name\\Text",
           "type": "textbox",
           "required": true
+        },
+        {
+          "id": "boygirl",
+          "label": "Boy/Girl",
+          "type": "toggle",
+          "required": true,
+          "options": [
+            {
+              "value": "boy",
+              "label": "Boy"
+            },
+            {
+              "value": "girl",
+              "label": "Girl"
+            }
+          ]
         }
       ]
     },
     {
-      "id": "SW-TOYS",
-      "name": "Soft Toys",
+      "id": "SW-SNAKE",
+      "name": "Snake",
       "fields": [
         {
           "id": "color",
@@ -327,12 +961,40 @@
               "label": "White"
             },
             {
-              "value": "blue",
-              "label": "Blue"
+              "value": "gray",
+              "label": "Gray"
             },
             {
-              "value": "red",
-              "label": "Red"
+              "value": "dark-blue",
+              "label": "Dark Blue"
+            },
+            {
+              "value": "light-blue-red",
+              "label": "Light Blue Red"
+            },
+            {
+              "value": "pink",
+              "label": "Pink"
+            },
+            {
+              "value": "green",
+              "label": "Green"
+            },
+            {
+              "value": "yellow",
+              "label": "Yellow"
+            },
+            {
+              "value": "orange",
+              "label": "Orange"
+            },
+            {
+              "value": "purple",
+              "label": "Purple"
+            },
+            {
+              "value": "brown",
+              "label": "Brown"
             },
             {
               "value": "other",

@@ -912,3 +912,4 @@ Implementation:
   - home page first sentence - wording and font
 - Give every collection its own short introduction instead of jumping straight into products.
 - when in cart, maybe ability to edit product, do it will go back to product page and "update" button will appear?
+- https://bakesy.shop/b/shuni-sweets - example of personal touch
