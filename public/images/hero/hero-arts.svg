@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#9a8a7a"/>
+      <stop offset="100%" stop-color="#6a5a4a"/>
+    </linearGradient>
+    <linearGradient id="overlay" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="60%" stop-color="transparent"/>
+      <stop offset="100%" stop-color="rgba(50,35,20,0.6)"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <circle cx="350" cy="350" r="120" fill="#c4a484" opacity="0.4"/>
+  <circle cx="450" cy="400" r="90" fill="#d4b494" opacity="0.3"/>
+  <circle cx="300" cy="300" r="70" fill="#b49474" opacity="0.35"/>
+  <rect width="800" height="1000" fill="url(#overlay)"/>
+  <text x="40" y="940" font-family="Georgia,serif" font-size="28" fill="white" font-weight="500">Handmade Arts</text>
+</svg>

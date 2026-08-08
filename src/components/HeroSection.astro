@@ -1,0 +1,230 @@
+---
+import { sitePath } from '../utils/paths';
+---
+
+<section class="hero-section">
+  <div class="hero-container">
+    <div class="hero-content">
+      <h1 class="hero-headline">
+        Handmade breads, treats &amp; creative pieces<br/>
+        <span class="hero-emphasis">made with care.</span>
+      </h1>
+      <p class="hero-text">From the oven to the sewing table, everything here begins with care for the little details.</p>
+      <div class="hero-actions">
+        <a class="button button--hero-primary" href="bakery">Explore bakery <span class="arrow">→</span></a>
+        <a class="button button--hero-secondary" href="sewing">Explore sewing <span class="arrow">→</span></a>
+      </div>
+    </div>
+    <div class="hero-images">
+      <div class="hero-card" role="img" aria-label="Handmade artisan bread from RIPPLE Bakes & Makes" style={`background-image:url(${sitePath('images/hero/hero-bakery.svg')})`}>
+        <span class="hero-card-label">Artisan Bakery</span>
+      </div>
+      <div class="hero-card" role="img" aria-label="Handmade sewing creation from RIPPLE Bakes & Makes" style={`background-image:url(${sitePath('images/hero/hero-arts.svg')})`}>
+        <span class="hero-card-label">Handmade Arts</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-section {
+    background: var(--cream);
+    overflow: hidden;
+    padding: 5rem 0 4.5rem;
+    position: relative;
+  }
+
+  .hero-section::before {
+    background-image: radial-gradient(rgba(214,165,75,.12) 1px, transparent 1px);
+    background-size: 20px 20px;
+    content: '';
+    height: 200px;
+    position: absolute;
+    right: -30px;
+    top: -40px;
+    width: 220px;
+    pointer-events: none;
+  }
+
+  .hero-container {
+    align-items: center;
+    display: grid;
+    gap: 3rem;
+    grid-template-columns: 42% 1fr;
+    margin: auto;
+    max-width: 1200px;
+    padding: 0 3rem;
+    width: min(1120px, calc(100% - 40px));
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .hero-headline {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2.2rem, 4.5vw, 4rem);
+    font-weight: 500;
+    letter-spacing: -.04em;
+    line-height: 1.08;
+    margin: 0;
+    color: #5d6346;
+  }
+
+  .hero-emphasis {
+    color: var(--honey);
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  .hero-text {
+    color: var(--muted);
+    font-size: clamp(1rem, 1.15vw, 1.125rem);
+    line-height: 1.65;
+    margin: 0;
+    max-width: 28rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .85rem;
+    margin-top: .5rem;
+  }
+
+  .button--hero-primary {
+    align-items: center;
+    background: #5d6346;
+    border: 1px solid #5d6346;
+    border-radius: 99px;
+    color: #fff;
+    display: inline-flex;
+    font-size: .9rem;
+    font-weight: 600;
+    gap: .55rem;
+    justify-content: center;
+    padding: .84rem 1.28rem;
+    transition: transform .2s, background .2s;
+  }
+
+  .button--hero-primary:hover {
+    background: #4d5336;
+    transform: translateY(-2px);
+  }
+
+  .button--hero-secondary {
+    align-items: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 99px;
+    color: #5d6346;
+    display: inline-flex;
+    font-size: .9rem;
+    font-weight: 600;
+    gap: .55rem;
+    justify-content: center;
+    padding: .84rem 1.28rem;
+    transition: transform .2s, background .2s;
+  }
+
+  .button--hero-secondary:hover {
+    background: rgba(93, 99, 70, .08);
+    transform: translateY(-2px);
+  }
+
+  .button--hero-primary .arrow,
+  .button--hero-secondary .arrow {
+    font-size: 1.15rem;
+    line-height: .7;
+  }
+
+  .hero-images {
+    display: grid;
+    gap: .9rem;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hero-card {
+    background: linear-gradient(145deg, #8a7a5a, #5d4a32);
+    background-size: cover;
+    background-position: center;
+    border-radius: 1.15rem;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    position: relative;
+    min-height: 420px;
+  }
+
+  .hero-card::after {
+    background: linear-gradient(180deg, transparent 55%, rgba(50,35,20,.55));
+    content: '';
+    inset: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .hero-card-label {
+    bottom: 1rem;
+    color: #fff;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1rem, 1.1vw, 1.2rem);
+    font-weight: 500;
+    left: 1.2rem;
+    position: absolute;
+    z-index: 1;
+    text-shadow: 0 1px 4px rgba(0,0,0,.25);
+  }
+
+  @media (max-width: 900px) {
+    .hero-container {
+      gap: 2.5rem;
+      grid-template-columns: 1fr 1fr;
+      padding: 0 1.5rem;
+    }
+
+    .hero-card {
+      min-height: 320px;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .hero-section {
+      padding: 3rem 0 2.5rem;
+    }
+
+    .hero-container {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding: 0 1rem;
+    }
+
+    .hero-content {
+      text-align: center;
+      align-items: center;
+    }
+
+    .hero-text {
+      max-width: 100%;
+    }
+
+    .hero-actions {
+      justify-content: center;
+    }
+
+    .hero-images {
+      gap: .65rem;
+    }
+
+    .hero-card {
+      min-height: 240px;
+    }
+
+    .hero-card-label {
+      font-size: .9rem;
+      bottom: .75rem;
+      left: .85rem;
+    }
+  }
+</style>
