@@ -116,6 +116,16 @@ import { sitePath } from '../utils/paths';
 
         <p class="checkout-message" data-checkout-review-error hidden></p>
 
+        <p class="checkout-note">
+          <strong>Before You Place Your Order:</strong> Payment is required before your order can be
+          confirmed. Payment is made via <strong>Venmo</strong> after submitting your order.
+        </p>
+        <p class="checkout-note">
+          Pickup is available for all orders in <strong>San Jose, CA 95131</strong>; pickup details
+          and estimated preparation time will be communicated with your order. Shipping is
+          available for sewing products only and may require an additional charge.
+        </p>
+
         <div class="checkout-review__actions">
           <button class="button button--light" type="button" data-checkout-back>
             Back to edit
@@ -547,6 +557,8 @@ Object.entries(item.configuration).forEach(([key, value]) => {
   .checkout-submit{margin-top:1.4rem}
   .checkout-submit:disabled{cursor:not-allowed;opacity:.7;transform:none}
   .checkout-message{border-left:2px solid var(--honey);color:var(--muted);font-size:.9rem;margin:1rem 0 0;padding-left:.75rem}
+  .checkout-note{border-left:2px solid var(--honey);color:var(--muted);font-size:.86rem;line-height:1.5;margin:1rem 0 0;padding-left:.75rem}
+  .checkout-note strong{color:var(--cocoa)}
   .checkout-retry{background:transparent;border:0;color:var(--sage);cursor:pointer;display:block;font-size:.82rem;font-weight:600;margin:.55rem 0 0;padding:.25rem;text-decoration:underline;text-underline-offset:.25rem}.checkout-retry[hidden]{display:none}
   .order-summary{padding:1.5rem;position:sticky;top:1.5rem}
   .order-summary__heading{border-bottom:1px solid var(--line);margin-bottom:1.2rem;padding-bottom:1rem}
