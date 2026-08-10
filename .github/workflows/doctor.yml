@@ -2,6 +2,9 @@ name: RIPPLE Doctor — Weekly Health Report
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - ci-debug-doctor
   schedule:
     - cron: "0 8 * * 1"
 
@@ -45,6 +48,36 @@ jobs:
           ];
           require('fs').writeFileSync('.env', lines.join('\n') + '\n');
           "
+
+      - name: Diagnose env (temporary)
+        run: |
+          node -e '
+          var fs = require("fs");
+          var exists = fs.existsSync(".env");
+          console.log("[DIAG] .env exists: " + exists);
+          if (!exists) process.exit(0);
+          var keyLine = "";
+          var lines = fs.readFileSync(".env", "utf-8").split("\n");
+          for (var i = 0; i < lines.length; i++) {
+            if (lines[i].indexOf("GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=") === 0) keyLine = lines[i];
+          }
+          console.log("[DIAG] key line: " + (keyLine ? "found" : "MISSING"));
+          if (!keyLine) process.exit(0);
+          var body = keyLine.slice("GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=".length);
+          var value = body.charAt(0) === "\"" && body.charAt(body.length - 1) === "\"" ? body.slice(1, -1) : body;
+          console.log("[DIAG] file key length: " + value.length);
+          console.log("[DIAG] file key literal-backslash-n: " + (value.indexOf("\\n") !== -1));
+          console.log("[DIAG] file key real newlines: " + (value.indexOf("\n") !== -1));
+          '
+          node --env-file=.env -e '
+          var k = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
+          console.log("[DIAG] decoded key present: " + (!!k));
+          if (!k) process.exit(0);
+          console.log("[DIAG] decoded key length: " + k.length);
+          console.log("[DIAG] decoded key real newlines: " + (k.indexOf("\n") !== -1));
+          console.log("[DIAG] decoded BEGIN count: " + ((k.match(/BEGIN PRIVATE KEY/g) || []).length));
+          console.log("[DIAG] decoded END count: " + ((k.match(/END PRIVATE KEY/g) || []).length));
+          '
 
       - name: Run Doctor
         run: npm run doctor
