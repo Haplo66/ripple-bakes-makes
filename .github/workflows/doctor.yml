@@ -23,7 +23,7 @@ jobs:
         run: npm ci
 
       - name: Run Doctor
-        run: npm run doctor
+        run: node --experimental-strip-types scripts/doctor/doctor.ts
         env:
           PUBLIC_SUBMISSION_ENDPOINT: ${{ secrets.PUBLIC_SUBMISSION_ENDPOINT }}
           PUBLIC_ORDER_TOKEN: ${{ secrets.PUBLIC_ORDER_TOKEN }}
