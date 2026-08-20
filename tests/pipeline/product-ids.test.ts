@@ -137,4 +137,92 @@ describe('assignProductIds', () => {
     assignProductIds(records, [{ id: 'soft-toys', code: 'st' }], 'products.csv', warnings);
     assert.strictEqual(records[0].values.id, 'SW-ST-001');
   });
+
+  it('reuses an existing ID when the exact product is in prior state', () => {
+    const records: CsvRecord[] = [
+      makeRecord(2, { id: '', businessArea: 'sewing', collection: 'soft-toys', name: 'Toy' }),
+    ];
+    const prior = [{ id: 'SW-ST-001', businessArea: 'sewing', collection: 'soft-toys', name: 'Toy' }];
+    const warnings: PipelineWarning[] = [];
+    const { generated } = assignProductIds(records, [SEWING], 'products.csv', warnings, prior);
+    assert.strictEqual(records[0].values.id, 'SW-ST-001');
+    assert.strictEqual(generated.length, 1);
+    assert.strictEqual(warnings.length, 0);
+  });
+
+  it('carries over an ID for a single rename inside the same collection', () => {
+    const records: CsvRecord[] = [
+      makeRecord(2, { id: '', businessArea: 'bakery', collection: 'sourdough-bread', name: 'Mix-Ins Sourdough Loaf' }),
+    ];
+    const prior = [
+      {
+        id: 'BK-SB-002',
+        businessArea: 'bakery',
+        collection: 'sourdough-bread',
+        name: 'Seeded Sourdough Loaf',
+      },
+    ];
+    const warnings: PipelineWarning[] = [];
+    const { generated } = assignProductIds(
+      records,
+      [{ id: 'sourdough-bread', code: 'SB' }],
+      'products.csv',
+      warnings,
+      prior,
+    );
+    assert.strictEqual(records[0].values.id, 'BK-SB-002');
+    assert.strictEqual(generated.length, 1);
+    assert.strictEqual(warnings.length, 0);
+  });
+
+  it('does not carry over an ID when two products swap names in a collection', () => {
+    const records: CsvRecord[] = [
+      makeRecord(2, { id: '', businessArea: 'bakery', collection: 'sourdough-bread', name: 'Original Loaf' }),
+      makeRecord(3, { id: '', businessArea: 'bakery', collection: 'sourdough-bread', name: 'New Loaf' }),
+    ];
+    const prior = [
+      {
+        id: 'BK-SB-001',
+        businessArea: 'bakery',
+        collection: 'sourdough-bread',
+        name: 'Original Loaf',
+      },
+      {
+        id: 'BK-SB-002',
+        businessArea: 'bakery',
+        collection: 'sourdough-bread',
+        name: 'Seeded Sourdough Loaf',
+      },
+    ];
+    const warnings: PipelineWarning[] = [];
+    assignProductIds(
+      records,
+      [{ id: 'sourdough-bread', code: 'SB' }],
+      'products.csv',
+      warnings,
+      prior,
+    );
+
+    const assigned = new Set(records.map((r) => r.values.id));
+    assert.strictEqual(
+      assigned.has('BK-SB-001') && assigned.has('BK-SB-002'),
+      true,
+    );
+    assert.strictEqual(warnings.length, 0);
+  });
+
+  it('avoids re-issuing an ID already present in prior state', () => {
+    const records: CsvRecord[] = [
+      makeRecord(2, { id: '', businessArea: 'sewing', collection: 'soft-toys', name: 'Brand New Toy' }),
+    ];
+    const prior = [
+      { id: 'SW-ST-001', businessArea: 'sewing', collection: 'soft-toys', name: 'Toy' },
+      { id: 'SW-ST-002', businessArea: 'sewing', collection: 'soft-toys', name: 'Another Toy' },
+    ];
+    const warnings: PipelineWarning[] = [];
+    const { generated } = assignProductIds(records, [SEWING], 'products.csv', warnings, prior);
+    assert.strictEqual(records[0].values.id, 'SW-ST-003');
+    assert.strictEqual(generated[0].id, 'SW-ST-003');
+    assert.strictEqual(warnings.length, 0);
+  });
 });

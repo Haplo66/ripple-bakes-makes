@@ -31,6 +31,9 @@ export const IMAGE_DIR = path.join(PROJECT_ROOT, 'public', 'images');
 export const MANIFEST_DIR = path.join(PROJECT_ROOT, 'data', 'manifest');
 export const MANIFEST_FILE = path.join(MANIFEST_DIR, 'images.json');
 
+export const STATE_DIR = path.join(PROJECT_ROOT, 'data', 'state');
+export const PRODUCT_ID_STATE_FILE = path.join(STATE_DIR, 'product-ids.json');
+
 export const SHEET_TABS = {
   collections: 'Collections',
   products: 'Products',

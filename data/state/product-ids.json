@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "products": [
+    {
+      "id": "BK-CH-001",
+      "businessArea": "bakery",
+      "collection": "challah-bread",
+      "name": "Challah Bread"
+    },
+    {
+      "id": "BK-CH-002",
+      "businessArea": "bakery",
+      "collection": "challah-bread",
+      "name": "Mini Challah Bread"
+    },
+    {
+      "id": "BK-FP-001",
+      "businessArea": "bakery",
+      "collection": "filled-pockets",
+      "name": "Borekitas - Cheese Filled Pocket"
+    },
+    {
+      "id": "BK-FP-002",
+      "businessArea": "bakery",
+      "collection": "filled-pockets",
+      "name": "Tuna & Cheese Filled Pocket"
+    },
+    {
+      "id": "BK-FP-003",
+      "businessArea": "bakery",
+      "collection": "filled-pockets",
+      "name": "Calzone"
+    },
+    {
+      "id": "BK-GB-001",
+      "businessArea": "bakery",
+      "collection": "garlic-buns",
+      "name": "Garlic Buns"
+    },
+    {
+      "id": "BK-RL-001",
+      "businessArea": "bakery",
+      "collection": "rolls",
+      "name": "Rolls"
+    },
+    {
+      "id": "BK-SB-001",
+      "businessArea": "bakery",
+      "collection": "sourdough-bread",
+      "name": "Classic Sourdough Loaf"
+    },
+    {
+      "id": "BK-SB-002",
+      "businessArea": "bakery",
+      "collection": "sourdough-bread",
+      "name": "Mix-Ins Sourdough Loaf"
+    },
+    {
+      "id": "SW-BB-001",
+      "businessArea": "sewing",
+      "collection": "baby-blankets",
+      "name": "Custom Baby Blanket"
+    },
+    {
+      "id": "SW-BC-001",
+      "businessArea": "sewing",
+      "collection": "bowl-cozy",
+      "name": "Bowl Cozy"
+    },
+    {
+      "id": "SW-CS-001",
+      "businessArea": "sewing",
+      "collection": "custom-shirts",
+      "name": "Custom Design Shirt"
+    },
+    {
+      "id": "SW-HS-001",
+      "businessArea": "sewing",
+      "collection": "bucket-hats",
+      "name": "Bucket Hats"
+    },
+    {
+      "id": "SW-HW-001",
+      "businessArea": "sewing",
+      "collection": "beanie-hats",
+      "name": "Beanie Hats"
+    },
+    {
+      "id": "SW-RP-001",
+      "businessArea": "sewing",
+      "collection": "rice-packs",
+      "name": "Rice Heating Pack"
+    },
+    {
+      "id": "SW-RP-002",
+      "businessArea": "sewing",
+      "collection": "rice-packs",
+      "name": "Shoulder Rice Pack"
+    },
+    {
+      "id": "SW-ST-001",
+      "businessArea": "sewing",
+      "collection": "soft-toys",
+      "name": "Snake"
+    },
+    {
+      "id": "SW-ST-002",
+      "businessArea": "sewing",
+      "collection": "soft-toys",
+      "name": "Dog"
+    },
+    {
+      "id": "SW-ST-003",
+      "businessArea": "sewing",
+      "collection": "soft-toys",
+      "name": "Animal Lovie"
+    },
+    {
+      "id": "SW-TW-001",
+      "businessArea": "sewing",
+      "collection": "towel-hangers",
+      "name": "Towel Hanger"
+    }
+  ]
+}

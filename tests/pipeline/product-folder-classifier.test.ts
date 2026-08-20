@@ -61,7 +61,7 @@ describe('classifyProductFolders', () => {
 
   it('marks a folder with no matching product as unmatched', () => {
     const verdicts = classifyProductFolders(
-      [makeCandidate('Soft Toy', 'Sewing/Soft Toys/Soft Toy')],
+      [makeCandidate('Unicorns', 'Sewing/Soft Toys/Unicorns')],
       CATALOG,
       MANIFEST,
     );
@@ -109,7 +109,7 @@ describe('classifyProductFolders', () => {
         makeCandidate('Snake', 'Sewing/Soft Toys/Snake'),
         makeCandidate('Dog', 'Sewing/Soft Toys/Dog'),
         makeCandidate('Animal Lovie', 'Sewing/Soft Toys/Animal Lovie'),
-        makeCandidate('Soft Toy', 'Sewing/Soft Toys/Soft Toy'),
+        makeCandidate('Unicorns', 'Sewing/Soft Toys/Unicorns'),
       ],
       CATALOG,
       MANIFEST,
@@ -118,6 +118,48 @@ describe('classifyProductFolders', () => {
     const unmatched = verdicts.filter((v) => v.kind === 'unmatched');
     assert.strictEqual(products.length, 3);
     assert.strictEqual(unmatched.length, 1);
+  });
+
+  it('resolves a renamed product folder through the manifest Product ID link', () => {
+    const verdicts = classifyProductFolders(
+      [makeCandidate('Soft Toy', 'Sewing/Soft Toys/Soft Toy')],
+      CATALOG,
+      MANIFEST,
+    );
+    assert.strictEqual(verdicts.length, 1);
+    assert.strictEqual(verdicts[0].kind, 'product');
+    if (verdicts[0].kind !== 'product') return;
+    assert.strictEqual(verdicts[0].product.id, 'SW-ST-001');
+    assert.strictEqual(verdicts[0].product.name, 'Snake');
+    assert.strictEqual(verdicts[0].matchedBy, 'manifest-folder');
+    assert.strictEqual(verdicts[0].manifestEntry!.code, 'SW-ST-001');
+  });
+
+  it('matches a tolerant name change via normalized name matching', () => {
+    const verdicts = classifyProductFolders(
+      [
+        makeCandidate('Bucket Hat', 'Sewing/Bucket Hats/Bucket Hat'),
+        makeCandidate('Beanie Hat', 'Sewing/Beanie Hats/Beanie Hat'),
+        makeCandidate('Bucket Hats', 'Sewing/Bucket Hats/Bucket Hats', 'second-id'),
+      ],
+      [
+        ...CATALOG,
+        { id: 'SW-HS-001', name: 'Bucket Hats' },
+        { id: 'SW-HW-001', name: 'Beanie Hats' },
+      ],
+      MANIFEST,
+    );
+    assert.strictEqual(verdicts.length, 3);
+    const bucket = verdicts.find((v) => v.kind === 'product' && v.candidate.fullPath === 'Sewing/Bucket Hats/Bucket Hat');
+    assert.ok(bucket);
+    if (!bucket || bucket.kind !== 'product') return;
+    assert.strictEqual(bucket.product.id, 'SW-HS-001');
+    assert.strictEqual(bucket.matchedBy, 'normalized');
+    const beanie = verdicts.find((v) => v.kind === 'product' && v.candidate.fullPath === 'Sewing/Beanie Hats/Beanie Hat');
+    assert.ok(beanie);
+    if (!beanie || beanie.kind !== 'product') return;
+    assert.strictEqual(beanie.product.id, 'SW-HW-001');
+    assert.strictEqual(beanie.matchedBy, 'normalized');
   });
 });
 
@@ -129,15 +171,13 @@ describe('findStaleManifestProducts', () => {
     assert.match(entry!.reason, /no longer exists/);
   });
 
-  it('flags manifest entries whose folder name no longer matches the current product name', () => {
+  it('does not flag a renamed product whose Product ID is unchanged', () => {
     const stale = findStaleManifestProducts(MANIFEST, CATALOG);
     const entry = stale.find((s) => s.code === 'SW-ST-001');
-    assert.ok(entry);
-    assert.strictEqual(entry!.folder, 'Soft Toy');
-    assert.match(entry!.reason, /"Snake"/);
+    assert.ok(!entry, 'SW-ST-001 exists in the catalog, so its manifest entry must not be stale');
   });
 
-  it('leaves manifest entries that match the catalog untouched', () => {
+  it('does not flag an unchanged product whose name still matches', () => {
     const stale = findStaleManifestProducts(MANIFEST, CATALOG);
     assert.ok(!stale.some((s) => s.code === 'BK-CH-001'));
   });

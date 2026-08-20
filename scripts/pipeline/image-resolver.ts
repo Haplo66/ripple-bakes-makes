@@ -7,6 +7,7 @@
 import { join } from 'node:path';
 import { existsSync, readdirSync } from 'node:fs';
 import { IMAGE_DIR } from './constants.ts';
+import { normalizeFolderName } from './product-folder-classifier.ts';
 import { scanImageFolder } from './image-scanner.ts';
 import type { PipelineWarning } from './types.ts';
 
@@ -64,6 +65,45 @@ function resolveFolderByPriority(
   return { images: [], primaryImage: '', imageFolder: '' };
 }
 
+function findInBusinessArea(
+  imageRoot: string,
+  areaName: string,
+  folderName: string,
+): ResolvedImages | undefined {
+  const baDir = join(imageRoot, 'products', areaName);
+  if (!existsSync(baDir)) return undefined;
+
+  const wanted = normalizeFolderName(folderName);
+  for (const entry of readdirSync(baDir, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+
+    const exactPath = join(baDir, entry.name, folderName);
+    const exactResult = existsSync(exactPath) ? scanImageFolder(exactPath) : undefined;
+    if (exactResult?.found) {
+      return {
+        images: exactResult.files,
+        primaryImage: exactResult.files[0],
+        imageFolder: `products/${areaName}/${entry.name}/${folderName}`,
+      };
+    }
+
+    const collectionDir = join(baDir, entry.name);
+    for (const sub of readdirSync(collectionDir, { withFileTypes: true })) {
+      if (!sub.isDirectory()) continue;
+      if (normalizeFolderName(sub.name) !== wanted) continue;
+      const result = scanImageFolder(join(collectionDir, sub.name));
+      if (result.found) {
+        return {
+          images: result.files,
+          primaryImage: result.files[0],
+          imageFolder: `products/${areaName}/${entry.name}/${sub.name}`,
+        };
+      }
+    }
+  }
+  return undefined;
+}
+
 export function resolveProductImages(
   productId: string,
   collectionId: string,
@@ -73,6 +113,8 @@ export function resolveProductImages(
   productName?: string,
   collectionName?: string,
   areaName?: string,
+  manifestFolder?: string,
+  imageRoot: string = IMAGE_DIR,
 ): ResolvedImages {
   const candidates: { path: string; folderKey: string }[] = [];
 
@@ -80,7 +122,7 @@ export function resolveProductImages(
   const areaCode = toBusinessAreaCode(businessAreaId);
 
   if (productName && resolvedAreaName) {
-    const baDir = join(IMAGE_DIR, 'products', resolvedAreaName);
+    const baDir = join(imageRoot, 'products', resolvedAreaName);
     if (existsSync(baDir)) {
       for (const entry of readdirSync(baDir, { withFileTypes: true })) {
         if (!entry.isDirectory()) continue;
@@ -99,59 +141,74 @@ export function resolveProductImages(
     }
   }
 
+  // Manifest association: renamed products keep their historical Drive folder
+  // name (captured in the manifest), which no longer matches the product name.
+  if (manifestFolder && manifestFolder !== productName && resolvedAreaName) {
+    const hit = findInBusinessArea(imageRoot, resolvedAreaName, manifestFolder);
+    if (hit) return hit;
+  }
+
+  // Forgiving singular/plural matching ("Bucket Hat" vs "Bucket Hats").
+  const normalizedProductName = productName ? normalizeFolderName(productName) : '';
+  if (normalizedProductName && normalizedProductName !== normalizeFolderName(manifestFolder ?? '') && resolvedAreaName) {
+    const hit = findInBusinessArea(imageRoot, resolvedAreaName, normalizedProductName);
+    if (hit) return hit;
+  }
+
   if (productName) {
     candidates.push({
-      path: join(IMAGE_DIR, 'products', resolvedAreaName, productName),
-      folderKey: `products/${resolvedAreaName}/${productName}`,
-    });
-    candidates.push({
-      path: join(IMAGE_DIR, 'products', areaCode, productName),
-      folderKey: `products/${areaCode}/${productName}`,
-    });
-    candidates.push({
-      path: join(IMAGE_DIR, 'products', productName),
+      path: join(imageRoot, 'products', productName),
       folderKey: `products/${productName}`,
     });
   }
 
-  candidates.push({
-    path: join(IMAGE_DIR, 'products', productId),
-    folderKey: `products/${productId}`,
-  });
-
-  if (collectionName) {
-    const collectionsDir = join(IMAGE_DIR, 'collections');
-    if (existsSync(collectionsDir)) {
-      for (const entry of readdirSync(collectionsDir, { withFileTypes: true })) {
-        if (!entry.isDirectory()) continue;
-        const subPath = join(collectionsDir, entry.name, collectionName);
-        if (existsSync(subPath)) {
-          candidates.push({
-            path: subPath,
-            folderKey: `collections/${entry.name}/${collectionName}`,
-          });
+  const areaCandidates: string[] = [resolvedAreaName];
+  if (areaCode !== resolvedAreaName) {
+    areaCandidates.push(areaCode);
+  }
+  for (const area of areaCandidates) {
+    if (productName) {
+      candidates.push({
+        path: join(imageRoot, 'products', area, productName),
+        folderKey: `products/${area}/${productName}`,
+      });
+    }
+    if (collectionName) {
+      const collectionsDir = join(imageRoot, 'collections');
+      if (existsSync(collectionsDir)) {
+        for (const entry of readdirSync(collectionsDir, { withFileTypes: true })) {
+          if (!entry.isDirectory()) continue;
+          const subPath = join(collectionsDir, entry.name, collectionName);
+          if (existsSync(subPath)) {
+            candidates.push({
+              path: subPath,
+              folderKey: `collections/${entry.name}/${collectionName}`,
+            });
+          }
         }
       }
+      candidates.push({
+        path: join(imageRoot, 'collections', area, collectionName),
+        folderKey: `collections/${area}/${collectionName}`,
+      });
+      candidates.push({
+        path: join(imageRoot, 'collections', collectionName),
+        folderKey: `collections/${collectionName}`,
+      });
     }
     candidates.push({
-      path: join(IMAGE_DIR, 'collections', collectionName),
-      folderKey: `collections/${collectionName}`,
+      path: join(imageRoot, 'business-areas', area),
+      folderKey: `business-areas/${area}`,
     });
   }
 
   candidates.push({
-    path: join(IMAGE_DIR, 'collections', collectionId),
+    path: join(imageRoot, 'products', productId),
+    folderKey: `products/${productId}`,
+  });
+  candidates.push({
+    path: join(imageRoot, 'collections', collectionId),
     folderKey: `collections/${collectionId}`,
-  });
-
-  candidates.push({
-    path: join(IMAGE_DIR, 'business-areas', resolvedAreaName),
-    folderKey: `business-areas/${resolvedAreaName}`,
-  });
-
-  candidates.push({
-    path: join(IMAGE_DIR, 'business-areas', areaCode),
-    folderKey: `business-areas/${areaCode}`,
   });
 
   return resolveFolderByPriority(candidates, warnings, {
@@ -163,12 +220,13 @@ export function resolveProductImages(
 export function resolveCollectionImages(
   collectionCode: string,
   collectionName?: string,
+  imageRoot: string = IMAGE_DIR,
 ): { images: string[]; primaryImage: string; imageFolder: string } {
   const candidates: { path: string; folderKey: string }[] = [];
 
   // Check BA subfolder paths first: collections/{BA}/{collectionName}/
   if (collectionName) {
-    const collectionsDir = join(IMAGE_DIR, 'collections');
+    const collectionsDir = join(imageRoot, 'collections');
     if (existsSync(collectionsDir)) {
       for (const entry of readdirSync(collectionsDir, { withFileTypes: true })) {
         if (!entry.isDirectory()) continue;
@@ -185,13 +243,13 @@ export function resolveCollectionImages(
 
   if (collectionName) {
     candidates.push({
-      path: join(IMAGE_DIR, 'collections', collectionName),
+      path: join(imageRoot, 'collections', collectionName),
       folderKey: `collections/${collectionName}`,
     });
   }
 
   candidates.push({
-    path: join(IMAGE_DIR, 'collections', collectionCode),
+    path: join(imageRoot, 'collections', collectionCode),
     folderKey: `collections/${collectionCode}`,
   });
 

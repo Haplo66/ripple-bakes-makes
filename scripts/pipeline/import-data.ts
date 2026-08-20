@@ -4,9 +4,9 @@
  *
  */
 
-import { existsSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { basename, extname, join } from 'node:path';
-import { IMPORT_FILES, IMAGE_DIR, OUTPUT_FILES, PIPELINE_NAME, PIPELINE_VERSION } from './constants.ts';
+import { IMPORT_FILES, IMAGE_DIR, MANIFEST_FILE, OUTPUT_FILES, PIPELINE_NAME, PIPELINE_VERSION } from './constants.ts';
 import { sortById, writeGeneratedJson } from './generators.ts';
 import { resolveCollectionImages, resolveProductImages } from './image-resolver.ts';
 import {
@@ -23,7 +23,11 @@ import {
   normalizeProducts,
 } from './normalizers.ts';
 import { assignProductIds, type CollectionCodeRecord } from './product-ids.ts';
-import { writeGeneratedProductIds } from './sheets-writer.ts';
+import {
+  buildProductIdState,
+  loadProductIdState,
+  saveProductIdState,
+} from './product-id-state.ts';
 import type { DatasetName, PipelineWarning } from './types.ts';
 import { validateRecords } from './validators.ts';
 import { createReader } from './reader.ts';
@@ -34,6 +38,23 @@ const generatedFiles: string[] = [];
 const PREVIEW = process.argv.includes('--preview');
 
 const reader = createReader();
+
+function loadManifestProductFolders(): Map<string, string> {
+  const map = new Map<string, string>();
+  try {
+    const raw = JSON.parse(readFileSync(MANIFEST_FILE, 'utf-8')) as {
+      products?: { code: string; folder: string }[];
+    };
+    for (const entry of raw.products ?? []) {
+      if (entry.code && entry.folder) {
+        map.set(entry.code, entry.folder);
+      }
+    }
+  } catch {
+    // Manifest absent — resolution falls back to name-based matching.
+  }
+  return map;
+}
 
 const readValidRecords = async (dataset: DatasetName) => {
   const label = process.env.SHEETS_ENABLED === 'true' ? `Google Sheets: ${dataset}` : IMPORT_FILES[dataset];
@@ -47,27 +68,24 @@ const readValidRecords = async (dataset: DatasetName) => {
 };
 
 /**
- * Reads products, auto-generates Product IDs for rows with a blank ID, and
- * persists the generated IDs back to Google Sheets (Sheets mode only) so the
- * sheet remains the source of truth.
- *
- * In preview mode (`--preview`) the pipeline reads the same data but never
- * writes: generated IDs are reported as a table, the sheet is left untouched,
- * and no JSON files are emitted.
+ * Reads products, assigns/reconciles Product IDs from pipeline state (the
+ * spreadsheet does not maintain a Product ID column), and keeps the ID state up
+ * to date so future runs reuse the same IDs.
  */
 const readValidProducts = async (
   collections: CollectionCodeRecord[],
+  priorProducts: { id: string; businessArea: string; collection: string; name: string }[],
 ) => {
   const label = process.env.SHEETS_ENABLED === 'true' ? 'Google Sheets: products' : IMPORT_FILES.products;
   logReadStart(label);
   const result = await reader.read('products', warnings);
 
-  const { generated } = assignProductIds(result.records, collections, label, warnings);
+  const { generated } = assignProductIds(result.records, collections, label, warnings, priorProducts);
 
   if (generated.length > 0) {
     const header = PREVIEW
-      ? 'Preview — Product ID(s) that WILL be generated:'
-      : 'Generated Product ID(s):';
+      ? 'Preview — Product ID(s) that WILL be assigned:'
+      : 'Assigned Product ID(s):';
     console.log(`${header} (${generated.length})`);
 
     const rowByNumber = new Map(result.records.map((record) => [record.rowNumber, record]));
@@ -81,15 +99,6 @@ const readValidProducts = async (
       .join('\n');
     console.log(table);
     console.log('');
-
-    if (PREVIEW) {
-      console.log('  Preview only — nothing written. Re-run without --preview to apply.');
-      console.log('');
-    } else if (process.env.SHEETS_ENABLED === 'true') {
-      const written = await writeGeneratedProductIds(generated);
-      console.log(`✓ ${written} Product ID(s) written back to Google Sheets`);
-      console.log('');
-    }
   }
 
   const validated = validateRecords('products', label, result.records, warnings);
@@ -122,7 +131,8 @@ const run = async (): Promise<void> => {
   );
   logDatasetResult('collections', collections.length);
 
-  const productInput = await readValidProducts(collections);
+  const priorIdState = loadProductIdState();
+  const productInput = await readValidProducts(collections, priorIdState.products);
   const normalizedProducts = normalizeProducts(productInput.records);
 
   const slugToCode: Record<string, string> = {};
@@ -143,6 +153,8 @@ const run = async (): Promise<void> => {
     sewing: 'Sewing',
   };
 
+  const manifestFolderByCode = loadManifestProductFolders();
+
   const products = sortById(
     normalizedProducts.map((record) => {
       const collectionId = record.id.replace(/-\d+$/, '');
@@ -159,6 +171,7 @@ const run = async (): Promise<void> => {
         productName,
         collectionName,
         areaName,
+        manifestFolderByCode.get(record.id),
       );
 
       return {
@@ -171,6 +184,19 @@ const run = async (): Promise<void> => {
     }),
   );
   logDatasetResult('products', products.length);
+
+  if (!PREVIEW) {
+    saveProductIdState(
+      buildProductIdState(
+        products.map((product) => ({
+          id: product.id,
+          businessArea: product.businessArea,
+          collection: product.collection,
+          name: product.name,
+        })),
+      ),
+    );
+  }
 
   for (const collection of collections) {
     const code = slugToCode[collection.id];

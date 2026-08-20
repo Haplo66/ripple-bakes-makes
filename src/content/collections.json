@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-08-08T23:18:52.420Z",
+    "generatedAt": "2026-08-20T04:09:23.381Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -66,8 +66,11 @@
       "code": "HS",
       "slug": "bucket-hats",
       "name": "Bucket Hats",
-      "heroImage": null,
-      "images": [],
+      "imageFolder": "collections/Sewing/Bucket Hats",
+      "heroImage": "Harry Potter.jpg",
+      "images": [
+        "Harry Potter.jpg"
+      ],
       "featured": false,
       "status": "Active",
       "displayOrder": 0,

@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "generated": true,
-    "generatedAt": "2026-08-08T23:18:52.425Z",
+    "generatedAt": "2026-08-20T04:09:23.387Z",
     "source": "RIPPLE Data Pipeline",
     "version": 1
   },
@@ -45,7 +45,7 @@
       "featured": false,
       "homepageFeatured": false,
       "galleryFeatured": true,
-      "formId": "BK-CHALLAH",
+      "formId": "BK-CHALLAH-MINI",
       "image": "main-mini-challah-bread.jpg",
       "images": [
         "main-mini-challah-bread.jpg"
@@ -72,10 +72,10 @@
       "featured": false,
       "homepageFeatured": false,
       "galleryFeatured": true,
-      "formId": "BK-POCKETS",
-      "image": "main-filled-pockets.jpg",
+      "formId": "BK-BOREK",
+      "image": "main-cheese-filled-pocket.jpg",
       "images": [
-        "main-filled-pockets.jpg"
+        "main-cheese-filled-pocket.jpg"
       ],
       "imageTone": "cream",
       "active": true,
@@ -84,8 +84,8 @@
       "availability": "Made to Order",
       "preparationTime": "Next Day",
       "fulfillment": "Pickup Only",
-      "imageFolder": "collections/Bakery/Filled Pockets",
-      "primaryImage": "main-filled-pockets.jpg"
+      "imageFolder": "products/Bakery/Filled Pockets/Borekitas - Cheese Filled Pocket",
+      "primaryImage": "main-cheese-filled-pocket.jpg"
     },
     {
       "id": "BK-FP-002",
@@ -99,7 +99,7 @@
       "featured": true,
       "homepageFeatured": true,
       "galleryFeatured": true,
-      "formId": "BK-POCKETS",
+      "formId": "BK-TUNA",
       "image": "main-tuna-filled-pocket.jpg",
       "images": [
         "main-tuna-filled-pocket.jpg"
@@ -126,7 +126,7 @@
       "featured": false,
       "homepageFeatured": false,
       "galleryFeatured": true,
-      "formId": "BK-POCKETS",
+      "formId": "BK-CALZONE",
       "image": "main-filled-pockets.jpg",
       "images": [
         "main-filled-pockets.jpg"
@@ -235,7 +235,7 @@
       "featured": false,
       "homepageFeatured": false,
       "galleryFeatured": true,
-      "formId": "BK-SOURBEAD",
+      "formId": "BK-SOUR-MIX",
       "image": "main-sourdough-bread.jpg",
       "images": [
         "main-sourdough-bread.jpg"
@@ -355,8 +355,8 @@
       "id": "SW-HS-001",
       "businessArea": "sewing",
       "collection": "bucket-hats",
-      "slug": "custom-bucket-hat",
-      "name": "Custom Bucket Hat",
+      "slug": "bucket-hats",
+      "name": "Bucket Hats",
       "shortDescription": "Custom Bucket Hat",
       "description": "Handmade bucket hat",
       "status": "Active",
@@ -364,12 +364,15 @@
       "homepageFeatured": false,
       "galleryFeatured": true,
       "formId": "SW-BUCKET",
-      "image": "main-sewing.jpg",
+      "image": "Beach_Forest.jpg",
       "images": [
-        "main-sewing.jpg",
-        "gallery-01.jpg",
-        "gallery-02.jpg",
-        "gallery-03.jpg"
+        "Beach_Forest.jpg",
+        "Bees.jpg",
+        "Coffee.jpg",
+        "Harry Potter.jpg",
+        "hot pepers.jpg",
+        "Polka_Giraph.jpg",
+        "Vegie.jpg"
       ],
       "imageTone": "cream",
       "active": true,
@@ -378,15 +381,15 @@
       "availability": "Made to Order",
       "preparationTime": "3–5 Business Days",
       "fulfillment": "Pickup or Shipping",
-      "imageFolder": "business-areas/Sewing",
-      "primaryImage": "main-sewing.jpg"
+      "imageFolder": "products/Sewing/Bucket Hats/Bucket Hat",
+      "primaryImage": "Beach_Forest.jpg"
     },
     {
       "id": "SW-HW-001",
       "businessArea": "sewing",
       "collection": "beanie-hats",
-      "slug": "custom-beanie-hat",
-      "name": "Custom Beanie Hat",
+      "slug": "beanie-hats",
+      "name": "Beanie Hats",
       "shortDescription": "Custom Beanie Hat",
       "description": "Handmade winter beanie",
       "status": "Active",
@@ -415,8 +418,8 @@
       "id": "SW-RP-001",
       "businessArea": "sewing",
       "collection": "rice-packs",
-      "slug": "rice-pack",
-      "name": "Rice Pack",
+      "slug": "rice-heating-pack",
+      "name": "Rice Heating Pack",
       "shortDescription": "Rice-filled heating pads for comfort and convenience",
       "description": "A rice heating pad is a reusable fabric pouch filled with clean, dry rice. Designed to provide soothing warmth (or cooling) relief to the body. Just microwave the pack for 1–2 minutes.\r\nEffectively eases sore muscles, neck stiffness, backaches, and menstrual cramps without medication.",
       "status": "Active",
@@ -482,7 +485,7 @@
       "featured": false,
       "homepageFeatured": false,
       "galleryFeatured": true,
-      "formId": "SW-TOYS",
+      "formId": "SW-SNAKE",
       "image": "main-snake.jpg",
       "images": [
         "main-snake.jpg"
@@ -509,7 +512,7 @@
       "featured": false,
       "homepageFeatured": false,
       "galleryFeatured": true,
-      "formId": "SW-TOYS",
+      "formId": "SW-DOG",
       "image": "main-dogs.jpg",
       "images": [
         "main-dogs.jpg"
@@ -536,7 +539,7 @@
       "featured": false,
       "homepageFeatured": false,
       "galleryFeatured": true,
-      "formId": "SW-TOYS",
+      "formId": "SW-LOVIE",
       "image": "main-fox.jpg",
       "images": [
         "main-fox.jpg"

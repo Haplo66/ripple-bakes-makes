@@ -5,6 +5,7 @@
  */
 
 import type { CsvRecord, PipelineWarning } from './types.ts';
+import type { StoredProductId } from './product-id-state.ts';
 
 /** Business Area → 2-letter prefix used in Product IDs (e.g. `BK-CH-001`). */
 export const BUSINESS_AREA_CODES: Record<string, string> = {
@@ -39,8 +40,17 @@ const slugify = (value: string): string =>
     .replace(/^-|-$/g, '');
 
 /**
- * Fills blank Product IDs with the next available ID in the `{BA}-{Collection Code}-{NNN}`
- * family. Existing Product IDs are never modified and never reused.
+ * Assigns Product IDs to product records. The spreadsheet carries no Product ID
+ * column: IDs are reconciled from prior pipeline state (`priorProducts`).
+ *
+ * Reconciliation order for a record without an explicit ID:
+ * 1. Exact match: a prior product with the same business area, collection, and
+ *    name reuses its existing ID (a name change with the same collection and a
+ *    1:1 swap reuses the ID too).
+ * 2. Rename carry-over: if a collection has exactly one unmatched new record
+ *    and exactly one unmatched prior product, the prior ID is reused.
+ * 3. Otherwise the next available ID in the `{BA}-{Collection Code}-{NNN}`
+ *    family is generated.
  *
  * Collection code resolution (in order):
  * 1. The collection's `code` field from the Collections sheet.
@@ -48,13 +58,14 @@ const slugify = (value: string): string =>
  * 3. Otherwise the row is left with a blank ID and a warning is emitted.
  *
  * Mutates `values.id` in place for rows it fills and returns the list of
- * generated IDs (with sheet row numbers) for write-back.
+ * assigned IDs (with sheet row numbers) for reporting.
  */
 export function assignProductIds(
   records: CsvRecord[],
   collections: CollectionCodeRecord[],
   file: string,
   warnings: PipelineWarning[],
+  priorProducts: StoredProductId[] = [],
 ): { generated: GeneratedProductId[] } {
   const codeByCollection = new Map<string, string>();
   for (const collection of collections) {
@@ -80,6 +91,22 @@ export function assignProductIds(
     }
   }
 
+  const matchedPriorIds = new Set<string>();
+  for (const prior of priorProducts) {
+    existingIds.add(prior.id);
+  }
+
+  const keyOf = (area: string, collection: string, name: string): string =>
+    `${(area ?? '').trim().toLowerCase()}|${slugify(collection)}|${(name ?? '').trim()}`;
+
+  const priorByKey = new Map<string, StoredProductId>();
+  for (const prior of priorProducts) {
+    const key = keyOf(prior.businessArea, prior.collection, prior.name);
+    if (!priorByKey.has(key)) {
+      priorByKey.set(key, prior);
+    }
+  }
+
   const nextSequence = (prefix: string): string => {
     let max = 0;
     for (const id of existingIds) {
@@ -93,10 +120,58 @@ export function assignProductIds(
 
   const generated: GeneratedProductId[] = [];
 
+  const assign = (record: CsvRecord, id: string): void => {
+    record.values.id = id;
+    existingIds.add(id);
+    generated.push({ rowNumber: record.rowNumber, id });
+  };
+
+  // Pass 1: exact match on business area + collection + name.
   for (const record of records) {
-    if (record.values.id?.trim()) {
-      continue;
+    if (record.values.id?.trim()) continue;
+    const key = keyOf(
+      record.values.businessArea ?? '',
+      record.values.collection ?? '',
+      record.values.name ?? '',
+    );
+    const prior = priorByKey.get(key);
+    if (prior && !matchedPriorIds.has(prior.id)) {
+      assign(record, prior.id);
+      matchedPriorIds.add(prior.id);
     }
+  }
+
+  // Pass 2: rename carry-over — one unmatched record and one unmatched prior
+  // product in the same collection are treated as the same product renamed.
+  const unmatchedByCollection = new Map<string, CsvRecord[]>();
+  for (const record of records) {
+    if (record.values.id?.trim()) continue;
+    const collectionId = slugify(record.values.collection ?? '');
+    const list = unmatchedByCollection.get(collectionId) ?? [];
+    list.push(record);
+    unmatchedByCollection.set(collectionId, list);
+  }
+
+  const unmatchedPriorByCollection = new Map<string, StoredProductId[]>();
+  for (const prior of priorProducts) {
+    if (matchedPriorIds.has(prior.id)) continue;
+    const collectionId = slugify(prior.collection);
+    const list = unmatchedPriorByCollection.get(collectionId) ?? [];
+    list.push(prior);
+    unmatchedPriorByCollection.set(collectionId, list);
+  }
+
+  for (const [collectionId, records2] of unmatchedByCollection) {
+    const priors = unmatchedPriorByCollection.get(collectionId) ?? [];
+    if (records2.length === 1 && priors.length === 1) {
+      assign(records2[0], priors[0].id);
+      matchedPriorIds.add(priors[0].id);
+    }
+  }
+
+  // Pass 3: generate fresh IDs for anything still blank.
+  for (const record of records) {
+    if (record.values.id?.trim()) continue;
 
     const rawArea = (record.values.businessArea ?? '').trim();
     const baCode = BUSINESS_AREA_CODES[rawArea] || BUSINESS_AREA_CODES[rawArea.toLowerCase()];
@@ -138,10 +213,7 @@ export function assignProductIds(
       continue;
     }
 
-    const id = nextSequence(`${baCode}-${collectionCode}`);
-    record.values.id = id;
-    existingIds.add(id);
-    generated.push({ rowNumber: record.rowNumber, id });
+    assign(record, nextSequence(`${baCode}-${collectionCode}`));
   }
 
   return { generated };
